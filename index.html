@@ -252,6 +252,25 @@ h1,h2,h3{margin:0;text-wrap:balance}
 .practice .go{pointer-events:none}
 .pracdone{background:var(--success-soft);color:#16693F;font-weight:700;padding:10px 16px;border-radius:14px}
 .pracnext{color:var(--muted);font-size:15px}
+/* mascot + celebrations */
+.mascot{position:fixed;left:calc(10px + env(safe-area-inset-left, 0px));bottom:0;z-index:55;display:flex;align-items:flex-end;gap:6px;pointer-events:none;transform:translateY(120%);transition:transform .45s cubic-bezier(.3,1.5,.5,1)}
+.mascot.show{transform:translateY(calc(-14px - env(safe-area-inset-bottom, 0px)))}
+.mascot svg{width:92px;height:92px;filter:drop-shadow(0 4px 8px rgba(23,32,65,.2))}
+.mascot .bubble{background:#fff;border:2px solid var(--primary);color:var(--ink);font-weight:700;font-size:20px;padding:8px 14px;border-radius:18px 18px 18px 4px;margin-bottom:58px;white-space:nowrap;box-shadow:0 4px 12px rgba(23,32,65,.12)}
+.cele{width:clamp(120px,34vw,160px);animation:hop 1s ease-in-out infinite}
+.cele svg{width:100%;height:auto;display:block}
+@keyframes hop{0%,100%{transform:translateY(0) rotate(-3deg)}50%{transform:translateY(-14px) rotate(3deg)}}
+.gprogline{display:flex;align-items:center;gap:10px;width:min(340px,100%);font-size:14px;color:var(--muted);font-variant-numeric:tabular-nums}
+.gprogline .bar{height:10px}
+.gprogline .bar i{transition:width 1.2s cubic-bezier(.3,.8,.3,1) .4s}
+.fx{will-change:transform,opacity}
+/* quick check */
+.checkcard{grid-column:1 / -1;display:flex;align-items:center;gap:14px;padding:16px;text-align:left;background:#E5F6F8;border-color:#B5E3EA}
+.checkcard .pi{font-size:38px}.checkcard .pt{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px}.checkcard b{font-size:18px}.checkcard small{color:var(--muted);font-size:14px}
+.checkcard .go{pointer-events:none;background:#0F9BB5;border-color:#0F9BB5}
+.placednote{background:var(--bg);border:1px solid var(--line);border-radius:14px;padding:10px 14px;font-size:15px;color:var(--ink);max-width:420px}
+.pkid select{font:500 15px var(--font);color:var(--ink);background:var(--bg);border:1.5px solid var(--line);border-radius:10px;padding:8px 10px}
+.pkid .ctl{display:flex;gap:10px;flex-wrap:wrap;align-items:center;font-size:14px;color:var(--muted)}
 /* result */
 .result{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;text-align:center;padding:10px}
 .bigstars{display:flex;gap:10px;font-size:clamp(52px,14vw,76px);line-height:1}
@@ -493,7 +512,7 @@ async function say(parts,opts){
   const token=++sayToken;
   if(muted||!('speechSynthesis' in window)){ await wait(opts.silentMs||500); return; }
   try{ speechSynthesis.cancel(); }catch(e){}
-  const rate = opts.rate || (me ? {little:.75, middle:.82, older:.9}[groupOf(me.age)] : .82);
+  const rate = opts.rate || (me ? {little:.75, middle:.82, older:.9}[bandOf(me)] : .82);
   for(let i=0;i<parts.length;i++){
     if(token!==sayToken) return;
     await speakOne(parts[i], rate, token);
@@ -510,6 +529,64 @@ function burst(el){
     const a=Math.random()*Math.PI*2, d=60+Math.random()*80;
     s.animate([{transform:`translate(${cx-13}px,${cy-13}px) scale(.4)`,opacity:1},{transform:`translate(${cx-13+Math.cos(a)*d}px,${cy-13+Math.sin(a)*d}px) scale(1)`,opacity:0}],{duration:750+Math.random()*250,easing:'cubic-bezier(.2,.7,.3,1)'}).onfinish=()=>s.remove(); }
 }
+/* Tiri's mascot: an original round friend with a star on its head */
+function mascotSVG(mood){
+  const cheer = mood==='cheer';
+  const arms = cheer
+    ? `<path d="M26 60 Q10 44 14 26" /><path d="M94 60 Q110 44 106 26" />`
+    : `<path d="M24 74 Q12 82 15 92" /><path d="M96 74 Q108 82 105 92" />`;
+  const mouth = cheer
+    ? `<path d="M45 71 Q60 92 75 71 Z" fill="#8A2135"/><path d="M52 80 Q60 86 68 80" fill="#F07A93"/>`
+    : `<path d="M46 72 Q60 85 74 72" stroke="#172041" stroke-width="4" fill="none" stroke-linecap="round"/>`;
+  return `<svg viewBox="0 0 120 120" aria-hidden="true">
+    <g stroke="#3657E0" stroke-width="9" stroke-linecap="round" fill="none">${arms}</g>
+    <line x1="60" y1="27" x2="60" y2="14" stroke="#172041" stroke-width="3" stroke-linecap="round"/>
+    <polygon points="${starPts(60,11,9,4)}" fill="#F5B922" stroke="#C98A00" stroke-width="1.5" stroke-linejoin="round"/>
+    <ellipse cx="45" cy="107" rx="11" ry="5.5" fill="#23306B"/><ellipse cx="75" cy="107" rx="11" ry="5.5" fill="#23306B"/>
+    <circle cx="60" cy="66" r="40" fill="#3657E0"/>
+    <ellipse cx="60" cy="82" rx="24" ry="17" fill="#7E97F2"/>
+    <circle cx="46" cy="56" r="9.5" fill="#fff"/><circle cx="74" cy="56" r="9.5" fill="#fff"/>
+    <circle cx="47.5" cy="57" r="4.8" fill="#172041"/><circle cx="75.5" cy="57" r="4.8" fill="#172041"/>
+    <circle cx="49" cy="55" r="1.6" fill="#fff"/><circle cx="77" cy="55" r="1.6" fill="#fff"/>
+    <circle cx="36" cy="70" r="5" fill="#F79AB5" opacity=".85"/><circle cx="84" cy="70" r="5" fill="#F79AB5" opacity=".85"/>
+    ${mouth}
+  </svg>`;
+}
+let mascotT=null;
+function mascotPop(text){
+  let m=$('mascot');
+  if(!m){ m=document.createElement('div'); m.id='mascot'; m.className='mascot'; m.setAttribute('aria-hidden','true'); document.body.appendChild(m); }
+  m.innerHTML=`${mascotSVG('happy')}<div class="bubble">${esc(text)}</div>`;
+  m.classList.remove('show'); void m.offsetWidth; m.classList.add('show');
+  clearTimeout(mascotT); mascotT=setTimeout(()=>m.classList.remove('show'),1700);
+}
+/* stars floating up from the bottom of the screen */
+function riseStars(n){
+  if(reduceMotion) return;
+  const H=innerHeight, W=innerWidth, icons=['⭐','🌟','✨','⭐','💛'];
+  for(let i=0;i<n;i++){
+    const s=document.createElement('span'); s.className='fx'; s.textContent=icons[i%icons.length];
+    s.style.fontSize=(20+Math.random()*24)+'px'; document.body.appendChild(s);
+    const x=Math.random()*(W-40), drift=Math.random()*90-45;
+    s.animate([{transform:`translate(${x}px,${H+30}px) scale(.6)`,opacity:0},{opacity:1,offset:.12},{opacity:1,offset:.75},
+      {transform:`translate(${x+drift}px,-60px) scale(1.15) rotate(${Math.random()*300-150}deg)`,opacity:0}],
+      {duration:1300+Math.random()*900, delay:Math.random()*350, easing:'cubic-bezier(.25,.6,.35,1)', fill:'both'}).onfinish=()=>s.remove();
+  }
+}
+/* confetti falling from the top */
+function confetti(n){
+  if(reduceMotion) return;
+  const H=innerHeight, W=innerWidth, cols=['#3657E0','#F5B922','#E0567A','#22955A','#8B5CF6','#F08A3C'];
+  for(let i=0;i<n;i++){
+    const c=document.createElement('i'); c.className='fx';
+    Object.assign(c.style,{width:(6+Math.random()*6)+'px',height:(10+Math.random()*8)+'px',background:cols[i%cols.length],borderRadius:'2px',display:'block'});
+    document.body.appendChild(c);
+    const x=Math.random()*W, sway=Math.random()*120-60;
+    c.animate([{transform:`translate(${x}px,-30px) rotate(0deg)`,opacity:1},{transform:`translate(${x+sway}px,${H+30}px) rotate(${Math.random()*720}deg)`,opacity:.9}],
+      {duration:1800+Math.random()*1400, delay:Math.random()*700, easing:'cubic-bezier(.3,.2,.6,1)', fill:'both'}).onfinish=()=>c.remove();
+  }
+}
+function celebrateCorrect(){ riseStars(16); mascotPop(pick(['Great!','Yes!','Super!','Well done!','Brilliant!','You got it!'])); }
 let toastT=null;
 function toast(m){ const t=$('toast'); t.textContent=m; t.classList.add('show'); clearTimeout(toastT); toastT=setTimeout(()=>t.classList.remove('show'),2200); }
 
@@ -1052,6 +1129,7 @@ const GAMES = {
   orderops:{name:'Order of Operations', icon:'🧮', acc:'#C2410C', learn:'Brackets first, then × ÷', make:gOrderOps, sprint:true},
   words:{name:'Word Problems', icon:'📝', acc:'#4D7C0F', learn:'Real-life problem solving', make:gWords},
 
+  placement:{name:'Quick check', icon:'🧭', acc:'#0F9BB5', learn:'Find the right games', isPlacement:true},
   review:{name:'Review', icon:'🔁', acc:'#D19A06', learn:'Questions to try again', isReview:true},
   sprint:{name:'60-Second Challenge', icon:'⏱️', acc:'#D63E55', learn:'Quick-fire mixed questions', isSprint:true}
 };
@@ -1061,7 +1139,8 @@ const GROUPS = {
   older:{label:'Ages 9–12', games:['times','divide','fractions','decimals','percent','sequence','logic','area','orderops','words','sprint'], perLevel:8, voice:false}
 };
 const groupOf = age => age<=5?'little':age<=8?'middle':'older';
-const G = () => GROUPS[groupOf(me.age)];
+const bandOf = p => (p && GROUPS[p.band] ? p.band : groupOf(p.age));   // set by the quick check or the parent; age otherwise
+const G = () => GROUPS[bandOf(me)];
 
 /* ================= storage ================= */
 const KEY='cwm.v2';
@@ -1122,7 +1201,7 @@ function logRound(completed){
   const rec={
     id:'s'+Date.now().toString(36)+Math.random().toString(36).slice(2,6),
     date:`${d.getFullYear()}-${pad2(d.getMonth()+1)}-${pad2(d.getDate())}`, time:`${pad2(d.getHours())}:${pad2(d.getMinutes())}`,
-    child:me.name, child_age:me.age, child_id:me.id, age_group:GROUPS[groupOf(me.age)].label.replace('Ages ','').replace('–','-'),
+    child:me.name, child_age:me.age, child_id:me.id, age_group:GROUPS[bandOf(me)].label.replace('Ages ','').replace('–','-'),
     game:GAMES[round.game].name, game_id:round.game, level:round.level,
     questions:items.length, right_first_try:right, wrong_tries:items.reduce((a,i)=>a+i.wrong,0), answers_shown:items.filter(i=>i.shown).length,
     stars:round.stars||0, passed:!!round.passed, seconds:Math.round((Date.now()-round.started)/1000), completed:!!completed,
@@ -1174,7 +1253,7 @@ function resultsMessage(){
   const d=new Date(), today=`${d.getFullYear()}-${pad2(d.getMonth()+1)}-${pad2(d.getDate())}`;
   const lines=[`Tiri results — ${today} — device ${store.device}`,''];
   store.profiles.forEach(p=>{ const t=totals(p), acc=t.answers?Math.round(100*t.right/t.answers):0;
-    const lv=GROUPS[groupOf(p.age)].games.filter(id=>!GAMES[id].isSprint&&p.games[id]&&levelsDone(p.games[id])).map(id=>`${GAMES[id].name} ${levelsDone(p.games[id])}/10`).join(', ');
+    const lv=GROUPS[bandOf(p)].games.filter(id=>!GAMES[id].isSprint&&p.games[id]&&levelsDone(p.games[id])).map(id=>`${GAMES[id].name} ${levelsDone(p.games[id])}/10`).join(', ');
     lines.push(`${p.name} (age ${p.age}): ${t.rounds} rounds played, ${t.answers} answers, ${t.right} right first time (${acc}%), ${t.wrong} wrong tries.${lv?` Levels completed: ${lv}.`:''}`); });
   lines.push('','--- Spreadsheet data (paste into Excel; each round has a unique id) ---',toCSV());
   return lines.join('\n');
@@ -1189,6 +1268,7 @@ const ICON_SOUND_OFF='<svg viewBox="0 0 24 24"><path d="M4 9v6h4l5 4V5L8 9H4z"/>
 const ICON_LOCK='<svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 018 0v3"/></svg>';
 function show(id){
   current=id; SCREENS.forEach(s=>$(s).hidden=s!==id);
+  if(id!=='sPlay'){ const m=$('mascot'); if(m){ clearTimeout(mascotT); m.classList.remove('show'); } }
   $('backBtn').hidden = id==='sHome';
   const mid=$('topMid');
   if(me && ['sGames','sLevels','sPlay','sDone'].includes(id)) mid.innerHTML=`<div class="childchip">${avatar(me)}<b>${esc(me.name)}</b><span class="starcount">★ ${starTotal(me)}</span></div>`;
@@ -1200,7 +1280,7 @@ function goBack(){
   if(current==='sEdit') return editReturn==='sParent'?openParent():goHome();
   if(current==='sParent'||current==='sGames') return goHome();
   if(current==='sLevels') return openGames();
-  if(current==='sPlay'||current==='sDone'){ logRound(false); stopSprint(); const wasPractice=!!practice; practice=null; return (wasPractice||GAMES[game].isSprint||GAMES[game].isReview)?openGames():openLevels(game); }
+  if(current==='sPlay'||current==='sDone'){ logRound(false); stopSprint(); if(placing){ placing=null; me.placementSkipped=true; save(); return openGames(); } const wasPractice=!!practice; practice=null; return (wasPractice||GAMES[game].isPlacement||GAMES[game].isSprint||GAMES[game].isReview)?openGames():openLevels(game); }
 }
 
 /* ---------- home ---------- */
@@ -1257,8 +1337,9 @@ function openGames(){
   $('gamesSub').innerHTML=`<span class="tag">${grp.label}</span>&nbsp; Start today's practice, or pick a game.`;
   const due=dueReviews().length, days=practiceDays(me), doneToday=(me.practiceDays||[]).includes(todayStr());
   const card=`<button class="card practice tap" id="practiceBtn"><span class="pi">${doneToday?'✅':'🌟'}</span><span class="pt"><b>Today's practice</b><small>${doneToday?'Done today. You can play it again.':'About 10 minutes · games picked for you'}</small>${days?`<small class="streak">⭐ ${days} day${days>1?'s':''} in a row</small>`:''}</span><span class="btn primary small go">${doneToday?'Again':'Start'}</span></button>`;
+  const check = !me.placement ? `<button class="card checkcard tap" id="checkBtn"><span class="pi">🧭</span><span class="pt"><b>Quick check</b><small>8 warm-up questions to find the best games for ${esc(me.name)}</small></span><span class="btn primary small go">Start</span></button>` : '';
   const rev = due ? `<button class="card game tap" id="reviewBtn" style="--acc:#D19A06"><span class="gicon">🔁</span><b>Review</b><small>${due} question${due>1?'s':''} to try again</small></button>` : '';
-  $('games').innerHTML=card+rev+grp.games.map(id=>{
+  $('games').innerHTML=(me.placement?card:check+card)+rev+grp.games.map(id=>{
     const g=GAMES[id];
     if(g.isSprint) return `<button class="card game tap" data-game="${id}" style="--acc:${g.acc}"><span class="gicon">${g.icon}</span><b>${g.name}</b><small>${g.learn}</small><div class="gprog">Best score: ${me.best.sprint||0}</div></button>`;
     const s=gp(me,id), done=levelsDone(s);
@@ -1278,7 +1359,7 @@ function openLevels(id){
     return locked ? `<button class="lvl locked" disabled aria-label="Level ${n} locked">${ICON_LOCK}<span style="font-size:13px">${n}</span></button>`
                   : `<button class="card lvl tap${cur?' current':''}" data-level="${n}" aria-label="Level ${n}">${n}${starsHTML(st)}</button>`; }).join('');
   const per=G().perLevel, need=Math.ceil(per*0.5);
-  $('legend').textContent = groupOf(me.age)==='little' ? `Each level has ${per} questions. Finish a level to open the next one.` : `Each level has ${per} questions. Get at least ${need} right first time to open the next level. Get them all right for 3 stars.`;
+  $('legend').textContent = bandOf(me)==='little' ? `Each level has ${per} questions. Finish a level to open the next one.` : `Each level has ${per} questions. Get at least ${need} right first time to open the next level. Get them all right for 3 stars.`;
   if(G().voice) say(`${g.name}. Pick a level.`);
 }
 
@@ -1382,9 +1463,10 @@ function onKey(k){
 }
 const isRight = () => q.decimal ? Math.abs(parseFloat(typed)-parseFloat(q.answer))<1e-9 : typed.replace(/^0+(?=\d)/,'')===q.answer;
 function submitTyped(){
+  if(placing){ placeAnswer(isRight()); return; }
   if(sprint){ sprintAnswer(isRight()); return; }
   const s=$('slot');
-  if(isRight()){ locked=true; s.classList.add('ok'); ding(); burst(s); completeQ(tries===0, false, async()=>{ if(G().voice) await say(`Correct! ${speakify(q.explain)}.`); else await wait(700); }); return; }
+  if(isRight()){ locked=true; s.classList.add('ok'); ding(); burst(s); celebrateCorrect(); completeQ(tries===0, false, async()=>{ if(G().voice) await say(`Correct! ${speakify(q.explain)}.`); else await wait(700); }); return; }
   tries++; boop(); s.classList.remove('shake'); void s.offsetWidth; s.classList.add('shake'); typed=''; setTimeout(updateSlot,300);
   if(tries===1){ const h=q.hint||maskHint(q); if(h){ showWhy(h.html); if(G().voice) say(['Not quite. Here is a hint.', h.say]); return; } }
   if(tries>=2){ locked=true;
@@ -1394,7 +1476,8 @@ function submitTyped(){
 }
 function onChoice(btn){
   if(locked) return; audio();
-  if(btn.dataset.choice===q.answer){ locked=true; btn.classList.add('right'); ding(); burst(btn);
+  if(placing){ placeAnswer(btn.dataset.choice===q.answer, btn); return; }
+  if(btn.dataset.choice===q.answer){ locked=true; btn.classList.add('right'); ding(); burst(btn); celebrateCorrect();
     completeQ(tries===0,false, q.after ? ()=>q.after($('stage')) : ()=>say(`${pick(['Well done!','Great!','Yes!'])} ${q.praise||''}`)); }
   else {
     tries++; btn.classList.add('wrong'); boop();
@@ -1420,33 +1503,102 @@ function practiceButtons(){
   return {btns:`<button class="btn primary" id="pracEnd">Back to games</button>`, note:`<div class="pracdone">🌟 Today's practice is done! · ${d} day${d>1?'s':''} in a row</div>`, say:"Today's practice is done! Great work."};
 }
 function nextPracticeOrEnd(){ const pb=practiceButtons(); if(pb && practice) runPracticeStep(); else openGames(); }
+function cheerLines(passed, stars, lvl){
+  const n=me.name;
+  if(!passed) return `Good try, ${n}! Every try makes you stronger. Let's play again!`;
+  if(stars===3) return pick([`Perfect, ${n}! Three stars! You are making very good progress!`, `Wow, ${n}! All right! You are doing brilliantly!`]);
+  return pick([`Well done, ${n}! You are making very good progress!`, `Amazing, ${n}! Level ${lvl} complete. You are doing great!`, `Fantastic work, ${n}! You are getting better and better!`]);
+}
+function bigCelebration(){ fanfare(); confetti(70); setTimeout(()=>riseStars(24),300); }
 function finishLevel(){
-  const items=round?round.items:[], per=plan.length, right=items.filter(i=>i.ok).length, ratio=right/per, little=groupOf(me.age)==='little';
+  const items=round?round.items:[], per=plan.length, right=items.filter(i=>i.ok).length, ratio=right/per, little=bandOf(me)==='little';
   if(GAMES[game].isReview){
     if(round){ round.stars=0; round.passed=true; } save(); logRound(true);
     const left=per-right, pb=practiceButtons();
-    show('sDone'); fanfare();
-    $('result').innerHTML=`<div class="bigemoji">🔁</div><h2>Review done!</h2><p>${right} of ${per} right first time.${left?` ${left} will come back later.`:' All fixed!'}</p>
+    show('sDone'); bigCelebration();
+    $('result').innerHTML=`<div class="cele">${mascotSVG('cheer')}</div><h2>Review done, ${esc(me.name)}!</h2><p>${right} of ${per} right first time.${left?` ${left} will come back later.`:' All fixed!'}</p>
       ${pb?pb.note:''}<div class="btns">${pb?pb.btns:'<button class="btn primary" id="levelsBtn">Back to games</button>'}</div>`;
-    if(G().voice) say(pb?pb.say:'Review done! Well done.');
+    say(pb?[`Well done, ${me.name}! You fixed ${right} of them.`, pb.say]:`Well done, ${me.name}! You are making very good progress!`);
     return;
   }
   let stars = ratio>=0.99?3 : ratio>=0.7?2 : ratio>=0.5?1 : 0;
   if(little) stars=Math.max(1,stars);
-  const passed=stars>=1, s=gp(me,game);
+  const passed=stars>=1, s=gp(me,game), before=levelsDone(s);
   s.plays++;
   if(passed){ s.stars[level]=Math.max(s.stars[level]||0,stars); if(level===s.unlocked&&level<10) s.unlocked=level+1; }
   if(round){ round.stars=stars; round.passed=passed; }
   save(); logRound(true);
-  show('sDone'); if(passed) fanfare();
-  const last=level===10, pb=practiceButtons();
-  $('result').innerHTML=`<div class="bigstars">${[1,2,3].map(i=>`<span class="${i<=stars?'on':''}">★</span>`).join('')}</div>
-    <h2>${passed?(last?`You finished all 10 levels!`:`Level ${level} complete!`):'Nearly there!'}</h2>
-    <p>${right} of ${per} right first time${passed?'':` · get ${Math.ceil(per*.5)} to pass`}</p>
+  show('sDone');
+  if(passed) bigCelebration();
+  const last=level===10, pb=practiceButtons(), after=levelsDone(s);
+  $('result').innerHTML=`<div class="cele">${mascotSVG(passed?'cheer':'happy')}</div>
+    <div class="bigstars">${[1,2,3].map(i=>`<span class="${i<=stars?'on':''}">★</span>`).join('')}</div>
+    <h2>${passed?(last?`You finished all 10 levels, ${esc(me.name)}!`:(stars===3?`Perfect, ${esc(me.name)}!`:`Well done, ${esc(me.name)}!`)):`Good try, ${esc(me.name)}!`}</h2>
+    <p>${passed?`Level ${level} complete · `:''}${right} of ${per} right first time${passed?'':` · get ${Math.ceil(per*.5)} to pass`}</p>
+    <div class="gprogline" style="--acc:${GAMES[game].acc}"><span>${GAMES[game].icon} ${GAMES[game].name}</span><span class="bar" style="flex:1"><i id="progFill" style="width:${before*10}%"></i></span><span>${after}/10</span></div>
     ${pb?pb.note:''}
     <div class="btns">${pb?pb.btns:`${passed&&!last?`<button class="btn primary" id="nextBtn">Next level ▶</button>`:''}<button class="btn${passed?'':' primary'}" id="againBtn">↻ Play again</button><button class="btn" id="levelsBtn">All levels</button>`}</div>`;
-  if(G().voice) say(pb?[passed?(stars===3?'Perfect! Three stars!':`Level ${level} complete.`):'Good try!', pb.say]:(passed?(stars===3?`Perfect! Three stars!`:`Well done! Level ${level} complete.`):`Good try! Let's play again.`));
-  burst(document.querySelector('.bigstars'));
+  requestAnimationFrame(()=>requestAnimationFrame(()=>{ const f=$('progFill'); if(f) f.style.width=(after*10)+'%'; }));
+  say(pb?[cheerLines(passed,stars,level), pb.say]:cheerLines(passed,stars,level));
+}
+
+/* ---------- quick check: find the right games and starting level ---------- */
+/* A ladder of skills from counting (3 years) to brackets (12 years). The check starts at the child's age,
+   goes up after a right answer and down after a wrong one, and stops after 8 questions. */
+const LADDER=[['count',2],['count',6],['addpics',3],['addpics',8],['order',8],['addsub',3],['addsub',5],['place',4],['addsub',8],['times',4],['divide',4],['times',8],['fractions',6],['orderops',4]];
+const START_BY_AGE={3:0,4:1,5:2,6:4,7:5,8:7,9:8,10:9,11:10,12:11};
+let placing=null;
+const gameBand = gid => Object.keys(GROUPS).find(k=>GROUPS[k].games.includes(gid)) || 'little';
+function startPlacement(p){
+  me=p; practice=null; stopSprint(); logRound(false);
+  placing={pos:START_BY_AGE[p.age]??2, n:0, max:8, hist:[]};
+  game='placement'; level=0; plan=[];
+  round={game:'placement', level:0, started:Date.now(), items:[], logged:false};
+  show('sPlay'); $('qbar').style.width='0%';
+  say(`Hi ${p.name}! Let's play a few warm-up questions.`).then(()=>{ if(placing) placeQ(); });
+  $('pText').textContent='Warm-up'; $('stage').innerHTML=`<div class="cele">${mascotSVG('happy')}</div><p style="font-size:20px;font-weight:600;text-align:center;margin:0">A few warm-up questions<br>to find the best games for you.</p>`;
+}
+function placeQ(){
+  const [gid,lv]=LADDER[placing.pos];
+  q=makeQ(gid,lv); q.isReview=false; renderQ();
+  $('pTitle').textContent=`Warm-up · ${placing.n+1} of ${placing.max}`;
+  $('qbar').style.width=`${100*placing.n/placing.max}%`;
+  if(GROUPS[gameBand(gid)].voice || bandOf(me)!=='older') setTimeout(()=>say(questionParts(q)),250);
+}
+function placeAnswer(ok, btn){
+  locked=true;
+  const pos=placing.pos;
+  placing.hist.push({pos, ok}); placing.n++;
+  if(round) round.items.push({game:q.gid, answer:q.answer, ok, wrong:ok?0:1, shown:false});
+  if(ok){ ding(); if(btn) btn.classList.add('right'); else { const s=$('slot'); if(s) s.classList.add('ok'); } riseStars(8); }
+  else tick();
+  say(ok?pick(['Great!','Nice!','Yes!']):pick(['Okay! Next one.','Thank you! Next one.']));
+  const dir=ok?1:-1; if(placing.dir && dir!==placing.dir) placing.reversed=true; placing.dir=dir;
+  placing.pos=Math.max(0,Math.min(LADDER.length-1,pos+dir*(placing.reversed?1:2)));   // big steps until the first change of direction
+  const topOut = ok && pos===LADDER.length-1 && placing.hist.filter(h=>h.pos===pos&&h.ok).length>=2;
+  setTimeout(()=>{ if(!placing) return; (placing.n>=placing.max || topOut) ? finishPlacement() : placeQ(); }, 900);
+}
+function placementEstimate(hist){
+  const by={}; hist.forEach(h=>{ by[h.pos]=by[h.pos]||{ok:0,no:0}; h.ok?by[h.pos].ok++:by[h.pos].no++; });
+  const good=Object.keys(by).map(Number).filter(k=>by[k].ok>by[k].no);
+  return good.length ? Math.max(...good) : 0;
+}
+function placementResult(est){
+  const band = est<=3?'little' : est<=8?'middle' : 'older';
+  const start = band==='little' ? (est<=1?1:est===2?3:5) : band==='middle' ? (est<=5?1:est<=7?3:5) : (est<=10?1:est<=12?3:5);
+  return {band, start};
+}
+function finishPlacement(){
+  const p=me, est=placementEstimate(placing.hist), r=placementResult(est); placing=null;
+  p.band=r.band; p.placement={est, band:r.band, start:r.start, at:Date.now()}; p.dirty=true;
+  GROUPS[r.band].games.forEach(id=>{ if(GAMES[id].isSprint) return; const g=gp(p,id); g.unlocked=Math.max(g.unlocked||1, r.start); });
+  if(round){ round.level=est+1; round.stars=0; round.passed=true; }
+  save(); logRound(true);
+  show('sDone'); bigCelebration();
+  $('result').innerHTML=`<div class="cele">${mascotSVG('cheer')}</div><h2>All done, ${esc(p.name)}!</h2><p>Your games are ready.</p>
+    <div class="placednote">For grown-ups: ${esc(p.name)} will play the <b>${GROUPS[r.band].label.replace('Ages','ages')}</b> games, starting at <b>level ${r.start}</b>. You can change this in the Parent area.</div>
+    <div class="btns"><button class="btn primary" id="placedGo">Let's play ▶</button></div>`;
+  say(`Great job, ${p.name}! Your games are ready. Let's play!`);
 }
 
 /* ---------- 60-second challenge ---------- */
@@ -1498,7 +1650,7 @@ function renderParent(){
     : `<span class="status"><i></i>Saved on this device only</span>`;
   const kids = store.profiles.map(p=>{
     const t=totals(p), acc=t.answers?Math.round(100*t.right/t.answers):null;
-    const ids=GROUPS[groupOf(p.age)].games.filter(id=>!GAMES[id].isSprint);
+    const ids=GROUPS[bandOf(p)].games.filter(id=>!GAMES[id].isSprint);
     let weak=null; ids.forEach(id=>{ const s=p.games[id]; if(s&&s.tries>=6){ const a=s.right/s.tries; if(a<.6&&(!weak||a<weak.a)) weak={id,a}; } });
     const rv=(p.review||[]).length, pd=practiceDays(p);
     const flag = (!t.rounds ? '' : weak ? `<span class="flag">Needs practice: ${GAMES[weak.id].name}</span>` : `<span class="flag ok">On track</span>`)
@@ -1507,8 +1659,12 @@ function renderParent(){
     const rows = ids.map(id=>{ const s=p.games[id]||{stars:{},tries:0,right:0,plays:0}; const a=s.tries?Math.round(100*s.right/s.tries):null;
       return `<tr><td>${GAMES[id].icon} ${GAMES[id].name}</td><td class="n">${levelsDone(s)}/10</td><td class="n">${s.plays||0}</td><td class="n ${a!==null&&a<60?'low':''}">${a===null?'–':a+'%'}</td></tr>`; }).join('');
     return `<div class="card pkid">
-      <div class="who">${avatar(p,true)}<div><b>${esc(p.name)}</b><span>Age ${p.age} · ${GROUPS[groupOf(p.age)].label} · ${ago(p.last)}</span></div>
+      <div class="who">${avatar(p,true)}<div><b>${esc(p.name)}</b><span>Age ${p.age} · ${GROUPS[bandOf(p)].label} · ${ago(p.last)}</span></div>
         <div class="btns"><button class="btn small" data-edit="${p.id}">Edit</button></div></div>
+      <div class="ctl"><label for="band-${p.id}">Games</label>
+        <select id="band-${p.id}" data-band="${p.id}"><option value="">By age (${GROUPS[groupOf(p.age)].label})</option>${Object.keys(GROUPS).map(k=>`<option value="${k}" ${p.band===k?'selected':''}>${GROUPS[k].label}</option>`).join('')}</select>
+        <button class="btn small" data-place="${p.id}">${p.placement?'Redo quick check':'Run quick check'}</button>
+        ${p.placement?`<span>Quick check: ${GROUPS[p.placement.band].label}, from level ${p.placement.start}</span>`:''}</div>
       <div class="kpis"><div class="kpi"><b>${t.rounds}</b><span>Levels played</span></div><div class="kpi"><b>${t.answers}</b><span>Questions</span></div><div class="kpi"><b>${t.right}</b><span>Right first time${acc!==null?` (${acc}%)`:''}</span></div><div class="kpi"><b>${t.wrong}</b><span>Wrong tries</span></div></div>
       ${flag}
       <div class="tablewrap"><table class="gtable"><thead><tr><th>Game</th><th class="n">Levels</th><th class="n">Plays</th><th class="n">Accuracy</th></tr></thead><tbody>${rows}</tbody></table></div>
@@ -1536,7 +1692,12 @@ function renderParent(){
 document.addEventListener('click', async e=>{
   const t=e.target;
   if(t.closest('#addKid')||t.closest('#pAdd')){ openEditor(null, current==='sParent'?'sParent':'sHome'); return; }
-  const kid=t.closest('[data-kid]'); if(kid){ audio(); me=store.profiles.find(p=>p.id===kid.dataset.kid); openGames(); return; }
+  const kid=t.closest('[data-kid]'); if(kid){ audio(); me=store.profiles.find(p=>p.id===kid.dataset.kid);
+    const fresh=!me.placement && !me.placementSkipped && !Object.values(me.games||{}).some(g=>g.tries>0);
+    fresh ? startPlacement(me) : openGames(); return; }
+  if(t.closest('#placedGo')){ openGames(); return; }
+  if(t.closest('#checkBtn')){ audio(); startPlacement(me); return; }
+  const pl=t.closest('[data-place]'); if(pl){ const k=store.profiles.find(p=>p.id===pl.dataset.place); if(k){ startPlacement(k); } return; }
   const ag=t.closest('[data-age]'); if(ag){ edAge=+ag.dataset.age; renderAges(); return; }
   const gm=t.closest('[data-game]'); if(gm){ audio(); game=gm.dataset.game; GAMES[game].isSprint?startLevel(1):openLevels(game); return; }
   const lv=t.closest('[data-level]'); if(lv){ audio(); startLevel(+lv.dataset.level); return; }
@@ -1565,7 +1726,7 @@ document.addEventListener('click', async e=>{
     renderParent(); return; }
 });
 $('fSave').addEventListener('click',saveChild);
-document.addEventListener('change',e=>{ if(e.target.id==='pFamily'){ const v=e.target.value.trim().replace(/\s+/g,' '); if(v && v!==store.family){ store.family=v; store.profiles.forEach(p=>p.dirty=true); save(); liveSync(); } renderParent(); return; } if(e.target.id==='rEmail'){ const v=e.target.value.trim(); store.sendTo=validEmail(v)?v:''; save(); renderParent(); } });
+document.addEventListener('change',e=>{ if(e.target.dataset && e.target.dataset.band){ const k=store.profiles.find(p=>p.id===e.target.dataset.band); if(k){ if(e.target.value) k.band=e.target.value; else delete k.band; k.dirty=true; save(); renderParent(); } return; } if(e.target.id==='pFamily'){ const v=e.target.value.trim().replace(/\s+/g,' '); if(v && v!==store.family){ store.family=v; store.profiles.forEach(p=>p.dirty=true); save(); liveSync(); } renderParent(); return; } if(e.target.id==='rEmail'){ const v=e.target.value.trim(); store.sendTo=validEmail(v)?v:''; save(); renderParent(); } });
 $('fCancel').addEventListener('click',()=>editReturn==='sParent'?openParent():goHome());
 $('fName').addEventListener('keydown',e=>{ if(e.key==='Enter') saveChild(); });
 $('fRemove').addEventListener('click',()=>{
@@ -1592,7 +1753,7 @@ function wireHold(){
 }
 try{ speechSynthesis.getVoices(); }catch(e){}
 
-window.__cwm={GAMES,GROUPS,makeQ,maskHint,cur:()=>q};
+window.__cwm={GAMES,GROUPS,makeQ,maskHint,cur:()=>q,placementEstimate,placementResult,LADDER,START_BY_AGE};
 /* ---------- installable app (only when opened from its own web address) ---------- */
 let deferredInstall=null;
 const INSTALLED = (()=>{ try{ return matchMedia('(display-mode: standalone)').matches || navigator.standalone===true; }catch(e){ return false; } })();
