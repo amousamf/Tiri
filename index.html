@@ -212,6 +212,46 @@ h1,h2,h3{margin:0;text-wrap:balance}
 .fig svg{display:block;max-width:100%;height:auto}
 .clock{width:clamp(160px,42vw,210px);height:auto}
 
+/* showing why */
+.why{max-width:620px;width:100%;box-sizing:border-box;background:#FFF6DB;border:1.5px solid #F2D27A;border-radius:16px;padding:10px 14px;display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center;font-weight:600;font-size:clamp(15px,4vw,19px);color:var(--ink);animation:whyin .25s ease-out}
+@keyframes whyin{from{opacity:0;transform:translateY(-6px)}}
+.why .w-eq{font-size:clamp(20px,5.5vw,28px);font-weight:700;font-variant-numeric:tabular-nums}
+.why .colsum{text-align:right;font-family:ui-monospace,Menlo,Consolas,monospace;line-height:1.3;border-bottom:2px solid var(--ink);padding-bottom:4px}
+.match{display:flex;flex-wrap:wrap;gap:6px;justify-content:center}
+.box{width:clamp(36px,9.5vw,50px);height:clamp(36px,9.5vw,50px);box-sizing:border-box;border:2.5px dashed #9AA3BC;border-radius:12px;display:grid;place-items:center;font-size:clamp(22px,6vw,32px);background:#fff}
+.box.full{border-style:solid;border-color:var(--success);background:var(--success-soft)}
+.box.empty{border-color:var(--danger);background:var(--danger-soft)}
+.box.left{border:2.5px solid var(--danger);background:var(--danger-soft)}
+.wdots{display:flex;flex-wrap:wrap;gap:5px;max-width:240px;justify-content:center}
+.wdots i{width:15px;height:15px;border-radius:50%;background:var(--primary);position:relative}
+.wdots i.b{background:#F08A3C}
+.wdots i.x{background:#D3D8E4}
+.wdots i.x::after{content:"";position:absolute;left:-3px;right:-3px;top:6px;height:3px;border-radius:2px;background:var(--danger);transform:rotate(-40deg)}
+.nl{display:flex;gap:4px;flex-wrap:wrap;justify-content:center}
+.nl span{min-width:32px;height:32px;padding:0 4px;box-sizing:border-box;border-radius:8px;background:#fff;border:1.5px solid var(--line);display:grid;place-items:center;font-size:15px;font-weight:600;font-variant-numeric:tabular-nums}
+.nl span.on{background:var(--primary-soft);border-color:var(--primary);color:var(--primary)}
+.nl span.bad{background:var(--danger-soft);border-color:var(--danger);color:var(--danger)}
+.nl span.gap{border:2px dashed var(--ink)}
+.obj.matched{background:var(--success-soft);border-radius:10px;box-shadow:0 0 0 2px var(--success)}
+.obj.extra{background:var(--danger-soft);border-radius:10px;box-shadow:0 0 0 2px var(--danger)}
+.band0{background:#E3E9FD;border-radius:10px;padding:2px}.band1{background:#FFEBC9;border-radius:10px;padding:2px}
+.opt{position:relative}
+.opt.wrong{opacity:.6}
+.opt.same{border-color:var(--success);background:var(--success-soft)}
+.tagname{position:absolute;left:4px;right:4px;bottom:4px;font-size:12px;font-weight:700;line-height:1.1;color:var(--ink);background:rgba(255,255,255,.85);border-radius:6px;padding:2px 0}
+.opt.pulse{border-color:var(--gold)!important;box-shadow:0 0 0 5px rgba(245,185,34,.4);animation:pulse 1s ease-in-out infinite}
+@keyframes pulse{50%{transform:scale(1.07)}}
+.revtag{font-size:13px;font-weight:700;color:#7A5200;background:#FFEDB8;border-radius:99px;padding:4px 12px}
+/* today's practice */
+.practice{grid-column:1 / -1;display:flex;align-items:center;gap:14px;padding:16px;text-align:left;background:var(--primary-soft);border-color:#C9D4FA}
+.practice .pi{font-size:38px;line-height:1}
+.practice .pt{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px}
+.practice .pt b{font-size:18px}
+.practice .pt small{color:var(--muted);font-size:14px}
+.practice .pt .streak{color:#7A5200;font-weight:600}
+.practice .go{pointer-events:none}
+.pracdone{background:var(--success-soft);color:#16693F;font-weight:700;padding:10px 16px;border-radius:14px}
+.pracnext{color:var(--muted);font-size:15px}
 /* result */
 .result{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;text-align:center;padding:10px}
 .bigstars{display:flex;gap:10px;font-size:clamp(52px,14vw,76px);line-height:1}
@@ -311,9 +351,11 @@ h1,h2,h3{margin:0;text-wrap:balance}
 (function(){
 /* ================= helpers ================= */
 const $ = id => document.getElementById(id);
-const R = (a,b) => a + Math.floor(Math.random()*(b-a+1));
-const pick = a => a[Math.floor(Math.random()*a.length)];
-const shuffle = a => { a=a.slice(); for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; };
+let _seed = (Math.random()*4294967296)>>>0;
+function rnd(){ _seed=(_seed+0x6D2B79F5)|0; let t=Math.imul(_seed^(_seed>>>15),1|_seed); t=(t+Math.imul(t^(t>>>7),61|t))^t; return ((t^(t>>>14))>>>0)/4294967296; }
+const R = (a,b) => a + Math.floor(rnd()*(b-a+1));
+const pick = a => a[Math.floor(rnd()*a.length)];
+const shuffle = a => { a=a.slice(); for(let i=a.length-1;i>0;i--){const j=Math.floor(rnd()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; };
 const wait = ms => new Promise(r=>setTimeout(r,ms));
 const esc = s => String(s).replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const T = (lv,a) => a[Math.min(lv,a.length)-1];
@@ -492,19 +534,56 @@ async function countAloud(stage,total,sel){
   await sp;
 }
 const P = (o) => Object.assign({pad:true}, o);   // typed-answer question
+/* --- showing why: pictures that explain a wrong answer --- */
+const wdots = (n,cls) => `<div class="wdots">${Array.from({length:n},()=>`<i class="${cls||''}"></i>`).join('')}</div>`;
+const wdotsCross = (n,k) => `<div class="wdots">${Array.from({length:n},(_,i)=>`<i class="${i>=n-k?'x':''}"></i>`).join('')}</div>`;
+function matchViz(emoji, have, said){            // one thing in each box: shows too many / too few
+  let h='<div class="match">';
+  for(let i=0;i<Math.max(have,said);i++) h += i<said ? (i<have?`<span class="box full">${emoji}</span>`:`<span class="box empty"></span>`) : `<span class="box left">${emoji}</span>`;
+  return h+'</div>';
+}
+const tooMsg = (have,said) => said>have ? 'Too many! Some boxes are empty.' : 'Too few! Some are left over.';
+function tagBtn(btn,label){ if(btn && !btn.querySelector('.tagname')) btn.insertAdjacentHTML('beforeend',`<span class="tagname">${esc(label)}</span>`); }
+function numberLine(lo,hi,cls){ let h='<div class="nl">'; for(let x=lo;x<=hi;x++){ const c=cls(x)||''; h+=`<span class="${c}">${c==='gap'?'?':x}</span>`; } return h+'</div>'; }
+const hintBox = (title, body) => `<div>${title}</div>${body||''}`;
+function skipHint(step, target, label){
+  return {html:hintBox(esc(label||`Count in ${step}s until you reach ${target}`), `<div class="w-eq">${step}, ${2*step}, ${3*step}, …</div>`),
+          say: label ? label+'.' : `Count in ${step}s until you reach ${target}. How many jumps?`};
+}
+function timesHint(a,b){
+  if(a*b<=60 && a<=10 && b<=10) return {html:hintBox(`${a} rows of ${b}. Count them all.`, `<div class="array" style="grid-template-columns:repeat(${b},12px);gap:5px;padding:10px">${'<i style="width:12px;height:12px"></i>'.repeat(a*b)}</div>`), say:`${a} rows of ${b}. Count in ${b}s.`};
+  const big=Math.max(a,b), sm=Math.min(a,b); return skipHint(big, null, `Count in ${big}s, ${sm} times`);
+}
+function halfHint(a){ return {html:hintBox(`Split ${a} into two equal groups`, `<div class="w-eq">? + ? = ${a}</div>${a<=20?wdots(a):''}`), say:`Split ${a} into two equal groups. Which number plus the same number makes ${a}?`}; }
+function decHint(a,b,op){
+  if(op==='×'||op==='÷'){ const places=b===10?'one place':'two places';
+    return {html:hintBox(`${op==='×'?'Multiplying':'Dividing'} by ${b} moves every digit ${places} to the ${op==='×'?'left':'right'}.`, `<div>So the decimal point moves ${places} to the ${op==='×'?'right':'left'}.</div>`), say:`${op==='×'?'Multiplying':'Dividing'} by ${b} moves the decimal point ${places} to the ${op==='×'?'right':'left'}.`}; }
+  const A=a.toFixed(2), B=b.toFixed(2), w=Math.max(A.length,B.length);
+  return {html:hintBox('Line up the decimal points, then work column by column', `<div class="w-eq colsum">${A.padStart(w+2,' ')}<br>${op} ${B.padStart(w,' ')}</div>`), say:'Line up the decimal points, then work column by column.'};
+}
+/* a first-step hint made from the worked answer, with the final answer hidden */
+function maskHint(q){
+  if(!q.explain) return null;
+  const re=new RegExp(`(?<![\\d.])${String(q.answer).replace('.','\\.')}(?![\\d.])`,'g'); let last=-1, m;
+  while((m=re.exec(q.explain))) last=m.index;
+  if(last<0) return null;
+  const t=q.explain.slice(0,last)+'?'+q.explain.slice(last+String(q.answer).length);
+  return {html:hintBox('Try this step', `<div class="w-eq">${esc(t)}</div>`), say:speakify(t.replace('?','what'))};
+}
 const fillQ = (stage,v) => { const q=stage.querySelector('.qmark'); if(q){ q.textContent=v; q.classList.add('done'); } };
 
 /* ================= AGES 3–5 ================= */
 function gCount(lv){
   const [lo,hi]=T(lv,[[1,2],[1,3],[1,4],[2,5],[3,6],[4,7],[5,8],[6,9],[6,10],[7,10]]);
   const n=R(lo,hi), t=pick(THINGS);
-  return {text:`How many ${t.many}?`, speak:`How many ${t.many}?`, html:objs(t,n)+numBtns(numChoices(n,1,10,lv<=5?3:4),lv<=3), answer:String(n),
+  return {text:`How many ${t.many}?`, speak:`How many ${t.many}?`, html:objs(t,n)+numBtns(numChoices(n,1,10,lv<=5?3:4),lv<=3), why:(st,c)=>{ const k=+c; return {html:hintBox(`You said ${k}. One ${esc(t.one)} in each box:`, matchViz(t.e,n,k)), say:`You said ${k}. Let's put one ${t.one} in each box. ${tooMsg(n,k)} Try again.`}; },
+    answer:String(n),
     async after(st){ await countAloud(st,n); await say(`${n} ${plural(n,t)}!`); }};
 }
 function gFind(lv){
   const max=T(lv,[3,4,5,6,7,8,9,10,10,10]), cnt=T(lv,[2,3,3,3,4,4,4,4,5,5]), n=R(1,max);
-  if(lv>=8) return {text:'How many dots?', speak:'How many dots? Tap the number.', html:`<div class="dotcard">${'<i></i>'.repeat(n)}</div>`+numBtns(numChoices(n,1,10,cnt)), answer:String(n), praise:`${n} dots!`};
-  return {text:'Tap the number you hear', speak:`Find the number ${n}.`, key:String(n), html:numBtns(numChoices(n,1,max,cnt)), answer:String(n), praise:`That is ${n}!`};
+  if(lv>=8) return {text:'How many dots?', speak:'How many dots? Tap the number.', html:`<div class="dotcard">${'<i></i>'.repeat(n)}</div>`+numBtns(numChoices(n,1,10,cnt)), why:(st,c)=>({html:hintBox(`You said ${c}. One dot in each box:`, matchViz('🔵',n,+c)), say:`You said ${c}. Let's put one dot in each box. ${tooMsg(n,+c)} Try again.`}), answer:String(n), praise:`${n} dots!`};
+  return {text:'Tap the number you hear', speak:`Find the number ${n}.`, key:String(n), html:numBtns(numChoices(n,1,max,cnt)), why:(st,c)=>({html:hintBox(`That is ${c}`, wdots(+c)), say:`That is ${c}. Find ${n}. ${n}.`}), answer:String(n), praise:`That is ${n}!`};
 }
 function gOrder(lv){
   const p=T(lv,[{max:4,mode:'next',fix:1},{max:6,mode:'next'},{max:8,mode:'next'},{max:10,mode:'next'},{max:10,mode:'before'},{max:10,mode:'middle'},{max:10,mode:'back'},{max:15,mode:'next'},{max:20,mode:pick(['middle','before'])},{max:20,mode:pick(['next','before','middle','back'])}]);
@@ -512,6 +591,8 @@ function gOrder(lv){
   const miss = p.mode==='before'?0 : p.mode==='middle'?R(1,2) : 3, ans=seq[miss];
   const sp={next:'What number comes next?',before:'What number comes before?',middle:'What number is missing?',back:'We are counting down. What comes next?'}[p.mode];
   return {text:sp, speak:sp, html:`<div class="row">${seq.map((n,i)=>i===miss?`<span class="qmark">?</span>`:`<span class="ntile">${n}</span>`).join('')}</div>`+numBtns(numChoices(ans,1,p.max+1,3)),
+    why:(st,c)=>{ const v=+c, lo=Math.min(...seq,v), hi=Math.max(...seq,v);
+      return {html:hintBox('Count along the number line', numberLine(lo,hi,x=>x===v?'bad':x===ans?'gap':seq.includes(x)?'on':'')), say:`Count with me: ${seq.map((x,i)=>i===miss?'hmm':x).join(', ')}. Try again.`}; },
     answer:String(ans), async after(st){ fillQ(st,ans); await say(`Yes! ${seq.join(', ')}.`); }};
 }
 function gShapes(lv){
@@ -520,16 +601,16 @@ function gShapes(lv){
   if(lv<=6){
     const pool=T(lv,[['circle','square'],['circle','square','triangle'],SB,SB,[...SB,'heart'],SALL]), k=T(lv,[2,3,3,4,4,4]);
     const types=shuffle(pool).slice(0,k), tg=types[0];
-    return {text:`Find the ${tg}`, speak:`Find the ${tg}.`, key:tg, html:choices(shuffle(types).map(t=>btn(t,pick(C6),t))), answer:tg, praise:`A ${tg}!`};
+    return {text:`Find the ${tg}`, speak:`Find the ${tg}.`, key:tg, html:choices(shuffle(types).map(t=>btn(t,pick(C6),t))), why:(st,v,btn)=>{ tagBtn(btn,v); return {say:`That is a ${v}. Find the ${tg}. ${tg}.`}; }, answer:tg, praise:`A ${tg}!`};
   }
   if(lv<=8){
     const pool=lv===7?SB:SALL, t=pick(pool), c=pick(C6);
     const opts=[{t,c},{t,c:pick(C6.filter(x=>x!==c))},{t:pick(pool.filter(x=>x!==t)),c}]; const seen=new Set(opts.map(o=>o.t+o.c));
     while(opts.length<4){ const o={t:pick(pool),c:pick(C6)}; if(!seen.has(o.t+o.c)){seen.add(o.t+o.c);opts.push(o);} }
-    return {text:`Find the ${c} ${t}`, speak:`Find the ${c} ${t}.`, key:`${c} ${t}`, html:choices(shuffle(opts).map(o=>btn(o.t,o.c,o.t+'-'+o.c))), answer:`${t}-${c}`, praise:`The ${c} ${t}!`};
+    return {text:`Find the ${c} ${t}`, speak:`Find the ${c} ${t}.`, key:`${c} ${t}`, html:choices(shuffle(opts).map(o=>btn(o.t,o.c,o.t+'-'+o.c))), why:(st,v,btn)=>{ const [t2,c2]=v.split('-'); tagBtn(btn,`${c2} ${t2}`); return {say:`That is a ${c2} ${t2}. Find the ${c} ${t}.`}; }, answer:`${t}-${c}`, praise:`The ${c} ${t}!`};
   }
   const types=shuffle(Object.keys(SIDES)).slice(0,3).concat('circle'), tg=types[0], n=SIDES[tg];
-  return {text:`Find the shape with ${n} sides`, speak:`Find the shape with ${n} sides.`, key:`${n} sides`, html:choices(shuffle(types).map(t=>btn(t,pick(C6),t))), answer:tg, praise:`Yes! A ${tg} has ${n} sides.`};
+  return {text:`Find the shape with ${n} sides`, speak:`Find the shape with ${n} sides.`, key:`${n} sides`, html:choices(shuffle(types).map(t=>btn(t,pick(C6),t))), why:(st,v,btn)=>{ const k=SIDES[v]; tagBtn(btn, k?`${k} sides`:'no corners'); return {say: k?`That ${v} has ${k} sides. Find the one with ${n} sides.`:`A circle has no straight sides. Find the one with ${n} sides.`}; }, answer:tg, praise:`Yes! A ${tg} has ${n} sides.`};
 }
 const COBJ=[{e:'🍌',c:'yellow',n:'banana'},{e:'🍎',c:'red',n:'apple'},{e:'🥦',c:'green',n:'broccoli'},{e:'🍊',c:'orange',n:'orange'},{e:'🍇',c:'purple',n:'bunch of grapes'},{e:'🐘',c:'grey',n:'elephant'},{e:'🐷',c:'pink',n:'pig'},{e:'🐻',c:'brown',n:'bear'},{e:'🐳',c:'blue',n:'whale'}];
 function gColours(lv){
@@ -538,19 +619,19 @@ function gColours(lv){
   if(lv<=7){
     const pool=T(lv,[C6,C6,C10,C6,C10,C10,C10]), k=T(lv,[2,3,3,4,4,4,5]);
     const cols=shuffle(pool).slice(0,k), tg=cols[0];
-    return {text:'Find the colour you hear', speak:`Find the colour ${tg}.`, key:tg, html:choices(shuffle(cols).map(sw)), answer:tg, praise:`Yes! ${tg}!`};
+    return {text:'Find the colour you hear', speak:`Find the colour ${tg}.`, key:tg, html:choices(shuffle(cols).map(sw)), why:(st,v,btn)=>{ tagBtn(btn,v); return {say:`That is ${v}. Find ${tg}. ${tg}.`}; }, answer:tg, praise:`Yes! ${tg}!`};
   }
   const o=pick(COBJ), k=lv===8?3:4, cols=[o.c,...shuffle(C10.filter(c=>c!==o.c)).slice(0,k-1)];
-  return {text:'What colour is it?', speak:`What colour is the ${o.n}?`, key:`What colour?`, html:`<div class="bigemoji">${o.e}</div>`+choices(shuffle(cols).map(sw)), answer:o.c, praise:`Yes! The ${o.n} is ${o.c}.`};
+  return {text:'What colour is it?', speak:`What colour is the ${o.n}?`, key:`What colour?`, html:`<div class="bigemoji">${o.e}</div>`+choices(shuffle(cols).map(sw)), why:(st,v,btn)=>{ tagBtn(btn,v); return {say:`That is ${v}. The ${o.n} is not ${v}. Try again.`}; }, answer:o.c, praise:`Yes! The ${o.n} is ${o.c}.`};
 }
 function gMore(lv){
   const p=T(lv,[{max:5,diff:3},{max:5,diff:2},{max:6,diff:2},{max:7,diff:2},{max:8,diff:1},{max:8,diff:2,fewer:1},{max:9,diff:1,fewer:1},{max:10,diff:1,fewer:1},{num:1,max:10},{num:1,max:20,fewer:1}]);
   let a,b; do{a=R(1,p.max);b=R(1,p.max);}while(Math.abs(a-b)<(p.diff||1));
-  const fewer=p.fewer&&Math.random()<.5, ans=fewer?(a<b?'L':'R'):(a>b?'L':'R'), hi=Math.max(a,b), lo=Math.min(a,b);
+  const fewer=p.fewer&&rnd()<.5, ans=fewer?(a<b?'L':'R'):(a>b?'L':'R'), hi=Math.max(a,b), lo=Math.min(a,b);
   if(p.num){ const w=fewer?'smaller':'bigger';
-    return {text:`Which number is ${w}?`, speak:`Which number is ${w}?`, html:`<div class="vs"><button class="opt wide" data-choice="L" style="font-size:64px;font-weight:700">${a}</button><button class="opt wide" data-choice="R" style="font-size:64px;font-weight:700">${b}</button></div>`, answer:ans, praise:fewer?`${lo} is smaller than ${hi}.`:`${hi} is bigger than ${lo}.`}; }
+    return {text:`Which number is ${w}?`, speak:`Which number is ${w}?`, html:`<div class="vs"><button class="opt wide" data-choice="L" style="font-size:64px;font-weight:700">${a}</button><button class="opt wide" data-choice="R" style="font-size:64px;font-weight:700">${b}</button></div>`, why:()=>({html:hintBox('Find both numbers. The one further along is bigger.', numberLine(Math.max(0,lo-2),hi+1,x=>x===a||x===b?'on':'')), say:'Find both numbers on the number line. The one further along is bigger.'}), answer:ans, praise:fewer?`${lo} is smaller than ${hi}.`:`${hi} is bigger than ${lo}.`}; }
   const t=pick(THINGS), w=fewer?'fewer':'more', g=(n,s)=>`<button class="opt wide" data-choice="${s}" aria-label="${n} ${t.many}">${Array.from({length:n},()=>`<span class="obj">${t.e}</span>`).join('')}</button>`;
-  return {text:`Which side has ${w}?`, speak:`Which side has ${w} ${t.many}?`, key:w, html:`<div class="vs">${g(a,'L')}${g(b,'R')}</div>`, answer:ans, praise:fewer?`${lo} is fewer than ${hi}.`:`${hi} is more than ${lo}.`};
+  return {text:`Which side has ${w}?`, speak:`Which side has ${w} ${t.many}?`, key:w, html:`<div class="vs">${g(a,'L')}${g(b,'R')}</div>`, why:(st)=>{ st.querySelectorAll('.vs .opt').forEach(g=>g.querySelectorAll('.obj').forEach((o,i)=>o.classList.add(i<lo?'matched':'extra'))); return {html:hintBox('Match them one to one. The side with extra ones has more.'), say:`Let's match them one to one. The side with extra ones has more. Which side has ${w}?`}; }, answer:ans, praise:fewer?`${lo} is fewer than ${hi}.`:`${hi} is more than ${lo}.`};
 }
 function gSizes(lv){
   const tower=[7,8,10].includes(lv), k=T(lv,[2,2,3,3,3,4,3,4,5,5]);
@@ -564,7 +645,7 @@ function gSizes(lv){
   const html = choices(vals.map((v,i)=> tower
     ? `<button class="opt size" data-choice="${i}" aria-label="tower ${v}"><span class="tower">${'<i></i>'.repeat(v)}</span></button>`
     : `<button class="opt size" data-choice="${i}" aria-label="size ${i+1}"><span style="font-size:${Math.round(v*64)}px;line-height:1">${e}</span></button>`));
-  return {text:`Find the ${word}`, speak:`Find the ${word}.`, key:word.split(' ')[0], html, answer:ans, praise:`Yes! That is the ${word}.`};
+  return {text:`Find the ${word}`, speak:`Find the ${word}.`, key:word.split(' ')[0], html, why:(st,v,btn)=>{ tagBtn(btn, 'not the '+word.split(' ')[0]); return {say:`Look again. Compare them one by one. Find the ${word}.`}; }, answer:ans, praise:`Yes! That is the ${word}.`};
 }
 function gOdd(lv){
   const k=T(lv,[3,4,4,5,4,4,5,4,5,6]), odd=R(0,k-1); let items;
@@ -575,7 +656,7 @@ function gOdd(lv){
     const o = mode==='colour' ? {t, c:pick(C6.filter(x=>x!==c))} : {t:pick(SB.filter(x=>x!==t)), c};
     items=Array.from({length:k},(_,i)=>i===odd?shapeSVG(o.t,COL[o.c]):shapeSVG(t,COL[c]));
   } else { const same=shuffle(A).slice(0,k-1), o=pick(B); items=[]; let j=0; for(let i=0;i<k;i++) items.push(i===odd?o:same[j++]); }
-  return {text:'Which one is different?', speak:'Which one is different?', html:choices(items.map((x,i)=>`<button class="opt ${lv>=5&&lv<=7?'shape':'pic'}" data-choice="${i}">${x}</button>`)), answer:String(odd), praise:'Yes! That one is different.'};
+  return {text:'Which one is different?', speak:'Which one is different?', html:choices(items.map((x,i)=>`<button class="opt ${lv>=5&&lv<=7?'shape':'pic'}" data-choice="${i}">${x}</button>`)), why:(st,v)=>{ st.querySelectorAll('.choices .opt').forEach((b,i)=>{ if(i!==odd && i!==+v) b.classList.add('same'); }); return {html:hintBox('The green ones go together. So does the one you picked.'), say:'These ones go together with the one you picked. Which one is different?'}; }, answer:String(odd), praise:'Yes! That one is different.'};
 }
 function gPattern(lv){
   const kind=pick(T(lv,[['AB'],['AB'],['AAB'],['ABB'],['AAB','ABB'],['AABB'],['ABC'],['ABC','AABB'],['AB','AAB','ABC'],['ABC','AABB','ABB']]));
@@ -588,18 +669,21 @@ function gPattern(lv){
   const shown = lv>=9 ? seq : seq.slice(0,L+1);
   return {text:lv>=9?'What is missing?':'What comes next?', speak:lv>=9?'Which picture is missing from the pattern?':'What comes next?',
     html:`<div class="row">${shown.map((x,i)=>i===miss?`<span class="qmark">?</span>`:`<span class="cell">${x}</span>`).join('')}</div>`+choices(shuffle(opts).map(x=>`<button class="opt pic" data-choice="${x}">${x}</button>`)),
+    why:(st)=>{ [...st.querySelectorAll('.row > *')].forEach((el,i)=>el.classList.add('band'+(Math.floor(i/kind.length)%2))); return {html:hintBox(`The pattern repeats in groups of ${kind.length}.`), say:`Look. The pattern repeats in groups of ${kind.length}. What goes in the empty spot?`}; },
     answer:ans, async after(st){ fillQ(st,ans); await say('Yes! Great pattern!'); }};
 }
 function gAdd(lv){
   const max=T(lv,[3,4,5,5,6,7,8,9,10,10]), a=R(1,Math.min(5,max-1)), b=R(1,Math.min(5,max-a)), n=a+b, t=pick(THINGS);
   return {text:'How many altogether?', speak:`${a} ${plural(a,t)} and ${b} more. How many altogether?`,
     html:`<div class="sum">${objs(t,a)}<span class="op">+</span>${objs(t,b)}<span class="op">=</span><span class="qmark">?</span></div>`+numBtns(numChoices(n,1,10,lv<=4?3:4)),
+    why:(st,c)=>({html:hintBox(`You said ${c}. One in each box:`, matchViz(t.e,n,+c)), say:`You said ${c}. Let's put one in each box. ${tooMsg(n,+c)} Count them all. Try again.`}),
     answer:String(n), async after(st){ await countAloud(st,n); fillQ(st,n); await say(`${a} plus ${b} is ${n}!`); }};
 }
 function gTake(lv){
   const max=T(lv,[3,4,5,5,6,7,8,9,10,10]), n=R(2,max), k=R(1,lv>=8?n:n-1), left=n-k, t=pick(THINGS);
   return {text:'How many are left?', speak:`There are ${n} ${t.many}. ${k} go away. How many are left?`,
     html:`<div class="objs">${Array.from({length:n},(_,i)=>`<span class="obj${i>=left?' gone':''}">${t.e}</span>`).join('')}</div>`+numBtns(numChoices(left,0,max,lv<=4?3:4)),
+    why:(st,c)=>({html:hintBox(`You said ${c}. Only count the ones still here:`, matchViz(t.e,left,+c)), say:`You said ${c}. Only count the ones that are still here. ${tooMsg(left,+c)} Try again.`}),
     answer:String(left), async after(st){ if(left) await countAloud(st,left); await say(`${n} take away ${k} is ${left}.`); }};
 }
 
@@ -619,7 +703,16 @@ function gAddSub(lv){
     default: op=pick(['+','−']); if(op==='+'){a=R(10,89);b=R(5,99-a);}else{a=R(30,99);b=R(5,a-1);}
   }
   const n=op==='+'?a+b:a-b;
-  return P({text:'Solve it', speak:`What is ${a} ${op==='+'?'plus':'minus'} ${b}?`, html:`<div class="eq">${a} ${op} ${b} = ${SLOT}</div>`, answer:String(n), explain:`${a} ${op} ${b} = ${n}`});
+  let hint;
+  if(op==='+'){
+    if(n<=20) hint={html:hintBox('Count them all', `<div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;justify-content:center">${wdots(a)}<b>+</b>${wdots(b,'b')}</div>`), say:`Start at ${a} and count on ${b} more.`};
+    else { const ta=a-a%10, tb=b-b%10; hint={html:hintBox('Add the tens, then the ones', `<div class="w-eq">${ta} + ${tb} = ${ta+tb}</div><div class="w-eq">${a%10} + ${b%10} = ${a%10+b%10}</div><div>Now put them together.</div>`), say:`Add the tens: ${ta} plus ${tb} is ${ta+tb}. Add the ones: ${a%10} plus ${b%10} is ${a%10+b%10}. Now put them together.`}; }
+  } else {
+    if(a<=20) hint={html:hintBox(`Cross out ${b}. How many are left?`, wdotsCross(a,b)), say:`Start with ${a}. Cross out ${b}. Count what is left.`};
+    else if(b<10) hint={html:hintBox(`Count back ${b} from ${a}`, `<div class="w-eq">${a-1}, ${a-2}, …</div>`), say:`Count back ${b} from ${a}.`};
+    else { const tb=b-b%10; hint={html:hintBox('Take away the tens first', `<div class="w-eq">${a} − ${tb} = ${a-tb}</div><div>Now take away ${b%10} more.</div>`), say:`Take away the tens first: ${a} minus ${tb} is ${a-tb}. Now take away ${b%10} more.`}; }
+  }
+  return P({hint, text:'Solve it', speak:`What is ${a} ${op==='+'?'plus':'minus'} ${b}?`, html:`<div class="eq">${a} ${op} ${b} = ${SLOT}</div>`, answer:String(n), explain:`${a} ${op} ${b} = ${n}`});
 }
 function gMissing(lv){
   let a,b,c,form;
@@ -633,14 +726,15 @@ function gMissing(lv){
     case 6: a=R(8,20); c=R(1,a-1); form='a-?'; break;
     case 8: c=R(20,50); b=R(3,c-5); form='?+b'; break;
     case 9: a=R(1,9)*10; c=100; form='a+?'; break;
-    default: if(Math.random()<.5){ c=R(30,100); a=R(5,c-5); form='a+?'; } else { a=R(30,99); c=R(5,a-5); form='a-?'; }
+    default: if(rnd()<.5){ c=R(30,100); a=R(5,c-5); form='a+?'; } else { a=R(30,99); c=R(5,a-5); form='a-?'; }
   }
   let html, ans, ex;
   if(form==='a+?'){ ans=c-a; html=`${a} + ${SLOT} = ${c}`; ex=`${a} + ${ans} = ${c}`; }
   else if(form==='?+b'){ ans=c-b; html=`${SLOT} + ${b} = ${c}`; ex=`${ans} + ${b} = ${c}`; }
   else if(form==='?-b'){ ans=c+b; html=`${SLOT} − ${b} = ${c}`; ex=`${ans} − ${b} = ${c}`; }
   else { ans=a-c; html=`${a} − ${SLOT} = ${c}`; ex=`${a} − ${ans} = ${c}`; }
-  return P({text:'Find the missing number', speak:'What is the missing number?', html:`<div class="eq">${html}</div>`, answer:String(ans), explain:ex});
+  const inv = form==='a+?'?`${c} − ${a}`: form==='?+b'?`${c} − ${b}`: form==='?-b'?`${c} + ${b}`:`${a} − ${c}`;
+  return P({hint:{html:hintBox('Use the opposite sum', `<div class="w-eq">${inv} = ?</div>`), say:speakify(`Try ${inv}.`)}, text:'Find the missing number', speak:'What is the missing number?', html:`<div class="eq">${html}</div>`, answer:String(ans), explain:ex});
 }
 function blocksHTML(n){ const t=Math.floor(n/10), o=n%10; return `<div class="blocks">${Array.from({length:t},()=>`<div class="rod">${'<i></i>'.repeat(10)}</div>`).join('')}<div class="cubes">${'<span class="cube"></span>'.repeat(o)}</div></div>`; }
 function gPlace(lv){
@@ -649,9 +743,9 @@ function gPlace(lv){
   if(lv===3){ const n=R(11,59), t=Math.floor(n/10), o=n%10; return P({text:`${t} tens and ${o} ones`, speak:`What number is ${t} tens and ${o} ones?`, html:`<div class="eq sm">${t} tens + ${o} ones = ${SLOT}</div>`, answer:String(n), explain:`${t} tens and ${o} ones make ${n}`}); }
   if(lv===5){ const n=R(21,99), t=Math.floor(n/10); return P({text:`How many tens in ${n}?`, speak:`How many tens are in ${n}?`, html:`<div class="eq">${n} → ${SLOT} tens</div>`, answer:String(t), explain:`${n} has ${t} tens`}); }
   if(lv===6){ const n=R(21,99), o=n%10; return P({text:`How many ones in ${n}?`, speak:`How many ones are in ${n}?`, html:`<div class="eq">${n} → ${SLOT} ones</div>`, answer:String(o), explain:`${n} has ${o} ones`}); }
-  if(lv===7){ const n=R(15,89), up=Math.random()<.5, a=up?n+10:n-10; return P({text:`10 ${up?'more':'less'} than ${n}`, speak:`What is 10 ${up?'more':'less'} than ${n}?`, html:`<div class="eq">${n} ${up?'+':'−'} 10 = ${SLOT}</div>`, answer:String(a), explain:`10 ${up?'more':'less'} than ${n} is ${a}`}); }
+  if(lv===7){ const n=R(15,89), up=rnd()<.5, a=up?n+10:n-10; return P({text:`10 ${up?'more':'less'} than ${n}`, speak:`What is 10 ${up?'more':'less'} than ${n}?`, html:`<div class="eq">${n} ${up?'+':'−'} 10 = ${SLOT}</div>`, answer:String(a), explain:`10 ${up?'more':'less'} than ${n} is ${a}`}); }
   if(lv===8){ const h=R(1,9), t=R(0,9), o=R(0,9), n=h*100+t*10+o; return P({text:'Build the number', speak:`What number is ${h} hundreds, ${t} tens and ${o} ones?`, html:`<div class="eq sm">${h} hundreds + ${t} tens + ${o} ones = ${SLOT}</div>`, answer:String(n), explain:`That makes ${n}`}); }
-  if(lv===9){ const n=R(150,850), up=Math.random()<.5, a=up?n+100:n-100; return P({text:`100 ${up?'more':'less'} than ${n}`, speak:`What is 100 ${up?'more':'less'} than ${n}?`, html:`<div class="eq">${n} ${up?'+':'−'} 100 = ${SLOT}</div>`, answer:String(a), explain:`100 ${up?'more':'less'} than ${n} is ${a}`}); }
+  if(lv===9){ const n=R(150,850), up=rnd()<.5, a=up?n+100:n-100; return P({text:`100 ${up?'more':'less'} than ${n}`, speak:`What is 100 ${up?'more':'less'} than ${n}?`, html:`<div class="eq">${n} ${up?'+':'−'} 100 = ${SLOT}</div>`, answer:String(a), explain:`100 ${up?'more':'less'} than ${n} is ${a}`}); }
   let d; do{ d=shuffle([1,2,3,4,5,6,7,8,9]).slice(0,3); }while(false);
   const n=d[0]*100+d[1]*10+d[2], pos=R(0,2), val=d[pos]*[100,10,1][pos];
   return P({text:`What is the ${d[pos]} worth in ${n}?`, speak:`What is the ${d[pos]} worth in ${n}?`, html:`<div class="eq">${n}</div><div class="eq sm">the ${d[pos]} is worth ${SLOT}</div>`, answer:String(val), explain:`The ${d[pos]} is in the ${['hundreds','tens','ones'][pos]} place, so it is worth ${val}`});
@@ -659,16 +753,17 @@ function gPlace(lv){
 function gCompare(lv){
   const L = lv===10 ? pick([7,8,9]) : lv;
   let lt, rt, lval, rval;
-  const pair=max=>{ const a=R(0,max), b=Math.random()<.2?a:R(0,max); return [a,b]; };
+  const pair=max=>{ const a=R(0,max), b=rnd()<.2?a:R(0,max); return [a,b]; };
   if(L<=4){ [lval,rval]=pair(T(L,[10,20,50,100])); lt=lval; rt=rval; }
-  else if(L===5){ do{ lval=R(12,98); }while(lval%10===0 || Math.floor(lval/10)===lval%10); rval=Math.random()<.75?(lval%10)*10+Math.floor(lval/10):lval; lt=lval; rt=rval; }
-  else if(L===6){ const a=R(1,9),b=R(1,9); lval=a+b; rval=Math.random()<.25?lval:lval+pick([-2,-1,1,2]); lt=`${a} + ${b}`; rt=rval; }
-  else if(L===7){ lval=R(100,999); rval=Math.random()<.2?lval:Math.max(100,Math.min(999,lval+pick([-100,-10,-1,1,10,100,R(-300,300)]))); lt=lval; rt=rval; }
-  else if(L===8){ const a=R(2,12),b=R(2,12),c=R(2,12); let d=a+b-c; if(Math.random()<.6) d+=pick([-1,1,2]); d=Math.max(1,d); lval=a+b; rval=c+d; lt=`${a} + ${b}`; rt=`${c} + ${d}`; }
-  else { const a=R(10,30), b=R(2,a-1); lval=a-b; rval=Math.random()<.25?lval:Math.max(0,lval+pick([-2,-1,1,2])); lt=`${a} − ${b}`; rt=rval; }
+  else if(L===5){ do{ lval=R(12,98); }while(lval%10===0 || Math.floor(lval/10)===lval%10); rval=rnd()<.75?(lval%10)*10+Math.floor(lval/10):lval; lt=lval; rt=rval; }
+  else if(L===6){ const a=R(1,9),b=R(1,9); lval=a+b; rval=rnd()<.25?lval:lval+pick([-2,-1,1,2]); lt=`${a} + ${b}`; rt=rval; }
+  else if(L===7){ lval=R(100,999); rval=rnd()<.2?lval:Math.max(100,Math.min(999,lval+pick([-100,-10,-1,1,10,100,R(-300,300)]))); lt=lval; rt=rval; }
+  else if(L===8){ const a=R(2,12),b=R(2,12),c=R(2,12); let d=a+b-c; if(rnd()<.6) d+=pick([-1,1,2]); d=Math.max(1,d); lval=a+b; rval=c+d; lt=`${a} + ${b}`; rt=`${c} + ${d}`; }
+  else { const a=R(10,30), b=R(2,a-1); lval=a-b; rval=rnd()<.25?lval:Math.max(0,lval+pick([-2,-1,1,2])); lt=`${a} − ${b}`; rt=rval; }
   const ans=lval>rval?'>':lval<rval?'<':'=', word={'>':'is greater than','<':'is less than','=':'is equal to'}[ans];
   return {text:'Pick the right sign', speak:speakify(`Pick the sign. Compare ${lt} and ${rt}.`),
     html:`<div class="eq sm">${lt} <span class="qmark">?</span> ${rt}</div>`+choices(['<','=','>'].map(s=>`<button class="opt word" data-choice="${s}" aria-label="${s==='<'?'less than':s==='>'?'greater than':'equal to'}" style="font-size:40px">${s}</button>`)),
+    why:()=>({html:hintBox(`Left is ${lval}. Right is ${rval}.`, '<div>The open side of the sign faces the bigger number. = means the same.</div>'), say:`The left side is ${lval}. The right side is ${rval}. The open side of the sign faces the bigger number.`}),
     answer:ans, async after(st){ fillQ(st,ans); await say(speakify(`Yes! ${lt} ${word} ${rt}.`)); }};
 }
 function gSkip(lv){
@@ -718,7 +813,7 @@ function gClock(lv){
   const opts=new Set([ans]);
   if(lv>=5 && m%5===0 && m>0 && lv!==10) opts.add(ts(m/5, (h%12)*5));
   let g=0; while(opts.size<k && g++<100){ const H=lv===9?h:R(1,12), M=pick(lv===9?FIVE:mins); opts.add(ts(H,M)); }
-  return {text, speak:sp, html:clockSVG(show[0],show[1])+wordBtns(shuffle([...opts])), answer:ans, praise: lv===10?`It will be ${ans}.`:`Yes! It is ${timeWords(h,m)}.`};
+  return {text, speak:sp, html:clockSVG(show[0],show[1])+wordBtns(shuffle([...opts])), why:()=>({html:hintBox('Short hand → the hour. Long hand → the minutes.', '<div>For the long hand, each number is 5 minutes.</div>'), say:'The short hand shows the hour. The long hand shows the minutes. For the long hand, each number is 5 minutes.'}), answer:ans, praise: lv===10?`It will be ${ans}.`:`Yes! It is ${timeWords(h,m)}.`};
 }
 function gMoney(lv){
   if(lv<=7){
@@ -746,7 +841,7 @@ function gDoubles(lv){
     case 9: { const a=R(10,50)*2; ans=a/2; txt=`Half of ${a}`; ex=`${ans} + ${ans} = ${a}`; break; }
     default: { const a=R(5,15); ans=2*a+1; return P({text:'Near doubles', speak:`What is ${a} plus ${a+1}?`, html:`<div class="eq">${a} + ${a+1} = ${SLOT}</div>`, answer:String(ans), explain:`Double ${a} is ${2*a}, plus 1 is ${ans}`}); }
   }
-  return P({text:txt, speak:`What is ${txt.toLowerCase()}?`, html:`<div class="eq">${txt} = ${SLOT}</div>`, answer:String(ans), explain:ex});
+  return P({hint: txt.startsWith('Half') ? halfHint(2*ans) : null, text:txt, speak:`What is ${txt.toLowerCase()}?`, html:`<div class="eq">${txt} = ${SLOT}</div>`, answer:String(ans), explain:ex});
 }
 function gGroups(lv){
   const arr=(r,c)=>`<div class="array" style="grid-template-columns:repeat(${c},20px)">${'<i></i>'.repeat(r*c)}</div>`;
@@ -767,23 +862,23 @@ function gGroups(lv){
 const TSETS=[[2,10],[5],[3,4],[2,3,4,5,10],[6],[7,8],[9,11,12],[2,3,4,5,6,7,8,9,10,11,12]];
 function gTimes(lv){
   let a,b; if(lv<=8){ a=pick(TSETS[lv-1]); b=R(2,lv<=4?10:12); } else if(lv===9){ a=R(11,25); b=R(2,9); } else { a=R(26,60); b=R(3,9); }
-  if(Math.random()<.5) [a,b]=[b,a];
-  return P({text:'Multiply', speak:`What is ${a} times ${b}?`, html:`<div class="eq">${a} × ${b} = ${SLOT}</div>`, answer:String(a*b), explain:`${a} × ${b} = ${a*b}`});
+  if(rnd()<.5) [a,b]=[b,a];
+  return P({hint:timesHint(a,b), text:'Multiply', speak:`What is ${a} times ${b}?`, html:`<div class="eq">${a} × ${b} = ${SLOT}</div>`, answer:String(a*b), explain:`${a} × ${b} = ${a*b}`});
 }
 function gDivide(lv){
   let d,q;
   if(lv<=8){ d=pick(TSETS[lv-1]); q=R(2,lv<=4?10:12); } else if(lv===9){ d=R(3,9); q=R(11,25); }
   else { d=R(3,12); q=R(3,12); const n=d*q;
-    return Math.random()<.5 ? P({text:'Find the missing factor', speak:`What times ${d} equals ${n}?`, html:`<div class="eq">${SLOT} × ${d} = ${n}</div>`, answer:String(q), explain:`${q} × ${d} = ${n}`})
-                            : P({text:'Find the missing number', speak:`${n} divided by what equals ${q}?`, html:`<div class="eq">${n} ÷ ${SLOT} = ${q}</div>`, answer:String(d), explain:`${n} ÷ ${d} = ${q}`}); }
+    return rnd()<.5 ? P({hint:skipHint(d,n), text:'Find the missing factor', speak:`What times ${d} equals ${n}?`, html:`<div class="eq">${SLOT} × ${d} = ${n}</div>`, answer:String(q), explain:`${q} × ${d} = ${n}`})
+                            : P({hint:skipHint(q,n), text:'Find the missing number', speak:`${n} divided by what equals ${q}?`, html:`<div class="eq">${n} ÷ ${SLOT} = ${q}</div>`, answer:String(d), explain:`${n} ÷ ${d} = ${q}`}); }
   const n=d*q;
-  return P({text:'Divide', speak:`What is ${n} divided by ${d}?`, html:`<div class="eq">${n} ÷ ${d} = ${SLOT}</div>`, answer:String(q), explain:`${n} ÷ ${d} = ${q}, because ${d} × ${q} = ${n}`});
+  return P({hint:skipHint(d,n), text:'Divide', speak:`What is ${n} divided by ${d}?`, html:`<div class="eq">${n} ÷ ${d} = ${SLOT}</div>`, answer:String(q), explain:`${n} ÷ ${d} = ${q}, because ${d} × ${q} = ${n}`});
 }
 function gFractions(lv){
   if(lv<=3){
     const d=pick(T(lv,[[2,4],[2,3,4,6],[3,4,5,6,8]])), k=R(1,d-1), want=lv===3?4:3, opts=[[k,d]];
     for(const c of shuffle([[d-k,d],[k,d+1],[k+1,d],[k,d-1],[1,k+1],[k,2*d],[d,k+d]].filter(([a,b])=>a>0&&b>1&&a<b))){ if(opts.length>=want) break; if(!opts.some(([a,b])=>Math.abs(a/b-c[0]/c[1])<1e-9)) opts.push(c); }
-    return {text:'What fraction is shaded?', speak:'What fraction of the circle is shaded?', html:`<div class="fig">${pieSVG(k,d)}</div>`+choices(shuffle(opts).map(([a,b])=>`<button class="opt word" data-choice="${a}/${b}" aria-label="${a} over ${b}" style="font-size:30px">${frac(a,b)}</button>`)), answer:`${k}/${d}`, praise:`Yes! ${k} out of ${d} equal parts.`};
+    return {text:'What fraction is shaded?', speak:'What fraction of the circle is shaded?', html:`<div class="fig">${pieSVG(k,d)}</div>`+choices(shuffle(opts).map(([a,b])=>`<button class="opt word" data-choice="${a}/${b}" aria-label="${a} over ${b}" style="font-size:30px">${frac(a,b)}</button>`)), why:()=>({html:hintBox('Top number: the coloured parts.', '<div>Bottom number: all the equal parts.</div>'), say:'Count the coloured parts for the top number. Count all the parts for the bottom number.'}), answer:`${k}/${d}`, praise:`Yes! ${k} out of ${d} equal parts.`};
   }
   if(lv===4||lv===5){
     let A,B;
@@ -791,6 +886,7 @@ function gFractions(lv){
     else { let x=R(2,10),y; do{y=R(2,10);}while(y===x); A=[1,x]; B=[1,y]; }
     const ans=A[0]/A[1]>B[0]/B[1]?'L':'R', big=ans==='L'?A:B;
     return {text:'Which fraction is bigger?', speak:'Which fraction is bigger?', html:`<div class="vs"><button class="opt wide" data-choice="L" style="font-size:52px;font-weight:700">${frac(A[0],A[1])}</button><button class="opt wide" data-choice="R" style="font-size:52px;font-weight:700">${frac(B[0],B[1])}</button></div>`,
+      why:()=>{ const pie=(f)=>`<div>${pieSVG(f[0],f[1]).replace('class="pie"','class="pie" style="width:104px"')}<div class="w-eq">${f[0]}/${f[1]}</div></div>`; return {html:hintBox('Look at both as pies. Which has more coloured?', `<div style="display:flex;gap:16px;justify-content:center;flex-wrap:wrap">${pie(A)}${pie(B)}</div>`), say:'Look at both as pies. Which one has more coloured?'}; },
       answer:ans, praise: lv===5?`Yes! ${big[0]} over ${big[1]}. Fewer parts means bigger parts.`:`Yes! ${big[0]} over ${big[1]} is bigger.`};
   }
   if(lv===6||lv===7){ const d=pick([2,3,4,5,8,10]), k=lv===6?1:R(2,d-1), m=R(2,lv===6?10:12), n=d*m;
@@ -809,7 +905,7 @@ function gDecimals(lv){
     if(lv===1){ a=R(1,9)/10; do{ b=R(1,9)/10; }while(b===a); }
     else { a=R(2,9)/10; b=Math.round((a - pick([0.01,0.05,0.09]) + pick([0,0.1]))*100)/100; if(b===a) b=a+0.05; b=Math.round(b*100)/100; }
     const ans=a>b?'L':'R', big=Math.max(a,b);
-    return {text:'Which is bigger?', speak:'Which number is bigger?', html:`<div class="vs"><button class="opt wide" data-choice="L" style="font-size:48px;font-weight:700">${fmt(a)}</button><button class="opt wide" data-choice="R" style="font-size:48px;font-weight:700">${fmt(b)}</button></div>`, answer:ans, praise:`Yes! ${fmt(big)} is bigger.`};
+    return {text:'Which is bigger?', speak:'Which number is bigger?', html:`<div class="vs"><button class="opt wide" data-choice="L" style="font-size:48px;font-weight:700">${fmt(a)}</button><button class="opt wide" data-choice="R" style="font-size:48px;font-weight:700">${fmt(b)}</button></div>`, why:()=>({html:hintBox(`${a.toFixed(2)} and ${b.toFixed(2)}`, '<div>Give both the same number of decimal places, then compare.</div>'), say:'Give both numbers the same number of decimal places, then compare.'}), answer:ans, praise:`Yes! ${fmt(big)} is bigger.`};
   }
   let a,b,op,ans;
   switch(lv){
@@ -819,11 +915,11 @@ function gDecimals(lv){
     case 6: a=R(15,50)/10; b=R(1,9)/10; op='−'; break;
     case 7: a=R(11,99)/10; b=10; op='×'; break;
     case 8: a=R(11,99); b=10; op='÷'; break;
-    case 9: if(Math.random()<.5){ a=R(101,999)/100; b=100; op='×'; } else { a=R(11,999); b=100; op='÷'; } break;
+    case 9: if(rnd()<.5){ a=R(101,999)/100; b=100; op='×'; } else { a=R(11,999); b=100; op='÷'; } break;
     default: a=R(5,50)/10; b=R(5,60)*5/100; op='+';
   }
   ans = op==='+'?a+b : op==='−'?a-b : op==='×'?a*b : a/b;
-  return D({text:'Work it out', speak:speakify(`What is ${fmt(a)} ${op} ${fmt(b)}?`), html:`<div class="eq">${fmt(a)} ${op} ${fmt(b)} = ${SLOT}</div>`, answer:fmt(ans), explain:`${fmt(a)} ${op} ${fmt(b)} = ${fmt(ans)}`});
+  return D({hint:decHint(a,b,op), text:'Work it out', speak:speakify(`What is ${fmt(a)} ${op} ${fmt(b)}?`), html:`<div class="eq">${fmt(a)} ${op} ${fmt(b)} = ${SLOT}</div>`, answer:fmt(ans), explain:`${fmt(a)} ${op} ${fmt(b)} = ${fmt(ans)}`});
 }
 function gPercent(lv){
   const L = lv===6 ? pick([1,2,3,4,5]) : lv===10 ? pick([7,8,9]) : lv;
@@ -956,6 +1052,7 @@ const GAMES = {
   orderops:{name:'Order of Operations', icon:'🧮', acc:'#C2410C', learn:'Brackets first, then × ÷', make:gOrderOps, sprint:true},
   words:{name:'Word Problems', icon:'📝', acc:'#4D7C0F', learn:'Real-life problem solving', make:gWords},
 
+  review:{name:'Review', icon:'🔁', acc:'#D19A06', learn:'Questions to try again', isReview:true},
   sprint:{name:'60-Second Challenge', icon:'⏱️', acc:'#D63E55', learn:'Quick-fire mixed questions', isSprint:true}
 };
 const GROUPS = {
@@ -1103,7 +1200,7 @@ function goBack(){
   if(current==='sEdit') return editReturn==='sParent'?openParent():goHome();
   if(current==='sParent'||current==='sGames') return goHome();
   if(current==='sLevels') return openGames();
-  if(current==='sPlay'||current==='sDone'){ logRound(false); stopSprint(); return GAMES[game].isSprint?openGames():openLevels(game); }
+  if(current==='sPlay'||current==='sDone'){ logRound(false); stopSprint(); const wasPractice=!!practice; practice=null; return (wasPractice||GAMES[game].isSprint||GAMES[game].isReview)?openGames():openLevels(game); }
 }
 
 /* ---------- home ---------- */
@@ -1156,14 +1253,18 @@ function openGames(){
   logRound(false); stopSprint(); show('sGames');
   const grp=G();
   $('gamesTitle').textContent=`Hi ${me.name}!`;
-  $('gamesSub').innerHTML=`<span class="tag">${grp.label}</span>&nbsp; Pick a game. Each game has 10 levels.`;
-  $('games').innerHTML=grp.games.map(id=>{
+  practice=null;
+  $('gamesSub').innerHTML=`<span class="tag">${grp.label}</span>&nbsp; Start today's practice, or pick a game.`;
+  const due=dueReviews().length, days=practiceDays(me), doneToday=(me.practiceDays||[]).includes(todayStr());
+  const card=`<button class="card practice tap" id="practiceBtn"><span class="pi">${doneToday?'✅':'🌟'}</span><span class="pt"><b>Today's practice</b><small>${doneToday?'Done today. You can play it again.':'About 10 minutes · games picked for you'}</small>${days?`<small class="streak">⭐ ${days} day${days>1?'s':''} in a row</small>`:''}</span><span class="btn primary small go">${doneToday?'Again':'Start'}</span></button>`;
+  const rev = due ? `<button class="card game tap" id="reviewBtn" style="--acc:#D19A06"><span class="gicon">🔁</span><b>Review</b><small>${due} question${due>1?'s':''} to try again</small></button>` : '';
+  $('games').innerHTML=card+rev+grp.games.map(id=>{
     const g=GAMES[id];
     if(g.isSprint) return `<button class="card game tap" data-game="${id}" style="--acc:${g.acc}"><span class="gicon">${g.icon}</span><b>${g.name}</b><small>${g.learn}</small><div class="gprog">Best score: ${me.best.sprint||0}</div></button>`;
     const s=gp(me,id), done=levelsDone(s);
     return `<button class="card game tap" data-game="${id}" style="--acc:${g.acc}"><span class="gicon">${g.icon}</span><b>${g.name}</b><small>${g.learn}</small><div class="gprog"><span class="bar"><i style="width:${done*10}%"></i></span>${done}/10</div></button>`;
   }).join('');
-  if(grp.voice) say(`Hi ${me.name}! Pick a game.`);
+  if(grp.voice) say(`Hi ${me.name}! Tap today's practice, or pick a game.`);
 }
 
 /* ---------- levels ---------- */
@@ -1182,27 +1283,86 @@ function openLevels(id){
 }
 
 /* ---------- play ---------- */
+/* Each question is built from a seed, so a question the child missed can be asked again exactly. */
+let plan=[];
+function makeQ(gid, lv, seed){
+  const sd = seed==null ? (Math.random()*4294967296)>>>0 : seed;
+  _seed = sd; const qq = GAMES[gid].make(lv); qq.gid=gid; qq.level=lv; qq.seed=sd; return qq;
+}
+const REVIEW_GAP = 3*60*1000;   // a missed question comes back after a few minutes, not straight away
+function addReview(qq){
+  if(!me||!qq||!qq.gid) return; me.review=me.review||[];
+  const r=me.review.find(x=>x.g===qq.gid&&x.s===qq.seed);
+  if(r){ r.n++; r.t=Date.now(); } else { me.review.push({g:qq.gid, lv:qq.level, s:qq.seed, n:1, t:Date.now()}); if(me.review.length>40) me.review.shift(); }
+}
+function clearReview(qq){ if(me&&me.review) me.review=me.review.filter(x=>!(x.g===qq.gid&&x.s===qq.seed)); }
+function dueReviews(gid){ const ok=new Set(G().games); return (me.review||[]).filter(r=>ok.has(r.g) && (!gid||r.g===gid) && Date.now()-r.t>=REVIEW_GAP); }
+function buildPlan(gid, lv){
+  if(gid==='review') return dueReviews().sort((x,y)=>y.n-x.n||x.t-y.t).slice(0,6).map(r=>({g:r.g,lv:r.lv,s:r.s,review:true}));
+  const N=G().perLevel, out=Array.from({length:N},()=>({g:gid,lv}));
+  const due=dueReviews(gid).filter(r=>r.lv<=lv).slice(0, N>=8?2:1);
+  const spots=[...Array(N-1).keys()].map(i=>i+1).sort(()=>Math.random()-.5);   // never the first question
+  due.forEach((r,i)=>{ out[spots[i]]={g:r.g,lv:r.lv,s:r.s,review:true}; });
+  return out;
+}
+
+/* ---------- today's practice ---------- */
+let practice=null;
+const dayStr = d => `${d.getFullYear()}-${pad2(d.getMonth()+1)}-${pad2(d.getDate())}`;
+const todayStr = () => dayStr(new Date());
+function practiceDays(p){
+  const days=new Set(p.practiceDays||[]), d=new Date(); let n=0;
+  if(!days.has(dayStr(d))) d.setDate(d.getDate()-1);
+  while(days.has(dayStr(d))){ n++; d.setDate(d.getDate()-1); }
+  return n;
+}
+function buildPractice(){
+  const ids=G().games.filter(id=>!GAMES[id].isSprint);
+  const st=ids.map(id=>{ const g=gp(me,id); return {id, acc:g.tries>=3?g.right/g.tries:null, done:levelsDone(g), last:g.last||0}; });
+  const used=new Set(), steps=[];
+  if(dueReviews().length) steps.push({g:'review', lv:0});
+  const take = x => { if(x && !used.has(x.id)){ used.add(x.id); steps.push({g:x.id, lv:Math.min(10, gp(me,x.id).unlocked)}); } };
+  take(st.filter(x=>x.acc!==null && x.acc<0.75).sort((x,y)=>x.acc-y.acc)[0]);                       // the one that needs practice
+  take(st.filter(x=>!used.has(x.id) && x.done<10).sort((x,y)=>x.last-y.last)[0]);                  // keep moving forward, least recently played first
+  take(st.filter(x=>!used.has(x.id) && x.acc!==null && x.acc>=0.75).sort((x,y)=>y.last-x.last)[0]); // one they enjoy and are good at
+  for(const x of st.slice().sort(()=>Math.random()-.5)){ if(steps.filter(z=>z.g!=='review').length>=3) break; take(x); }
+  return steps;
+}
+function startPractice(){ practice={steps:buildPractice(), i:0}; runPracticeStep(); }
+function runPracticeStep(){ const stp=practice.steps[practice.i]; game=stp.g; startLevel(stp.lv); }
+
 function startLevel(n){
   logRound(false);
-  level=n; qi=0; game=game;
+  level=n; qi=0;
   round={game, level:n, started:Date.now(), items:[], logged:false};
   me.last=Date.now(); save();
   show('sPlay');
-  $('pTitle').textContent = GAMES[game].isSprint ? GAMES[game].name : `${GAMES[game].name} · Level ${n}`;
-  if(GAMES[game].isSprint){ startSprint(); return; }
+  const g0=GAMES[game];
+  const label = g0.isSprint||g0.isReview ? g0.name : `${g0.name} · Level ${n}`;
+  $('pTitle').textContent = practice ? `Practice ${practice.i+1} of ${practice.steps.length} · ${label}` : label;
+  if(g0.isSprint){ startSprint(); return; }
+  plan=buildPlan(game,n);
+  if(!plan.length){ practice ? nextPracticeOrEnd() : openGames(); return; }
   setBar(); nextQ();
 }
-function setBar(){ $('qbar').style.width = `${100*qi/G().perLevel}%`; }
+function setBar(){ $('qbar').style.width = `${100*qi/Math.max(1,plan.length)}%`; }
 function nextQ(){
-  if(qi>=G().perLevel){ finishLevel(); return; }
-  let g=0; do{ q=GAMES[game].make(level); }while(!q.pad && q.answer===lastAnswer && g++<8);
-  lastAnswer=q.answer; renderQ();
-  if(G().voice) setTimeout(()=>say(questionParts(q)),250);
+  if(qi>=plan.length){ finishLevel(); return; }
+  const sp=plan[qi];
+  if(sp.s!=null) q=makeQ(sp.g, sp.lv, sp.s);
+  else { let g=0; do{ q=makeQ(sp.g, sp.lv); }while(!q.pad && q.answer===lastAnswer && g++<8); }
+  q.isReview=!!sp.review; lastAnswer=q.answer; renderQ();
+  if(G().voice) setTimeout(()=>say(q.isReview?['Here is one to try again.', ...questionParts(q)]:questionParts(q)),250);
 }
 function renderQ(){
   $('pText').textContent=q.text;
-  $('stage').innerHTML = q.html + (q.pad ? padHTML(q.decimal) : '');
+  $('stage').innerHTML = (q.isReview?'<div class="revtag">🔁 One to try again</div>':'') + q.html + (q.pad ? padHTML(q.decimal) : '');
   typed=''; tries=0; locked=false;
+}
+function showWhy(html){
+  const st=$('stage'); let w=st.querySelector('.why');
+  if(!w){ w=document.createElement('div'); w.className='why'; const tag=st.querySelector('.revtag'); tag?tag.after(w):st.prepend(w); }
+  w.innerHTML=html;
 }
 function padHTML(dec){
   const k=[1,2,3,4,5,6,7,8,9].map(n=>`<button data-key="${n}">${n}</button>`).join('');
@@ -1226,6 +1386,7 @@ function submitTyped(){
   const s=$('slot');
   if(isRight()){ locked=true; s.classList.add('ok'); ding(); burst(s); completeQ(tries===0, false, async()=>{ if(G().voice) await say(`Correct! ${speakify(q.explain)}.`); else await wait(700); }); return; }
   tries++; boop(); s.classList.remove('shake'); void s.offsetWidth; s.classList.add('shake'); typed=''; setTimeout(updateSlot,300);
+  if(tries===1){ const h=q.hint||maskHint(q); if(h){ showWhy(h.html); if(G().voice) say(['Not quite. Here is a hint.', h.say]); return; } }
   if(tries>=2){ locked=true;
     setTimeout(async()=>{ s.textContent=q.answer; s.classList.remove('empty'); s.classList.add('reveal'); $('pText').textContent=q.explain;
       await say(speakify(q.explain)+'.',{silentMs:2400}); await wait(900); completeQ(false,true); },350);
@@ -1235,16 +1396,41 @@ function onChoice(btn){
   if(locked) return; audio();
   if(btn.dataset.choice===q.answer){ locked=true; btn.classList.add('right'); ding(); burst(btn);
     completeQ(tries===0,false, q.after ? ()=>q.after($('stage')) : ()=>say(`${pick(['Well done!','Great!','Yes!'])} ${q.praise||''}`)); }
-  else { tries++; btn.classList.add('wrong'); boop(); if(G().voice) say(pick(['Try again.','Not that one. Try again.','Almost! Try again.'])); }
+  else {
+    tries++; btn.classList.add('wrong'); boop();
+    const w = q.why ? q.why($('stage'), btn.dataset.choice, btn) : null;
+    if(w && w.html) showWhy(w.html);
+    if(tries>=2){ const c=[...$('stage').querySelectorAll('[data-choice]')].find(b=>b.dataset.choice===q.answer); if(c) c.classList.add('pulse'); }
+    if(G().voice){ const first=(w&&w.say)||pick(['Try again.','Not that one. Try again.','Almost! Try again.']); say(tries>=2?[first,'Tap the one that is shining.']:first); }
+  }
 }
 async function completeQ(firstTry, shown, celebrate){
   if(celebrate) await celebrate();
-  const s=gp(me,game); s.tries++; if(firstTry) s.right++; s.last=Date.now();
-  if(round) round.items.push({answer:q.answer, ok:!!firstTry, wrong:tries, shown:!!shown});
+  const s=gp(me,q.gid); s.tries++; if(firstTry) s.right++; s.last=Date.now();
+  if(firstTry){ if(q.isReview) clearReview(q); } else addReview(q);
+  if(round) round.items.push({game:q.gid, answer:q.answer, ok:!!firstTry, wrong:tries, shown:!!shown, review:!!q.isReview});
   save(); qi++; setBar(); await wait(350); nextQ();
 }
+function practiceButtons(){
+  if(!practice) return null;
+  practice.i++;
+  if(practice.i<practice.steps.length) return {btns:`<button class="btn primary" id="pracNext">Continue ▶</button>`, note:`<p class="pracnext">Next: ${GAMES[practice.steps[practice.i].g].name}</p>`, say:'Great! On to the next one.'};
+  me.practiceDays=[...new Set([...(me.practiceDays||[]), todayStr()])].slice(-90); save(); practice=null;
+  const d=practiceDays(me);
+  return {btns:`<button class="btn primary" id="pracEnd">Back to games</button>`, note:`<div class="pracdone">🌟 Today's practice is done! · ${d} day${d>1?'s':''} in a row</div>`, say:"Today's practice is done! Great work."};
+}
+function nextPracticeOrEnd(){ const pb=practiceButtons(); if(pb && practice) runPracticeStep(); else openGames(); }
 function finishLevel(){
-  const items=round?round.items:[], per=G().perLevel, right=items.filter(i=>i.ok).length, ratio=right/per, little=groupOf(me.age)==='little';
+  const items=round?round.items:[], per=plan.length, right=items.filter(i=>i.ok).length, ratio=right/per, little=groupOf(me.age)==='little';
+  if(GAMES[game].isReview){
+    if(round){ round.stars=0; round.passed=true; } save(); logRound(true);
+    const left=per-right, pb=practiceButtons();
+    show('sDone'); fanfare();
+    $('result').innerHTML=`<div class="bigemoji">🔁</div><h2>Review done!</h2><p>${right} of ${per} right first time.${left?` ${left} will come back later.`:' All fixed!'}</p>
+      ${pb?pb.note:''}<div class="btns">${pb?pb.btns:'<button class="btn primary" id="levelsBtn">Back to games</button>'}</div>`;
+    if(G().voice) say(pb?pb.say:'Review done! Well done.');
+    return;
+  }
   let stars = ratio>=0.99?3 : ratio>=0.7?2 : ratio>=0.5?1 : 0;
   if(little) stars=Math.max(1,stars);
   const passed=stars>=1, s=gp(me,game);
@@ -1253,12 +1439,13 @@ function finishLevel(){
   if(round){ round.stars=stars; round.passed=passed; }
   save(); logRound(true);
   show('sDone'); if(passed) fanfare();
-  const last=level===10;
+  const last=level===10, pb=practiceButtons();
   $('result').innerHTML=`<div class="bigstars">${[1,2,3].map(i=>`<span class="${i<=stars?'on':''}">★</span>`).join('')}</div>
     <h2>${passed?(last?`You finished all 10 levels!`:`Level ${level} complete!`):'Nearly there!'}</h2>
     <p>${right} of ${per} right first time${passed?'':` · get ${Math.ceil(per*.5)} to pass`}</p>
-    <div class="btns">${passed&&!last?`<button class="btn primary" id="nextBtn">Next level ▶</button>`:''}<button class="btn${passed?'':' primary'}" id="againBtn">↻ Play again</button><button class="btn" id="levelsBtn">All levels</button></div>`;
-  if(G().voice) say(passed?(stars===3?`Perfect! Three stars!`:`Well done! Level ${level} complete.`):`Good try! Let's play again.`);
+    ${pb?pb.note:''}
+    <div class="btns">${pb?pb.btns:`${passed&&!last?`<button class="btn primary" id="nextBtn">Next level ▶</button>`:''}<button class="btn${passed?'':' primary'}" id="againBtn">↻ Play again</button><button class="btn" id="levelsBtn">All levels</button>`}</div>`;
+  if(G().voice) say(pb?[passed?(stars===3?'Perfect! Three stars!':`Level ${level} complete.`):'Good try!', pb.say]:(passed?(stars===3?`Perfect! Three stars!`:`Well done! Level ${level} complete.`):`Good try! Let's play again.`));
   burst(document.querySelector('.bigstars'));
 }
 
@@ -1270,7 +1457,7 @@ function startSprint(){
 }
 function sprintQ(){
   const pool=G().games.filter(id=>GAMES[id].sprint), id=pick(pool), s=gp(me,id);
-  q=GAMES[id].make(Math.max(1,Math.min(10,s.unlocked))); renderQ();
+  q=makeQ(id, Math.max(1,Math.min(10,s.unlocked))); renderQ();
 }
 function sprintTick(){
   if(!sprint) return;
@@ -1280,7 +1467,7 @@ function sprintTick(){
   if(left<=0) endSprint();
 }
 function sprintAnswer(ok){
-  const s=$('slot'); if(round) round.items.push({answer:q.answer, ok:!!ok, wrong:ok?0:1, shown:!ok});
+  const s=$('slot'); if(round) round.items.push({game:q.gid, answer:q.answer, ok:!!ok, wrong:ok?0:1, shown:!ok}); if(!ok) addReview(q);
   locked=true;
   if(ok){ sprint.score++; tick(); s.classList.add('ok'); setTimeout(()=>{ if(sprint) sprintQ(); },220); }
   else { boop(); s.textContent=q.answer; s.classList.add('reveal'); setTimeout(()=>{ if(sprint) sprintQ(); },900); }
@@ -1313,7 +1500,10 @@ function renderParent(){
     const t=totals(p), acc=t.answers?Math.round(100*t.right/t.answers):null;
     const ids=GROUPS[groupOf(p.age)].games.filter(id=>!GAMES[id].isSprint);
     let weak=null; ids.forEach(id=>{ const s=p.games[id]; if(s&&s.tries>=6){ const a=s.right/s.tries; if(a<.6&&(!weak||a<weak.a)) weak={id,a}; } });
-    const flag = !t.rounds ? '' : weak ? `<span class="flag">Needs practice: ${GAMES[weak.id].name}</span>` : `<span class="flag ok">On track</span>`;
+    const rv=(p.review||[]).length, pd=practiceDays(p);
+    const flag = (!t.rounds ? '' : weak ? `<span class="flag">Needs practice: ${GAMES[weak.id].name}</span>` : `<span class="flag ok">On track</span>`)
+      + (rv?`<span class="flag" style="background:#FFEDB8;color:#7A5200">${rv} missed question${rv>1?'s':''} waiting for review</span>`:'')
+      + (pd?`<span class="flag ok">⭐ Daily practice: ${pd} day${pd>1?'s':''} in a row</span>`:'');
     const rows = ids.map(id=>{ const s=p.games[id]||{stars:{},tries:0,right:0,plays:0}; const a=s.tries?Math.round(100*s.right/s.tries):null;
       return `<tr><td>${GAMES[id].icon} ${GAMES[id].name}</td><td class="n">${levelsDone(s)}/10</td><td class="n">${s.plays||0}</td><td class="n ${a!==null&&a<60?'low':''}">${a===null?'–':a+'%'}</td></tr>`; }).join('');
     return `<div class="card pkid">
@@ -1354,7 +1544,11 @@ document.addEventListener('click', async e=>{
   const ch=t.closest('#stage [data-choice]'); if(ch){ onChoice(ch); return; }
   if(t.closest('#nextBtn')){ startLevel(level+1); return; }
   if(t.closest('#againBtn')){ startLevel(level); return; }
-  if(t.closest('#levelsBtn')){ GAMES[game].isSprint?openGames():openLevels(game); return; }
+  if(t.closest('#levelsBtn')){ (GAMES[game].isSprint||GAMES[game].isReview)?openGames():openLevels(game); return; }
+  if(t.closest('#practiceBtn')){ audio(); startPractice(); return; }
+  if(t.closest('#reviewBtn')){ audio(); practice=null; game='review'; startLevel(0); return; }
+  if(t.closest('#pracNext')){ if(practice) runPracticeStep(); return; }
+  if(t.closest('#pracEnd')){ openGames(); return; }
   const ed=t.closest('[data-edit]'); if(ed){ openEditor(store.profiles.find(p=>p.id===ed.dataset.edit),'sParent'); return; }
   const cp=t.closest('#copyMsg, #copyCsv');
   if(cp){ const text=cp.id==='copyMsg'?resultsMessage():toCSV();
@@ -1398,7 +1592,7 @@ function wireHold(){
 }
 try{ speechSynthesis.getVoices(); }catch(e){}
 
-window.__cwm={GAMES,GROUPS};
+window.__cwm={GAMES,GROUPS,makeQ,maskHint,cur:()=>q};
 /* ---------- installable app (only when opened from its own web address) ---------- */
 let deferredInstall=null;
 const INSTALLED = (()=>{ try{ return matchMedia('(display-mode: standalone)').matches || navigator.standalone===true; }catch(e){ return false; } })();
