@@ -1025,7 +1025,7 @@ function logRound(completed){
   const rec={
     id:'s'+Date.now().toString(36)+Math.random().toString(36).slice(2,6),
     date:`${d.getFullYear()}-${pad2(d.getMonth()+1)}-${pad2(d.getDate())}`, time:`${pad2(d.getHours())}:${pad2(d.getMinutes())}`,
-    child:me.name, child_age:me.age, child_id:me.id, age_group:GROUPS[groupOf(me.age)].label.replace('Ages ',''),
+    child:me.name, child_age:me.age, child_id:me.id, age_group:GROUPS[groupOf(me.age)].label.replace('Ages ','').replace('–','-'),
     game:GAMES[round.game].name, game_id:round.game, level:round.level,
     questions:items.length, right_first_try:right, wrong_tries:items.reduce((a,i)=>a+i.wrong,0), answers_shown:items.filter(i=>i.shown).length,
     stars:round.stars||0, passed:!!round.passed, seconds:Math.round((Date.now()-round.started)/1000), completed:!!completed,
