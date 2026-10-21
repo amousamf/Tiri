@@ -992,7 +992,7 @@ const avatar = (p,lg) => `<span class="av${lg?' lg':''}" style="background:${p.c
 let round=null, dbRef=null, dbState='checking', dlRef=null;
 const STANDALONE = (()=>{ try{ return window.self===window.top; }catch(e){ return false; } })();
 /* ---------- live results: sent to the organiser's Google Sheet as soon as each level ends ---------- */
-const LIVE = { url: '', key: 'tiri-2026-amf' };
+const LIVE = { url: 'https://script.google.com/macros/s/AKfycbxrjokxVXg0WQwSPfD9SXMqzU-GAGlS_xjYnIwJBwIusW7GEXeBlWbxdD30GxO6cNXKtg/exec', key: 'tiri-2026-amf' };
 let liveBusy=false, liveState='', liveLast=0;
 function livePending(){ return store.sessions.filter(r=>!r.live).length + store.profiles.filter(p=>p.dirty).length + (store.removed||[]).length; }
 async function liveSync(){
