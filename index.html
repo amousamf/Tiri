@@ -267,6 +267,11 @@ h1,h2,h3{margin:0;text-wrap:balance}
   <section class="screen" id="sEdit" hidden><div class="scroll">
     <div class="head"><h1 id="editTitle">Add a child</h1><p>Games are chosen by age. You can change this later.</p></div>
     <div class="card form">
+      <div id="famWrap" hidden style="display:flex;flex-direction:column;gap:8px">
+        <label class="label" for="fFamily">Family name</label>
+        <input class="input" id="fFamily" maxlength="30" autocomplete="off" placeholder="For example, Ahmed family">
+        <p class="agehint" style="margin:0">Asked once. It tells the organiser which family the children belong to.</p>
+      </div>
       <label class="label" for="fName">Child's name</label>
       <input class="input" id="fName" maxlength="20" autocomplete="off" placeholder="For example, Hodan">
       <div class="label" id="ageLabel">Age</div>
@@ -986,6 +991,31 @@ const avatar = (p,lg) => `<span class="av${lg?' lg':''}" style="background:${p.c
 /* ================= results log ================= */
 let round=null, dbRef=null, dbState='checking', dlRef=null;
 const STANDALONE = (()=>{ try{ return window.self===window.top; }catch(e){ return false; } })();
+/* ---------- live results: sent to the organiser's Google Sheet as soon as each level ends ---------- */
+const LIVE = { url: '', key: 'tiri-2026-amf' };
+let liveBusy=false, liveState='', liveLast=0;
+function livePending(){ return store.sessions.filter(r=>!r.live).length + store.profiles.filter(p=>p.dirty).length + (store.removed||[]).length; }
+async function liveSync(){
+  if(!LIVE.url || !STANDALONE || liveBusy) return;
+  if(navigator.onLine===false){ liveState='offline'; return; }
+  liveBusy=true;
+  try{
+    for(let guard=0; guard<20; guard++){
+      const kids=store.profiles.filter(p=>p.dirty), gone=(store.removed||[]).slice(0,20), rounds=store.sessions.filter(r=>!r.live).slice(0,50);
+      if(!kids.length && !gone.length && !rounds.length) break;
+      const body={ key:LIVE.key, family:store.family||'', device:store.device,
+        children: kids.map(p=>({child_id:p.id, child:p.name, age:p.age, stars:starTotal(p)})).concat(gone),
+        rounds: rounds.map(({items,synced,live,...r})=>r) };
+      await fetch(LIVE.url, {method:'POST', mode:'no-cors', headers:{'Content-Type':'text/plain;charset=utf-8'}, body:JSON.stringify(body)});
+      kids.forEach(p=>delete p.dirty); rounds.forEach(r=>r.live=true); store.removed=(store.removed||[]).slice(gone.length);
+      liveLast=Date.now(); liveState='ok'; save();
+    }
+  }catch(e){ liveState='offline'; }
+  finally{ liveBusy=false; if(current==='sParent') renderParent(); }
+}
+window.addEventListener('online', ()=>liveSync());
+document.addEventListener('visibilitychange', ()=>{ if(document.visibilityState==='visible') liveSync(); });
+setInterval(()=>{ if(livePending()) liveSync(); }, 60000);
 const validEmail = v => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v||'');
 function logRound(completed){
   if(!round||round.logged||!me) return;
@@ -1002,7 +1032,7 @@ function logRound(completed){
     sprint_score: round.game==='sprint'?right:null, device:store.device, items, synced:false
   };
   store.sessions.push(rec); if(store.sessions.length>1500) store.sessions=store.sessions.slice(-1500);
-  save(); round=null; syncPending();
+  me.dirty=true; save(); round=null; syncPending(); liveSync();
 }
 let syncing=false;
 async function syncPending(){
@@ -1101,7 +1131,9 @@ function openEditor(p,from){
   editing=p||null; editReturn=from||'sHome'; edAge=p?p.age:null;
   $('editTitle').textContent=p?`Edit ${p.name}`:'Add a child';
   $('fName').value=p?p.name:''; $('fErr').hidden=true; $('fRemove').hidden=!p; $('fRemove').textContent='Remove child'; removeArmed=false;
-  renderAges(); show('sEdit'); setTimeout(()=>{ if(!p) $('fName').focus(); },50);
+  const askFam = LIVE.url && STANDALONE && !store.family;
+  $('famWrap').hidden = !askFam; $('fFamily').value = store.family||'';
+  renderAges(); show('sEdit'); setTimeout(()=>{ if(!p) (askFam?$('fFamily'):$('fName')).focus(); },50);
 }
 function renderAges(){
   $('ages').innerHTML=[3,4,5,6,7,8,9,10,11,12].map(a=>`<button class="age" data-age="${a}" aria-pressed="${a===edAge}">${a}</button>`).join('');
@@ -1110,11 +1142,13 @@ function renderAges(){
 let removeArmed=false;
 function saveChild(){
   const name=$('fName').value.trim().replace(/\s+/g,' ');
-  const err=!name?'Type the child’s name.':!edAge?'Pick the child’s age.':'';
+  const fam=$('fFamily').value.trim().replace(/\s+/g,' ');
+  const err=(!$('famWrap').hidden && !fam)?'Type your family name.':!name?'Type the child’s name.':!edAge?'Pick the child’s age.':'';
   if(err){ $('fErr').textContent=err; $('fErr').hidden=false; return; }
-  if(editing){ editing.name=name; editing.age=edAge; }
-  else store.profiles.push({id:'k'+Date.now().toString(36), name, age:edAge, color:AVCOL[store.profiles.length%AVCOL.length], games:{}, best:{}, last:0});
-  save(); editReturn==='sParent'?openParent():goHome();
+  if(!$('famWrap').hidden){ store.family=fam; }
+  if(editing){ editing.name=name; editing.age=edAge; editing.dirty=true; }
+  else store.profiles.push({id:'k'+Date.now().toString(36)+Math.random().toString(36).slice(2,5), name, age:edAge, color:AVCOL[store.profiles.length%AVCOL.length], games:{}, best:{}, last:0, dirty:true});
+  save(); liveSync(); editReturn==='sParent'?openParent():goHome();
 }
 
 /* ---------- games ---------- */
@@ -1290,6 +1324,12 @@ function renderParent(){
       <div class="tablewrap"><table class="gtable"><thead><tr><th>Game</th><th class="n">Levels</th><th class="n">Plays</th><th class="n">Accuracy</th></tr></thead><tbody>${rows}</tbody></table></div>
     </div>`; }).join('');
   $('parentBody').innerHTML = `<div class="head"><h1>Progress</h1><p>How each child is doing, game by game.</p></div>
+    ${LIVE.url&&STANDALONE?`<div class="card panel"><h3>Live sharing</h3>
+      <p><span class="status ${liveState==='offline'?'bad':'on'}"><i></i>${liveState==='offline'?`No internet right now. ${livePending()} item${livePending()===1?'':'s'} will be sent when it returns.`:livePending()?'Sending…':`Up to date${liveLast?' · last sent '+new Date(liveLast).toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'}):''}`}</span></p>
+      <label class="label" for="pFamily" style="font-size:14px">Family name</label>
+      <input class="input" id="pFamily" maxlength="30" value="${esc(store.family||'')}" placeholder="For example, Ahmed family" style="font-size:16px;padding:10px 12px">
+      <p>Each child's name and age, and their game results, are shared with the Tiri organiser so progress can be followed.</p>
+    </div>`:''}
     <div class="card panel"><h3>Results log</h3>
       <p>${n} level${n===1?'':'s'} recorded on this device. ${st}</p>
       ${STANDALONE?`<label class="label" for="rEmail" style="font-size:14px">Send results to (email)</label>
@@ -1331,13 +1371,15 @@ document.addEventListener('click', async e=>{
     renderParent(); return; }
 });
 $('fSave').addEventListener('click',saveChild);
-document.addEventListener('change',e=>{ if(e.target.id==='rEmail'){ const v=e.target.value.trim(); store.sendTo=validEmail(v)?v:''; save(); renderParent(); } });
+document.addEventListener('change',e=>{ if(e.target.id==='pFamily'){ const v=e.target.value.trim().replace(/\s+/g,' '); if(v && v!==store.family){ store.family=v; store.profiles.forEach(p=>p.dirty=true); save(); liveSync(); } renderParent(); return; } if(e.target.id==='rEmail'){ const v=e.target.value.trim(); store.sendTo=validEmail(v)?v:''; save(); renderParent(); } });
 $('fCancel').addEventListener('click',()=>editReturn==='sParent'?openParent():goHome());
 $('fName').addEventListener('keydown',e=>{ if(e.key==='Enter') saveChild(); });
 $('fRemove').addEventListener('click',()=>{
   if(!editing) return;
   if(!removeArmed){ removeArmed=true; $('fRemove').textContent='Tap again to remove'; return; }
-  store.profiles=store.profiles.filter(p=>p!==editing); save(); openParent();
+  if(!Array.isArray(store.removed)) store.removed=[];
+  store.removed.push({child_id:editing.id, child:editing.name, age:editing.age, removed:true});
+  store.profiles=store.profiles.filter(p=>p!==editing); save(); liveSync(); openParent();
 });
 $('backBtn').addEventListener('click',goBack);
 $('sayBtn').addEventListener('click',()=>{ audio(); if(q) say(questionParts(q)); });
@@ -1365,6 +1407,7 @@ window.addEventListener('beforeinstallprompt', e=>{ e.preventDefault(); deferred
 window.addEventListener('appinstalled', ()=>{ deferredInstall=null; toast('Installed. Look for Tiri on your home screen.'); if(current==='sHome') renderHome(); });
 if(STANDALONE && 'serviceWorker' in navigator && (location.protocol==='https:'||location.hostname==='localhost')){ try{ navigator.serviceWorker.register('sw.js').catch(()=>{}); }catch(e){} }
 load(); renderMute(); renderHome(); show('sHome');
+setTimeout(liveSync, 1500);
 })();
 </script>
 </body>
