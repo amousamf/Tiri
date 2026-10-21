@@ -1,0 +1,1371 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Tiri</title>
+<meta name="description" content="Maths games for children aged 3 to 12. Works offline.">
+<meta name="theme-color" content="#3657E0">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Tiri">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);box-sizing:border-box;height:100%}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+</head>
+<body>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: app shell — top bar, one screen at a time (family → games → levels → play → result).
+   Lexend was designed to make reading easier, which suits early readers. One calm light theme; colour comes from each game's accent. */
+:root{
+  --bg:#F3F5FA;
+  --surface:#FFFFFF;
+  --ink:#172041;
+  --muted:#5B6483;
+  --line:#DFE4EE;
+  --primary:#3657E0;
+  --primary-soft:#E8EDFD;
+  --success:#22955A;
+  --success-soft:#DFF5E9;
+  --danger:#D63E55;
+  --danger-soft:#FCE6EA;
+  --gold:#F5B922;
+  --font:"Lexend", "Segoe UI", system-ui, -apple-system, sans-serif;
+  color-scheme:light;
+}
+html,body{height:100%}
+body{background:var(--bg);color:var(--ink);font-family:var(--font);font-size:16px;overflow:hidden;-webkit-tap-highlight-color:transparent}
+.app{height:100%;max-width:980px;margin:0 auto;display:flex;flex-direction:column;
+  padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px));padding-block:10px;box-sizing:border-box}
+button{font-family:inherit;color:inherit;border:0;background:none;padding:0;cursor:pointer}
+button:focus-visible,input:focus-visible{outline:3px solid var(--primary);outline-offset:2px}
+h1,h2,h3{margin:0;text-wrap:balance}
+
+/* top bar */
+.top{display:flex;align-items:center;gap:10px;min-height:52px;padding-bottom:6px}
+.top .grow{flex:1;min-width:0}
+.brand{display:flex;align-items:center;gap:10px;font-weight:700;font-size:19px}
+.brand .mark{min-width:34px;height:34px;padding:0 6px;box-sizing:border-box;border-radius:10px;background:var(--primary);color:#fff;display:grid;place-items:center;font-size:13px;font-weight:700;letter-spacing:.5px}
+.ibtn{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;background:var(--surface);border:1px solid var(--line);font-size:20px;flex:none}
+.ibtn svg{width:22px;height:22px;stroke:var(--ink);fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.childchip{display:flex;align-items:center;gap:8px;min-width:0}
+.childchip b{font-size:17px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.childchip .starcount{font-size:15px;color:var(--muted);white-space:nowrap;font-variant-numeric:tabular-nums}
+.av{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;color:#fff;font-weight:700;font-size:16px;flex:none}
+.av.lg{width:64px;height:64px;font-size:26px}
+
+.screen{flex:1;display:flex;flex-direction:column;min-height:0}
+.scroll{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding-bottom:20px}
+.head{display:flex;flex-direction:column;gap:4px;margin:6px 0 16px}
+.head h1{font-size:clamp(24px,5.5vw,32px);font-weight:700}
+.head p{margin:0;color:var(--muted);font-size:16px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:18px;box-shadow:0 1px 2px rgba(23,32,65,.04),0 4px 14px rgba(23,32,65,.05)}
+.tap{transition:transform .08s, box-shadow .15s, border-color .15s}
+.tap:active{transform:scale(.98)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:50px;padding:0 22px;border-radius:14px;font-size:16px;font-weight:600;background:var(--surface);border:1px solid var(--line)}
+.btn.primary{background:var(--primary);border-color:var(--primary);color:#fff}
+.btn.danger{background:var(--danger);border-color:var(--danger);color:#fff}
+.btn.small{height:40px;padding:0 14px;font-size:14px;border-radius:11px}
+.btns{display:flex;gap:10px;flex-wrap:wrap}
+
+/* family */
+.kids{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:14px}
+.kid{display:flex;flex-direction:column;align-items:center;gap:8px;padding:20px 10px 16px;text-align:center;min-width:0}
+.kid b{font-size:18px;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.kid > span:not(.av):not(.plus){font-size:14px;color:var(--muted);font-variant-numeric:tabular-nums}
+.kid.add{border:2px dashed var(--line);background:transparent;box-shadow:none;justify-content:center;color:var(--primary);font-weight:600}
+.kid.add .plus{width:64px;height:64px;border-radius:50%;background:var(--primary-soft);display:grid;place-items:center;font-size:30px}
+.empty{padding:28px 20px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:12px}
+.empty .big{font-size:52px}
+.empty p{margin:0;color:var(--muted);max-width:40ch;line-height:1.5}
+.parentlink{margin:22px auto 0;display:flex;flex-direction:column;align-items:center;gap:6px}
+.hold{position:relative;overflow:hidden;isolation:isolate}
+.hold .fill{position:absolute;inset:0;background:var(--primary-soft);transform-origin:left;transform:scaleX(0);z-index:-1}
+.hold.holding .fill{transition:transform 1.3s linear;transform:scaleX(1)}
+.hint{font-size:13px;color:var(--muted);margin:0}
+
+/* form */
+.form{padding:20px;display:flex;flex-direction:column;gap:16px;max-width:560px}
+.label{font-weight:600;font-size:15px}
+.input{font:500 18px var(--font);color:var(--ink);background:var(--bg);border:1.5px solid var(--line);border-radius:12px;padding:12px 14px;width:100%;box-sizing:border-box}
+.input:focus{border-color:var(--primary);outline:none}
+.ages{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;max-width:360px}
+.age{height:48px;border-radius:12px;border:1.5px solid var(--line);background:var(--surface);font-size:18px;font-weight:600;font-variant-numeric:tabular-nums}
+.age[aria-pressed="true"]{background:var(--primary);border-color:var(--primary);color:#fff}
+.agehint{font-size:14px;color:var(--muted);margin:0}
+.err{color:var(--danger);font-weight:600;margin:0}
+
+/* games */
+.games{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:12px}
+.game{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;align-items:center;padding:14px;text-align:left;min-width:0}
+.gicon{grid-row:span 2;width:52px;height:52px;border-radius:14px;display:grid;place-items:center;font-size:28px;background:color-mix(in srgb, var(--acc) 15%, #fff)}
+.game b{font-size:16px;font-weight:600;min-width:0}
+.game small{font-size:13px;color:var(--muted);line-height:1.3;min-width:0}
+.gprog{grid-column:1 / -1;display:flex;align-items:center;gap:10px;margin-top:8px;font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums}
+.bar{flex:1;height:6px;border-radius:99px;background:var(--line);overflow:hidden}
+.bar i{display:block;height:100%;background:var(--acc, var(--primary));border-radius:99px}
+.tag{display:inline-block;font-size:12px;font-weight:600;padding:3px 9px;border-radius:99px;background:var(--primary-soft);color:var(--primary)}
+
+/* levels */
+.ltop{display:flex;gap:14px;align-items:center;margin:6px 0 18px}
+.ltop .gicon{width:60px;height:60px;font-size:32px;grid-row:auto}
+.ltop h1{font-size:clamp(22px,5vw,28px)}
+.ltop p{margin:2px 0 0;color:var(--muted)}
+.levels{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;max-width:560px}
+.lvl{aspect-ratio:1/1;max-width:100%;border-radius:16px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font-size:clamp(20px,5vw,26px);font-weight:700;font-variant-numeric:tabular-nums}
+.lvl .st{font-size:11px;letter-spacing:1px;color:var(--gold);line-height:1}
+.lvl .st .off{color:var(--line)}
+.lvl.locked{background:#ECEFF5;color:#A3AAC0;border:1px solid transparent;box-shadow:none;cursor:default}
+.lvl.current{border:2px solid var(--acc);box-shadow:0 0 0 4px color-mix(in srgb, var(--acc) 18%, transparent)}
+.lvl svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2.2}
+.legend{margin-top:16px;color:var(--muted);font-size:14px;line-height:1.5;max-width:560px}
+
+/* play */
+.ptop{display:flex;align-items:center;gap:12px;margin-bottom:10px}
+.ptop .meta{flex:1;min-width:0}
+.ptop .meta b{font-size:15px;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.qbar{height:8px;border-radius:99px;background:var(--line);overflow:hidden;margin-top:6px}
+.qbar i{display:block;height:100%;background:var(--acc);border-radius:99px;transition:width .3s}
+.prompt{display:flex;align-items:center;justify-content:center;gap:12px;min-height:52px;text-align:center}
+.prompt .say{width:48px;height:48px;border-radius:50%;background:var(--primary-soft);display:grid;place-items:center;flex:none}
+.prompt .say svg{width:24px;height:24px;stroke:var(--primary);fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.prompt .text{font-size:clamp(19px,4.6vw,26px);font-weight:600;min-width:0}
+.stage{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:clamp(12px,3vh,26px);min-height:0;overflow-y:auto;padding-block:8px}
+.choices{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;max-width:620px}
+.opt{background:var(--surface);border:2px solid var(--line);border-radius:18px;box-shadow:0 3px 0 var(--line);transition:transform .08s,border-color .15s,background .15s;display:grid;place-items:center}
+.opt:active{transform:translateY(2px);box-shadow:0 1px 0 var(--line)}
+.opt.num{width:clamp(78px,21vw,104px);aspect-ratio:1/1;font-size:clamp(34px,9vw,48px);font-weight:700;font-variant-numeric:tabular-nums;grid-template-rows:1fr auto;padding:8px 4px}
+.opt.num .dots{display:flex;flex-wrap:wrap;gap:3px;justify-content:center;max-width:72px}
+.opt.num .dots i{width:8px;height:8px;border-radius:50%;background:#F08A3C}
+.opt.shape{width:clamp(90px,24vw,124px);aspect-ratio:1/1}
+.opt.shape svg{width:72%;height:auto}
+.opt.pic{width:clamp(80px,21vw,108px);aspect-ratio:1/1;font-size:clamp(38px,10vw,54px)}
+.opt.word{min-width:clamp(96px,26vw,130px);height:clamp(64px,15vw,80px);padding:0 14px;font-size:clamp(22px,6vw,30px);font-weight:700;font-variant-numeric:tabular-nums}
+.opt.swatch{width:clamp(76px,20vw,100px);aspect-ratio:1/1}
+.opt.swatch i{width:68%;aspect-ratio:1/1;border-radius:50%;box-shadow:inset 0 -6px 0 rgba(0,0,0,.12);border:2px solid rgba(23,32,65,.15)}
+.opt.size{min-width:clamp(70px,18vw,100px);height:clamp(120px,26vw,150px);align-items:end;padding:8px}
+.opt.wide{flex:1;min-width:0;min-height:150px;display:flex;flex-wrap:wrap;align-content:center;justify-content:center;gap:4px;padding:14px 8px}
+.opt.right{border-color:var(--success)!important;background:var(--success-soft)!important;animation:yay .45s}
+.opt.wrong{border-color:var(--danger);background:var(--danger-soft);animation:shake .45s;opacity:.45;pointer-events:none}
+@keyframes yay{40%{transform:scale(1.08)}}
+@keyframes shake{20%{transform:translateX(-8px)}40%{transform:translateX(8px)}60%{transform:translateX(-6px)}80%{transform:translateX(6px)}}
+.shake{animation:shake .45s}
+.vs{display:flex;gap:12px;width:100%;max-width:620px}
+.objs{display:flex;flex-wrap:wrap;justify-content:center;gap:6px;max-width:560px;padding:12px 16px;border-radius:20px;background:var(--surface);border:1px solid var(--line)}
+.obj{font-size:clamp(30px,8.5vw,52px);line-height:1.1;position:relative;display:inline-block}
+.obj.gone{opacity:.35}
+.obj.gone::after{content:"✕";position:absolute;inset:0;display:grid;place-items:center;color:var(--danger);font-weight:700;font-size:.8em}
+.obj.lit{animation:pop .35s ease-out forwards}
+@keyframes pop{50%{transform:scale(1.3)}100%{transform:scale(1.12)}}
+.wide .obj{font-size:clamp(24px,6.5vw,40px)}
+.sum{display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap}
+.sum .objs{max-width:230px;padding:10px}
+.sum .obj{font-size:clamp(24px,7vw,42px)}
+.op{font-size:clamp(32px,9vw,50px);font-weight:700;color:var(--muted)}
+.qmark{min-width:clamp(56px,15vw,80px);height:clamp(56px,15vw,80px);border-radius:16px;border:3px dashed var(--muted);display:inline-grid;place-items:center;font-size:clamp(30px,8vw,46px);font-weight:700;background:var(--surface);padding:0 6px;box-sizing:border-box}
+.qmark.done{border-style:solid;border-color:var(--success);background:var(--success-soft)}
+.row{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;align-items:center;padding:12px;border-radius:20px;background:var(--surface);border:1px solid var(--line)}
+.row .cell{font-size:clamp(30px,8.5vw,50px);line-height:1}
+.row .cell svg{width:clamp(36px,9vw,54px);height:auto;display:block}
+.row .ntile{min-width:clamp(52px,13vw,72px);height:clamp(52px,13vw,72px);border-radius:14px;background:var(--bg);display:grid;place-items:center;font-size:clamp(26px,7vw,38px);font-weight:700;font-variant-numeric:tabular-nums}
+.dotcard{display:grid;grid-template-columns:repeat(5,22px);gap:10px;padding:18px;border-radius:20px;background:var(--surface);border:1px solid var(--line)}
+.dotcard i{width:22px;height:22px;border-radius:50%;background:var(--primary)}
+.bigemoji{font-size:clamp(70px,20vw,110px);line-height:1}
+.tower{display:flex;flex-direction:column-reverse;gap:2px}
+.tower i{width:26px;height:14px;border-radius:3px;background:var(--acc);border:1.5px solid rgba(23,32,65,.35)}
+
+.eq{font-size:clamp(34px,10vw,60px);font-weight:700;display:flex;align-items:center;justify-content:center;gap:.25em;flex-wrap:wrap;font-variant-numeric:tabular-nums;line-height:1.15;text-align:center}
+.eq.sm{font-size:clamp(26px,7vw,40px)}
+.slot{min-width:1.6em;padding:0 .2em;border-radius:14px;border:3px dashed var(--muted);display:inline-grid;place-items:center;background:var(--surface);color:var(--ink);box-sizing:border-box}
+.slot.empty{color:#A3AAC0}
+.slot.ok{border-style:solid;border-color:var(--success);background:var(--success-soft)}
+.slot.reveal{border-style:solid;border-color:var(--gold);background:#FFF6DB}
+.pad{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;width:min(320px,100%)}
+.pad button{height:clamp(46px,7.5vh,58px);font-size:26px;font-weight:600;border-radius:14px;background:var(--surface);border:1.5px solid var(--line);font-variant-numeric:tabular-nums;box-shadow:0 2px 0 var(--line)}
+.pad button:active{transform:translateY(2px);box-shadow:none}
+.pad .go{background:var(--primary);color:#fff;border-color:var(--primary)}
+.pad .go.span{grid-column:1 / -1}
+.story{max-width:580px;font-size:clamp(18px,4.6vw,24px);font-weight:500;line-height:1.45;background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:16px 20px;text-align:center;text-wrap:pretty}
+.story .se{font-size:40px;display:block;margin-bottom:4px}
+.blocks{display:flex;gap:8px;align-items:flex-end;flex-wrap:wrap;justify-content:center;background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:14px;max-width:560px}
+.rod{display:grid;grid-template-rows:repeat(10,1fr);width:18px;height:140px;border:2px solid #23306B;border-radius:4px;background:#4C6EF5;overflow:hidden}
+.rod i{border-bottom:1.5px solid rgba(255,255,255,.45)}
+.cubes{display:grid;grid-template-columns:repeat(3,18px);gap:4px;align-content:end}
+.cube{width:18px;height:18px;border:2px solid #23306B;border-radius:3px;background:#F08A3C;box-sizing:border-box}
+.frac{display:inline-flex;flex-direction:column;align-items:center;line-height:1;font-variant-numeric:tabular-nums;vertical-align:middle}
+.frac>span:first-child{border-bottom:.08em solid currentColor;padding:0 .14em .06em}
+.frac>span:last-child{padding-top:.06em}
+.pie{width:clamp(120px,32vw,160px);height:auto}
+.eqlines{display:flex;flex-direction:column;gap:8px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:16px 22px}
+.eqlines div{font-size:clamp(24px,6.5vw,38px);font-weight:700;font-variant-numeric:tabular-nums;white-space:nowrap}
+.array{display:grid;gap:8px;padding:16px;background:var(--surface);border:1px solid var(--line);border-radius:20px}
+.array i{width:20px;height:20px;border-radius:50%;background:#F08A3C}
+.groupsbox{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;max-width:600px}
+.groupsbox>div{display:flex;flex-wrap:wrap;gap:2px;max-width:110px;justify-content:center;padding:10px;border:2px dashed var(--line);border-radius:16px;background:var(--surface);font-size:28px}
+.coins{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;align-items:center;max-width:560px;padding:12px;border-radius:20px;background:var(--surface);border:1px solid var(--line)}
+.fig{background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:10px;max-width:100%}
+.fig svg{display:block;max-width:100%;height:auto}
+.clock{width:clamp(160px,42vw,210px);height:auto}
+
+/* result */
+.result{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;text-align:center;padding:10px}
+.bigstars{display:flex;gap:10px;font-size:clamp(52px,14vw,76px);line-height:1}
+.bigstars span{color:var(--line)}
+.bigstars span.on{color:var(--gold);animation:starin .45s backwards}
+.bigstars span:nth-child(2){animation-delay:.15s}.bigstars span:nth-child(3){animation-delay:.3s}
+@keyframes starin{0%{transform:scale(0) rotate(-40deg)}70%{transform:scale(1.2)}}
+.result h2{font-size:clamp(24px,6vw,32px)}
+.result p{margin:0;color:var(--muted);font-size:17px}
+.result .btns{justify-content:center;margin-top:8px}
+
+/* parent */
+.panel{padding:16px 18px;display:flex;flex-direction:column;gap:10px;margin-bottom:14px}
+.panel h3{font-size:18px}
+.panel p{margin:0;color:var(--muted);font-size:14px;line-height:1.5}
+.status{display:inline-flex;align-items:center;gap:6px;font-weight:600;color:var(--ink)}
+.status i{width:9px;height:9px;border-radius:50%;background:#B9C2DA}
+.status.on i{background:var(--success)}.status.bad i{background:var(--danger)}
+.panel textarea{width:100%;box-sizing:border-box;height:120px;font:12px ui-monospace,Menlo,monospace;border:1px solid var(--line);border-radius:10px;padding:8px;color:var(--ink);background:var(--bg)}
+.pkid{padding:16px 18px;display:flex;flex-direction:column;gap:12px;margin-bottom:12px;min-width:0}
+.pkid .who{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.pkid .who div{flex:1;min-width:140px}
+.pkid .who b{font-size:18px;display:block}
+.pkid .who div span{font-size:14px;color:var(--muted)}
+.kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.kpi{background:var(--bg);border-radius:12px;padding:10px;min-width:0}
+.kpi b{font-size:20px;display:block;font-variant-numeric:tabular-nums}
+.kpi span{font-size:12px;color:var(--muted)}
+.flag{font-size:13px;font-weight:600;padding:4px 10px;border-radius:99px;background:var(--danger-soft);color:#A72A3F;align-self:flex-start}
+.flag.ok{background:var(--success-soft);color:#16693F}
+.gtable{width:100%;border-collapse:collapse;font-size:14px}
+.gtable th{text-align:left;font-weight:600;color:var(--muted);font-size:12px;padding:6px 6px;border-bottom:1px solid var(--line)}
+.gtable td{padding:7px 6px;border-bottom:1px solid var(--line);font-variant-numeric:tabular-nums}
+.gtable td.n{text-align:right}.gtable th.n{text-align:right}
+.gtable .low{color:var(--danger);font-weight:600}
+.tablewrap{overflow-x:auto}
+.toast{position:fixed;left:50%;top:calc(12px + env(safe-area-inset-top, 0px));transform:translate(-50%,-150%);background:var(--ink);color:#fff;font-weight:600;padding:10px 18px;border-radius:99px;z-index:60;transition:transform .3s;white-space:nowrap;font-size:15px}
+.toast.show{transform:translate(-50%,0)}
+.fx{position:fixed;pointer-events:none;font-size:26px;z-index:50;left:0;top:0}
+@media (max-width:420px){ .kpis{grid-template-columns:repeat(2,minmax(0,1fr))} }
+@media (prefers-reduced-motion: reduce){ *,*::before,*::after{animation:none!important;transition:none!important} }
+</style>
+
+<div class="app">
+  <header class="top">
+    <button class="ibtn" id="backBtn" aria-label="Back" hidden><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button>
+    <div class="grow" id="topMid"></div>
+    <button class="ibtn" id="muteBtn" aria-label="Sound on or off"></button>
+  </header>
+
+  <section class="screen" id="sHome"><div class="scroll" id="homeBody"></div></section>
+
+  <section class="screen" id="sEdit" hidden><div class="scroll">
+    <div class="head"><h1 id="editTitle">Add a child</h1><p>Games are chosen by age. You can change this later.</p></div>
+    <div class="card form">
+      <label class="label" for="fName">Child's name</label>
+      <input class="input" id="fName" maxlength="20" autocomplete="off" placeholder="For example, Hodan">
+      <div class="label" id="ageLabel">Age</div>
+      <div class="ages" id="ages" role="group" aria-labelledby="ageLabel"></div>
+      <p class="agehint" id="ageHint"></p>
+      <p class="err" id="fErr" hidden></p>
+      <div class="btns"><button class="btn primary" id="fSave">Save</button><button class="btn" id="fCancel">Cancel</button><button class="btn danger" id="fRemove" hidden>Remove child</button></div>
+    </div>
+  </div></section>
+
+  <section class="screen" id="sGames" hidden><div class="scroll">
+    <div class="head"><h1 id="gamesTitle"></h1><p id="gamesSub"></p></div>
+    <div class="games" id="games"></div>
+  </div></section>
+
+  <section class="screen" id="sLevels" hidden><div class="scroll">
+    <div class="ltop" id="ltop"></div>
+    <div class="levels" id="levels"></div>
+    <p class="legend" id="legend"></p>
+  </div></section>
+
+  <section class="screen" id="sPlay" hidden>
+    <div class="ptop">
+      <div class="meta"><b id="pTitle"></b><div class="qbar"><i id="qbar"></i></div></div>
+    </div>
+    <div class="prompt"><button class="say" id="sayBtn" aria-label="Hear the question"><svg viewBox="0 0 24 24"><path d="M4 9v6h4l5 4V5L8 9H4z"/><path d="M16.5 8.5a5 5 0 010 7"/></svg></button><div class="text" id="pText"></div></div>
+    <div class="stage" id="stage"></div>
+  </section>
+
+  <section class="screen" id="sDone" hidden><div class="result" id="result"></div></section>
+
+  <section class="screen" id="sParent" hidden><div class="scroll" id="parentBody"></div></section>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+(function(){
+/* ================= helpers ================= */
+const $ = id => document.getElementById(id);
+const R = (a,b) => a + Math.floor(Math.random()*(b-a+1));
+const pick = a => a[Math.floor(Math.random()*a.length)];
+const shuffle = a => { a=a.slice(); for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; };
+const wait = ms => new Promise(r=>setTimeout(r,ms));
+const esc = s => String(s).replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const T = (lv,a) => a[Math.min(lv,a.length)-1];
+const pad2 = n => String(n).padStart(2,'0');
+const fmt = x => String(Math.round(x*1000)/1000);
+const gcd = (a,b) => b ? gcd(b,a%b) : a;
+const SLOT = '<span class="slot empty" id="slot">?</span>';
+const speakify = s => String(s).replace(/×/g,' times ').replace(/÷/g,' divided by ').replace(/−/g,' minus ').replace(/\+/g,' plus ').replace(/²/g,' squared');
+
+const THINGS = [
+  {e:'🍎',one:'apple',many:'apples'},{e:'🐟',one:'fish',many:'fish'},{e:'🐥',one:'chick',many:'chicks'},{e:'🍌',one:'banana',many:'bananas'},
+  {e:'🚗',one:'car',many:'cars'},{e:'🎈',one:'balloon',many:'balloons'},{e:'🐞',one:'ladybug',many:'ladybugs'},{e:'🌸',one:'flower',many:'flowers'},
+  {e:'🐢',one:'turtle',many:'turtles'},{e:'🍓',one:'strawberry',many:'strawberries'},{e:'⚽',one:'ball',many:'balls'},{e:'🐑',one:'sheep',many:'sheep'}
+];
+const PUNITS = ['🍎','🍌','🍇','🐶','🐱','⭐','🌙','🔴','🔵','🟡','🟢','🟣','🐸','🌸'];
+const COL = {red:'#E5383B',blue:'#3B6FE0',yellow:'#F7C531',green:'#2FA866',orange:'#F6852C',purple:'#8B5CF6',pink:'#F06FB2',brown:'#8D5B3C',grey:'#8A93A6',black:'#2A2A2E'};
+const C6 = ['red','blue','yellow','green','orange','purple'];
+const C10 = Object.keys(COL);
+const SB = ['circle','square','triangle','star'];
+const SALL = ['circle','square','triangle','star','heart','rectangle','oval'];
+const SIDES = {triangle:3, square:4, pentagon:5, hexagon:6};
+const NAMES = ['Amina','Hodan','Yusuf','Ayaan','Bilal','Sagal','Hamza','Iman','Khadar','Nimco','Zakariye','Fartun'];
+const ITEMS = [{e:'🥭',w:'mangoes'},{e:'🐐',w:'goats'},{e:'🐪',w:'camels'},{e:'✏️',w:'pencils'},{e:'🍬',w:'sweets'},{e:'📚',w:'books'},{e:'🍌',w:'bananas'},{e:'🎈',w:'balloons'}];
+const CATS = {animals:['🐶','🐱','🐮','🐷','🐸','🐵','🐔','🦁','🐰'], fruits:['🍎','🍌','🍇','🍓','🍊','🍉','🍍','🥭'], vehicles:['🚗','🚌','🚲','✈️','🚂','🚀','🚜','⛵']};
+const AVCOL = ['#3657E0','#E0567A','#22955A','#E8862A','#8B5CF6','#0F9BB5','#C2410C','#4D7C0F','#BE185D','#1D4ED8'];
+
+function starPts(cx,cy,r1,r2,n){ n=n||5; let p=[]; for(let i=0;i<n*2;i++){const r=i%2?r2:r1;const a=-Math.PI/2+i*Math.PI/n;p.push((cx+r*Math.cos(a)).toFixed(1)+','+(cy+r*Math.sin(a)).toFixed(1));} return p.join(' '); }
+function polyPts(n){ let p=[]; for(let i=0;i<n;i++){const a=-Math.PI/2+i*2*Math.PI/n;p.push((50+42*Math.cos(a)).toFixed(1)+','+(52+42*Math.sin(a)).toFixed(1));} return p.join(' '); }
+function shapeSVG(type,color){
+  const st = `fill="${color}" stroke="#172041" stroke-width="4" stroke-linejoin="round"`;
+  const s = {
+    circle:`<circle cx="50" cy="50" r="40" ${st}/>`,
+    square:`<rect x="13" y="13" width="74" height="74" rx="5" ${st}/>`,
+    triangle:`<polygon points="50,9 93,88 7,88" ${st}/>`,
+    star:`<polygon points="${starPts(50,53,44,19)}" ${st}/>`,
+    heart:`<path d="M50 89 C22 68 6 50 6 31 A22 22 0 0 1 50 23 A22 22 0 0 1 94 31 C94 50 78 68 50 89Z" ${st}/>`,
+    rectangle:`<rect x="5" y="27" width="90" height="46" rx="4" ${st}/>`,
+    oval:`<ellipse cx="50" cy="50" rx="45" ry="30" ${st}/>`,
+    pentagon:`<polygon points="${polyPts(5)}" ${st}/>`,
+    hexagon:`<polygon points="${polyPts(6)}" ${st}/>`
+  }[type];
+  return `<svg viewBox="0 0 100 100" aria-hidden="true">${s}</svg>`;
+}
+function pieSVG(k,d){
+  const c=50,r=44; let s='';
+  for(let i=0;i<d;i++){
+    const a0=(-90+360*i/d)*Math.PI/180, a1=(-90+360*(i+1)/d)*Math.PI/180;
+    s += `<path d="M${c} ${c} L${(c+r*Math.cos(a0)).toFixed(2)} ${(c+r*Math.sin(a0)).toFixed(2)} A${r} ${r} 0 0 1 ${(c+r*Math.cos(a1)).toFixed(2)} ${(c+r*Math.sin(a1)).toFixed(2)} Z" fill="${i<k?'#F08A3C':'#FFFFFF'}" stroke="#172041" stroke-width="2.5" stroke-linejoin="round"/>`;
+  }
+  return `<svg class="pie" viewBox="0 0 100 100" aria-hidden="true">${s}</svg>`;
+}
+function clockSVG(h,m){
+  let s = `<circle cx="100" cy="100" r="92" fill="#fff" stroke="#172041" stroke-width="6"/>`;
+  for(let i=1;i<=12;i++){ const a=(i*30-90)*Math.PI/180; s+=`<text x="${(100+72*Math.cos(a)).toFixed(1)}" y="${(100+72*Math.sin(a)+8).toFixed(1)}" text-anchor="middle" font-family="Lexend, sans-serif" font-size="22" font-weight="600" fill="#172041">${i}</text>`; }
+  for(let i=0;i<60;i++){ if(i%5===0) continue; const a=(i*6-90)*Math.PI/180; s+=`<line x1="${(100+86*Math.cos(a)).toFixed(1)}" y1="${(100+86*Math.sin(a)).toFixed(1)}" x2="${(100+90*Math.cos(a)).toFixed(1)}" y2="${(100+90*Math.sin(a)).toFixed(1)}" stroke="#9AA3BC" stroke-width="2"/>`; }
+  const ha=((h%12)+m/60)*30*Math.PI/180, ma=m*6*Math.PI/180;
+  s += `<line x1="100" y1="100" x2="${(100+44*Math.sin(ha)).toFixed(1)}" y2="${(100-44*Math.cos(ha)).toFixed(1)}" stroke="#172041" stroke-width="9" stroke-linecap="round"/>`;
+  s += `<line x1="100" y1="100" x2="${(100+68*Math.sin(ma)).toFixed(1)}" y2="${(100-68*Math.cos(ma)).toFixed(1)}" stroke="#3657E0" stroke-width="6" stroke-linecap="round"/>`;
+  s += `<circle cx="100" cy="100" r="7" fill="#172041"/>`;
+  return `<div class="fig"><svg class="clock" viewBox="0 0 200 200" aria-label="clock">${s}</svg></div>`;
+}
+function coinSVG(v){
+  const big = v>=10, r = big ? 30 : 24;
+  return `<svg width="${r*2+4}" height="${r*2+4}" viewBox="0 0 ${r*2+4} ${r*2+4}" aria-label="${v} coin"><circle cx="${r+2}" cy="${r+2}" r="${r}" fill="${big?'#D3D9E6':'#F2C14E'}" stroke="${big?'#7C879F':'#B8892A'}" stroke-width="3"/><circle cx="${r+2}" cy="${r+2}" r="${r-6}" fill="none" stroke="${big?'#9AA3B8':'#D4A63A'}" stroke-width="1.5"/><text x="${r+2}" y="${r+9}" text-anchor="middle" font-family="Lexend, sans-serif" font-size="${big?22:20}" font-weight="700" fill="#172041">${v}</text></svg>`;
+}
+function rectFig(w,h,o){
+  o=o||{}; const u = Math.min(240/w, 160/h, 34), W=w*u, H=h*u, x0=40, y0=14;
+  let s = `<rect x="${x0}" y="${y0}" width="${W}" height="${H}" fill="#E8EDFD" stroke="#172041" stroke-width="3"/>`;
+  if(o.grid){ for(let i=1;i<w;i++) s+=`<line x1="${x0+i*u}" y1="${y0}" x2="${x0+i*u}" y2="${y0+H}" stroke="#9AAAE8" stroke-width="1.5"/>`; for(let j=1;j<h;j++) s+=`<line x1="${x0}" y1="${y0+j*u}" x2="${x0+W}" y2="${y0+j*u}" stroke="#9AAAE8" stroke-width="1.5"/>`; }
+  if(o.labels!==false){
+    s += `<text x="${x0+W/2}" y="${y0+H+26}" text-anchor="middle" font-family="Lexend, sans-serif" font-size="18" font-weight="600" fill="#172041">${o.wl!==undefined?o.wl:w+' cm'}</text>`;
+    s += `<text x="${x0-8}" y="${y0+H/2+6}" text-anchor="end" font-family="Lexend, sans-serif" font-size="18" font-weight="600" fill="#172041">${o.hl!==undefined?o.hl:h+' cm'}</text>`;
+  }
+  return `<div class="fig"><svg viewBox="0 0 ${x0+W+20} ${y0+H+36}" width="${x0+W+20}" aria-hidden="true">${s}</svg></div>`;
+}
+function twoRectFig(w1,h1,w2,h2){
+  const u = Math.min(260/(w1+w2), 150/Math.max(h1,h2), 28), x0=40, base=14+Math.max(h1,h2)*u;
+  const r = (x,w,h)=>`<rect x="${x}" y="${base-h*u}" width="${w*u}" height="${h*u}" fill="#E8EDFD" stroke="#172041" stroke-width="3"/>`;
+  const t = (x,y,txt,a)=>`<text x="${x}" y="${y}" text-anchor="${a||'middle'}" font-family="Lexend, sans-serif" font-size="16" font-weight="600" fill="#172041">${txt}</text>`;
+  const xb = x0+w1*u;
+  const s = r(x0,w1,h1)+r(xb,w2,h2)+t(x0+w1*u/2,base+22,w1+' cm')+t(xb+w2*u/2,base+22,w2+' cm')+t(x0-6,base-h1*u/2+5,h1+' cm','end')+t(xb+w2*u+6,base-h2*u/2+5,h2+' cm','start');
+  return `<div class="fig"><svg viewBox="0 0 ${xb+w2*u+70} ${base+32}" width="${xb+w2*u+70}" aria-hidden="true">${s}</svg></div>`;
+}
+const frac = (n,d) => `<span class="frac"><span>${n}</span><span>${d}</span></span>`;
+
+/* ================= sound + voice ================= */
+let muted=false; try{ muted = localStorage.getItem('cwm.muted')==='1'; }catch(e){}
+let actx=null;
+function audio(){ if(!actx){ try{ actx=new (window.AudioContext||window.webkitAudioContext)(); }catch(e){} } if(actx&&actx.state==='suspended') actx.resume(); return actx; }
+function tone(f,st,d,type,vol){ const c=audio(); if(!c||muted) return; const o=c.createOscillator(),g=c.createGain(); o.type=type||'sine'; o.frequency.value=f; g.gain.setValueAtTime(.0001,c.currentTime+st); g.gain.exponentialRampToValueAtTime(vol||.22,c.currentTime+st+.02); g.gain.exponentialRampToValueAtTime(.0001,c.currentTime+st+d); o.connect(g); g.connect(c.destination); o.start(c.currentTime+st); o.stop(c.currentTime+st+d+.05); }
+const ding=()=>{tone(784,0,.16);tone(1047,.11,.28);tone(1319,.24,.36,'sine',.16);};
+const tick=()=>tone(1047,0,.1,'sine',.12);
+const boop=()=>{tone(220,0,.22,'triangle',.18);tone(180,.1,.28,'triangle',.13);};
+const fanfare=()=>{[523,659,784,1047].forEach((f,i)=>tone(f,i*.12,.32,'sine',.2));};
+/* Voice: pick the clearest female English voice the device has. Voice names differ by phone and browser,
+   so known female voices score up and known male voices score down. */
+const FEMALE_V=/female|woman|samantha|victoria|karen|moira|tessa|fiona|serena|zira|hazel|susan|heera|catherine|allison|\bava\b|nicky|\bkate\b|libby|sonia|jenny|aria|emma|\bamy\b|joanna|salli|kimberly|\bivy\b|kendra|martha|stephanie|google us english|google uk english female|x-sfg|x-tpf|x-iob|x-iog|x-tpc|x-gba|x-rjs-?f/i;
+const MALE_V=/\bmale\b|\bman\b|david|\bmark\b|daniel|\balex\b|\bfred\b|rishi|aaron|arthur|gordon|oliver|thomas|george|\bryan\b|\bguy\b|\beric\b|brian|matthew|joey|justin|x-iol|x-iom|x-tpd|x-gbd|x-gbc|x-rjs\b/i;
+let cachedVoice=null, voiceIsFemale=false;
+function chooseVoice(){
+  try{
+    const vs=speechSynthesis.getVoices(); if(!vs.length) return;
+    let best=null, bs=-1e9;
+    for(const v of vs){
+      if(!/^en/i.test(v.lang)) continue;
+      let s=0; const nm=v.name+' '+(v.voiceURI||'');
+      if(/en[-_](US|GB|AU|IE|ZA|KE|NG)/i.test(v.lang)) s+=2;
+      if(FEMALE_V.test(nm)) s+=20; else if(MALE_V.test(nm)) s-=20;
+      if(/natural|neural|enhanced|premium|online/i.test(nm)) s+=3;
+      if(v.localService) s+=1;
+      if(s>bs){ bs=s; best=v; }
+    }
+    cachedVoice=best; voiceIsFemale=!!best && FEMALE_V.test(best.name+' '+(best.voiceURI||''));
+  }catch(e){}
+}
+try{ chooseVoice(); speechSynthesis.addEventListener ? speechSynthesis.addEventListener('voiceschanged',chooseVoice) : (speechSynthesis.onvoiceschanged=chooseVoice); }catch(e){}
+let sayToken=0;
+function speakOne(text,rate,token){
+  return new Promise(res=>{
+    if(token!==sayToken) return res();
+    try{
+      if(!cachedVoice) chooseVoice();
+      const u=new SpeechSynthesisUtterance(text);
+      if(cachedVoice){ u.voice=cachedVoice; u.lang=cachedVoice.lang; } else u.lang='en-US';
+      u.rate=rate; u.pitch=voiceIsFemale?1.1:1.35; u.volume=1;
+      let done=false; const fin=()=>{ if(!done){ done=true; res(); } };
+      u.onend=fin; u.onerror=fin; setTimeout(fin, Math.max(1600, text.length*120/rate));
+      speechSynthesis.speak(u);
+    }catch(e){ res(); }
+  });
+}
+/* say(text) or say([part, part, …]) — parts are spoken one by one with a short pause between them */
+async function say(parts,opts){
+  opts=opts||{}; parts=Array.isArray(parts)?parts:[parts];
+  const token=++sayToken;
+  if(muted||!('speechSynthesis' in window)){ await wait(opts.silentMs||500); return; }
+  try{ speechSynthesis.cancel(); }catch(e){}
+  const rate = opts.rate || (me ? {little:.75, middle:.82, older:.9}[groupOf(me.age)] : .82);
+  for(let i=0;i<parts.length;i++){
+    if(token!==sayToken) return;
+    await speakOne(parts[i], rate, token);
+    if(i<parts.length-1) await wait(opts.gap||450);
+  }
+}
+/* the question, then its key word twice more, so the child hears it three times */
+const questionParts = q => q.key ? [q.speak, q.key+'.', q.key+'.'] : [q.speak];
+const reduceMotion = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+function burst(el){
+  if(reduceMotion||!el||!el.animate) return;
+  const r=el.getBoundingClientRect(), cx=r.left+r.width/2, cy=r.top+r.height/2;
+  for(let i=0;i<12;i++){ const s=document.createElement('span'); s.className='fx'; s.textContent=pick(['⭐','✨','🌟']); document.body.appendChild(s);
+    const a=Math.random()*Math.PI*2, d=60+Math.random()*80;
+    s.animate([{transform:`translate(${cx-13}px,${cy-13}px) scale(.4)`,opacity:1},{transform:`translate(${cx-13+Math.cos(a)*d}px,${cy-13+Math.sin(a)*d}px) scale(1)`,opacity:0}],{duration:750+Math.random()*250,easing:'cubic-bezier(.2,.7,.3,1)'}).onfinish=()=>s.remove(); }
+}
+let toastT=null;
+function toast(m){ const t=$('toast'); t.textContent=m; t.classList.add('show'); clearTimeout(toastT); toastT=setTimeout(()=>t.classList.remove('show'),2200); }
+
+/* ================= question building blocks ================= */
+function numChoices(n,min,max,count){
+  count=Math.min(count,max-min+1);
+  const set=new Set([n]);
+  for(const x of shuffle([n-1,n+1,n-2,n+2,n+3,n-3])){ if(set.size>=count) break; if(x>=min&&x<=max) set.add(x); }
+  let g=0; while(set.size<count&&g++<80) set.add(R(min,max));
+  return shuffle([...set]);
+}
+const choices = arr => `<div class="choices">${arr.join('')}</div>`;
+const numBtns = (list,dots) => choices(list.map(n=>`<button class="opt num" data-choice="${n}" aria-label="${n}"><span>${n}</span>${dots?`<span class="dots">${'<i></i>'.repeat(n)}</span>`:''}</button>`));
+const wordBtns = list => choices(list.map(w=>`<button class="opt word" data-choice="${esc(w)}">${esc(w)}</button>`));
+const objs = (t,n) => `<div class="objs">${Array.from({length:n},()=>`<span class="obj">${t.e}</span>`).join('')}</div>`;
+const plural = (n,t) => n===1?t.one:t.many;
+async function countAloud(stage,total,sel){
+  const els=[...stage.querySelectorAll(sel||'.obj:not(.gone)')].slice(0,total);
+  const words=Array.from({length:total},(_,i)=>i+1).join(', ');
+  const sp=say(words,{silentMs:total*400,gap:200});
+  for(const o of els){ o.classList.add('lit'); await wait(total>6?360:440); }
+  await sp;
+}
+const P = (o) => Object.assign({pad:true}, o);   // typed-answer question
+const fillQ = (stage,v) => { const q=stage.querySelector('.qmark'); if(q){ q.textContent=v; q.classList.add('done'); } };
+
+/* ================= AGES 3–5 ================= */
+function gCount(lv){
+  const [lo,hi]=T(lv,[[1,2],[1,3],[1,4],[2,5],[3,6],[4,7],[5,8],[6,9],[6,10],[7,10]]);
+  const n=R(lo,hi), t=pick(THINGS);
+  return {text:`How many ${t.many}?`, speak:`How many ${t.many}?`, html:objs(t,n)+numBtns(numChoices(n,1,10,lv<=5?3:4),lv<=3), answer:String(n),
+    async after(st){ await countAloud(st,n); await say(`${n} ${plural(n,t)}!`); }};
+}
+function gFind(lv){
+  const max=T(lv,[3,4,5,6,7,8,9,10,10,10]), cnt=T(lv,[2,3,3,3,4,4,4,4,5,5]), n=R(1,max);
+  if(lv>=8) return {text:'How many dots?', speak:'How many dots? Tap the number.', html:`<div class="dotcard">${'<i></i>'.repeat(n)}</div>`+numBtns(numChoices(n,1,10,cnt)), answer:String(n), praise:`${n} dots!`};
+  return {text:'Tap the number you hear', speak:`Find the number ${n}.`, key:String(n), html:numBtns(numChoices(n,1,max,cnt)), answer:String(n), praise:`That is ${n}!`};
+}
+function gOrder(lv){
+  const p=T(lv,[{max:4,mode:'next',fix:1},{max:6,mode:'next'},{max:8,mode:'next'},{max:10,mode:'next'},{max:10,mode:'before'},{max:10,mode:'middle'},{max:10,mode:'back'},{max:15,mode:'next'},{max:20,mode:pick(['middle','before'])},{max:20,mode:pick(['next','before','middle','back'])}]);
+  const a=p.fix||R(1,p.max-3); let seq=[a,a+1,a+2,a+3]; if(p.mode==='back') seq.reverse();
+  const miss = p.mode==='before'?0 : p.mode==='middle'?R(1,2) : 3, ans=seq[miss];
+  const sp={next:'What number comes next?',before:'What number comes before?',middle:'What number is missing?',back:'We are counting down. What comes next?'}[p.mode];
+  return {text:sp, speak:sp, html:`<div class="row">${seq.map((n,i)=>i===miss?`<span class="qmark">?</span>`:`<span class="ntile">${n}</span>`).join('')}</div>`+numBtns(numChoices(ans,1,p.max+1,3)),
+    answer:String(ans), async after(st){ fillQ(st,ans); await say(`Yes! ${seq.join(', ')}.`); }};
+}
+function gShapes(lv){
+  if(lv===10) lv=pick([8,9]);
+  const btn=(t,c,val)=>`<button class="opt shape" data-choice="${val}" aria-label="${c} ${t}">${shapeSVG(t,COL[c])}</button>`;
+  if(lv<=6){
+    const pool=T(lv,[['circle','square'],['circle','square','triangle'],SB,SB,[...SB,'heart'],SALL]), k=T(lv,[2,3,3,4,4,4]);
+    const types=shuffle(pool).slice(0,k), tg=types[0];
+    return {text:`Find the ${tg}`, speak:`Find the ${tg}.`, key:tg, html:choices(shuffle(types).map(t=>btn(t,pick(C6),t))), answer:tg, praise:`A ${tg}!`};
+  }
+  if(lv<=8){
+    const pool=lv===7?SB:SALL, t=pick(pool), c=pick(C6);
+    const opts=[{t,c},{t,c:pick(C6.filter(x=>x!==c))},{t:pick(pool.filter(x=>x!==t)),c}]; const seen=new Set(opts.map(o=>o.t+o.c));
+    while(opts.length<4){ const o={t:pick(pool),c:pick(C6)}; if(!seen.has(o.t+o.c)){seen.add(o.t+o.c);opts.push(o);} }
+    return {text:`Find the ${c} ${t}`, speak:`Find the ${c} ${t}.`, key:`${c} ${t}`, html:choices(shuffle(opts).map(o=>btn(o.t,o.c,o.t+'-'+o.c))), answer:`${t}-${c}`, praise:`The ${c} ${t}!`};
+  }
+  const types=shuffle(Object.keys(SIDES)).slice(0,3).concat('circle'), tg=types[0], n=SIDES[tg];
+  return {text:`Find the shape with ${n} sides`, speak:`Find the shape with ${n} sides.`, key:`${n} sides`, html:choices(shuffle(types).map(t=>btn(t,pick(C6),t))), answer:tg, praise:`Yes! A ${tg} has ${n} sides.`};
+}
+const COBJ=[{e:'🍌',c:'yellow',n:'banana'},{e:'🍎',c:'red',n:'apple'},{e:'🥦',c:'green',n:'broccoli'},{e:'🍊',c:'orange',n:'orange'},{e:'🍇',c:'purple',n:'bunch of grapes'},{e:'🐘',c:'grey',n:'elephant'},{e:'🐷',c:'pink',n:'pig'},{e:'🐻',c:'brown',n:'bear'},{e:'🐳',c:'blue',n:'whale'}];
+function gColours(lv){
+  if(lv===10) lv=pick([7,9]);
+  const sw=c=>`<button class="opt swatch" data-choice="${c}" aria-label="${c}"><i style="background:${COL[c]}"></i></button>`;
+  if(lv<=7){
+    const pool=T(lv,[C6,C6,C10,C6,C10,C10,C10]), k=T(lv,[2,3,3,4,4,4,5]);
+    const cols=shuffle(pool).slice(0,k), tg=cols[0];
+    return {text:'Find the colour you hear', speak:`Find the colour ${tg}.`, key:tg, html:choices(shuffle(cols).map(sw)), answer:tg, praise:`Yes! ${tg}!`};
+  }
+  const o=pick(COBJ), k=lv===8?3:4, cols=[o.c,...shuffle(C10.filter(c=>c!==o.c)).slice(0,k-1)];
+  return {text:'What colour is it?', speak:`What colour is the ${o.n}?`, key:`What colour?`, html:`<div class="bigemoji">${o.e}</div>`+choices(shuffle(cols).map(sw)), answer:o.c, praise:`Yes! The ${o.n} is ${o.c}.`};
+}
+function gMore(lv){
+  const p=T(lv,[{max:5,diff:3},{max:5,diff:2},{max:6,diff:2},{max:7,diff:2},{max:8,diff:1},{max:8,diff:2,fewer:1},{max:9,diff:1,fewer:1},{max:10,diff:1,fewer:1},{num:1,max:10},{num:1,max:20,fewer:1}]);
+  let a,b; do{a=R(1,p.max);b=R(1,p.max);}while(Math.abs(a-b)<(p.diff||1));
+  const fewer=p.fewer&&Math.random()<.5, ans=fewer?(a<b?'L':'R'):(a>b?'L':'R'), hi=Math.max(a,b), lo=Math.min(a,b);
+  if(p.num){ const w=fewer?'smaller':'bigger';
+    return {text:`Which number is ${w}?`, speak:`Which number is ${w}?`, html:`<div class="vs"><button class="opt wide" data-choice="L" style="font-size:64px;font-weight:700">${a}</button><button class="opt wide" data-choice="R" style="font-size:64px;font-weight:700">${b}</button></div>`, answer:ans, praise:fewer?`${lo} is smaller than ${hi}.`:`${hi} is bigger than ${lo}.`}; }
+  const t=pick(THINGS), w=fewer?'fewer':'more', g=(n,s)=>`<button class="opt wide" data-choice="${s}" aria-label="${n} ${t.many}">${Array.from({length:n},()=>`<span class="obj">${t.e}</span>`).join('')}</button>`;
+  return {text:`Which side has ${w}?`, speak:`Which side has ${w} ${t.many}?`, key:w, html:`<div class="vs">${g(a,'L')}${g(b,'R')}</div>`, answer:ans, praise:fewer?`${lo} is fewer than ${hi}.`:`${hi} is more than ${lo}.`};
+}
+function gSizes(lv){
+  const tower=[7,8,10].includes(lv), k=T(lv,[2,2,3,3,3,4,3,4,5,5]);
+  const mode=lv===1||lv===3?'big':lv===2||lv===4?'small':pick(['big','small']);
+  let vals;
+  if(tower){ vals = lv===7 ? shuffle([2,4,6,8]).slice(0,k) : lv===8 ? shuffle([1,2,3,4,5,6,7,8]).slice(0,k) : shuffle([3,4,5,6,7,8]).slice(0,k); }
+  else { vals = shuffle(lv<=6 ? [0.45,0.7,0.95,1.2] : [0.6,0.72,0.84,0.96,1.08,1.2]).slice(0,k); }
+  const target=mode==='big'?Math.max(...vals):Math.min(...vals), ans=String(vals.indexOf(target));
+  const e=pick(['🐘','🐢','🍎','🐟','🚗','⭐','🏠','🐱','🎈']);
+  const word = tower ? (mode==='big'?'tallest tower':'shortest tower') : (mode==='big'?'biggest one':'smallest one');
+  const html = choices(vals.map((v,i)=> tower
+    ? `<button class="opt size" data-choice="${i}" aria-label="tower ${v}"><span class="tower">${'<i></i>'.repeat(v)}</span></button>`
+    : `<button class="opt size" data-choice="${i}" aria-label="size ${i+1}"><span style="font-size:${Math.round(v*64)}px;line-height:1">${e}</span></button>`));
+  return {text:`Find the ${word}`, speak:`Find the ${word}.`, key:word.split(' ')[0], html, answer:ans, praise:`Yes! That is the ${word}.`};
+}
+function gOdd(lv){
+  const k=T(lv,[3,4,4,5,4,4,5,4,5,6]), odd=R(0,k-1); let items;
+  const cats=shuffle(Object.keys(CATS)), A=CATS[cats[0]], B=CATS[cats[1]];
+  if(lv<=4){ const base=pick(A), o = lv<=2 ? pick(B) : pick(A.filter(x=>x!==base)); items=Array.from({length:k},(_,i)=>i===odd?o:base); }
+  else if(lv<=7){
+    const mode = lv===5?'colour':lv===6?'shape':pick(['colour','shape']), t=pick(SB), c=pick(C6);
+    const o = mode==='colour' ? {t, c:pick(C6.filter(x=>x!==c))} : {t:pick(SB.filter(x=>x!==t)), c};
+    items=Array.from({length:k},(_,i)=>i===odd?shapeSVG(o.t,COL[o.c]):shapeSVG(t,COL[c]));
+  } else { const same=shuffle(A).slice(0,k-1), o=pick(B); items=[]; let j=0; for(let i=0;i<k;i++) items.push(i===odd?o:same[j++]); }
+  return {text:'Which one is different?', speak:'Which one is different?', html:choices(items.map((x,i)=>`<button class="opt ${lv>=5&&lv<=7?'shape':'pic'}" data-choice="${i}">${x}</button>`)), answer:String(odd), praise:'Yes! That one is different.'};
+}
+function gPattern(lv){
+  const kind=pick(T(lv,[['AB'],['AB'],['AAB'],['ABB'],['AAB','ABB'],['AABB'],['ABC'],['ABC','AABB'],['AB','AAB','ABC'],['ABC','AABB','ABB']]));
+  const u=shuffle(PUNITS), map={A:u[0],B:u[1],C:u[2]};
+  const L = kind.length===4?7 : kind.length===3?6 : lv===2?6:5;
+  const seq=Array.from({length:L+1},(_,i)=>map[kind[i%kind.length]]);
+  const miss = lv>=9 ? R(2,L) : L, ans=seq[miss];
+  const used=[...new Set(kind.split('').map(x=>map[x]))];
+  let opts=shuffle([...new Set([ans,...used,u[3],u[4]])]).slice(0,lv<=4?3:4); if(!opts.includes(ans)) opts[0]=ans;
+  const shown = lv>=9 ? seq : seq.slice(0,L+1);
+  return {text:lv>=9?'What is missing?':'What comes next?', speak:lv>=9?'Which picture is missing from the pattern?':'What comes next?',
+    html:`<div class="row">${shown.map((x,i)=>i===miss?`<span class="qmark">?</span>`:`<span class="cell">${x}</span>`).join('')}</div>`+choices(shuffle(opts).map(x=>`<button class="opt pic" data-choice="${x}">${x}</button>`)),
+    answer:ans, async after(st){ fillQ(st,ans); await say('Yes! Great pattern!'); }};
+}
+function gAdd(lv){
+  const max=T(lv,[3,4,5,5,6,7,8,9,10,10]), a=R(1,Math.min(5,max-1)), b=R(1,Math.min(5,max-a)), n=a+b, t=pick(THINGS);
+  return {text:'How many altogether?', speak:`${a} ${plural(a,t)} and ${b} more. How many altogether?`,
+    html:`<div class="sum">${objs(t,a)}<span class="op">+</span>${objs(t,b)}<span class="op">=</span><span class="qmark">?</span></div>`+numBtns(numChoices(n,1,10,lv<=4?3:4)),
+    answer:String(n), async after(st){ await countAloud(st,n); fillQ(st,n); await say(`${a} plus ${b} is ${n}!`); }};
+}
+function gTake(lv){
+  const max=T(lv,[3,4,5,5,6,7,8,9,10,10]), n=R(2,max), k=R(1,lv>=8?n:n-1), left=n-k, t=pick(THINGS);
+  return {text:'How many are left?', speak:`There are ${n} ${t.many}. ${k} go away. How many are left?`,
+    html:`<div class="objs">${Array.from({length:n},(_,i)=>`<span class="obj${i>=left?' gone':''}">${t.e}</span>`).join('')}</div>`+numBtns(numChoices(left,0,max,lv<=4?3:4)),
+    answer:String(left), async after(st){ if(left) await countAloud(st,left); await say(`${n} take away ${k} is ${left}.`); }};
+}
+
+/* ================= AGES 6–8 ================= */
+function gAddSub(lv){
+  let a,b,op='+';
+  switch(lv){
+    case 1: a=R(1,9); b=R(1,10-a); break;
+    case 2: a=R(3,12); b=R(2,15-a); break;
+    case 3: a=R(5,15); b=R(3,20-a); break;
+    case 4: op='−'; a=R(3,10); b=R(1,a); break;
+    case 5: op='−'; a=R(11,20); b=R(2,9); break;
+    case 6: op=pick(['+','−']); if(op==='+'){a=R(5,15);b=R(2,20-a);}else{a=R(10,20);b=R(2,a);} break;
+    case 7: a=R(10,49); b=R(1,9-Math.floor(a/10)-1)*10+R(0,9-a%10); break;
+    case 8: a=R(1,5)*10+R(1,9); b=R(1,8-Math.floor(a/10))*10+R(10-a%10,9); break;
+    case 9: op='−'; a=R(3,9)*10+R(1,9); b=R(1,Math.floor(a/10)-1)*10+R(0,a%10); break;
+    default: op=pick(['+','−']); if(op==='+'){a=R(10,89);b=R(5,99-a);}else{a=R(30,99);b=R(5,a-1);}
+  }
+  const n=op==='+'?a+b:a-b;
+  return P({text:'Solve it', speak:`What is ${a} ${op==='+'?'plus':'minus'} ${b}?`, html:`<div class="eq">${a} ${op} ${b} = ${SLOT}</div>`, answer:String(n), explain:`${a} ${op} ${b} = ${n}`});
+}
+function gMissing(lv){
+  let a,b,c,form;
+  const L = lv===7 ? pick([4,5,6]) : lv;
+  switch(L){
+    case 1: c=R(2,5); a=R(1,c-1); form='a+?'; break;
+    case 2: c=R(4,10); a=R(1,c-1); form='a+?'; break;
+    case 3: c=R(6,15); a=R(1,c-1); form='a+?'; break;
+    case 4: c=R(10,20); a=R(1,c-1); form='a+?'; break;
+    case 5: c=R(1,9); b=R(1,10-c); form='?-b'; break;
+    case 6: a=R(8,20); c=R(1,a-1); form='a-?'; break;
+    case 8: c=R(20,50); b=R(3,c-5); form='?+b'; break;
+    case 9: a=R(1,9)*10; c=100; form='a+?'; break;
+    default: if(Math.random()<.5){ c=R(30,100); a=R(5,c-5); form='a+?'; } else { a=R(30,99); c=R(5,a-5); form='a-?'; }
+  }
+  let html, ans, ex;
+  if(form==='a+?'){ ans=c-a; html=`${a} + ${SLOT} = ${c}`; ex=`${a} + ${ans} = ${c}`; }
+  else if(form==='?+b'){ ans=c-b; html=`${SLOT} + ${b} = ${c}`; ex=`${ans} + ${b} = ${c}`; }
+  else if(form==='?-b'){ ans=c+b; html=`${SLOT} − ${b} = ${c}`; ex=`${ans} − ${b} = ${c}`; }
+  else { ans=a-c; html=`${a} − ${SLOT} = ${c}`; ex=`${a} − ${ans} = ${c}`; }
+  return P({text:'Find the missing number', speak:'What is the missing number?', html:`<div class="eq">${html}</div>`, answer:String(ans), explain:ex});
+}
+function blocksHTML(n){ const t=Math.floor(n/10), o=n%10; return `<div class="blocks">${Array.from({length:t},()=>`<div class="rod">${'<i></i>'.repeat(10)}</div>`).join('')}<div class="cubes">${'<span class="cube"></span>'.repeat(o)}</div></div>`; }
+function gPlace(lv){
+  if([1,2,4].includes(lv)){ const n=lv===1?R(11,20):lv===2?R(21,50):R(51,99), t=Math.floor(n/10), o=n%10;
+    return P({text:'How many blocks? Each stick is 10.', speak:'How many blocks? Each tall stick is ten.', html:blocksHTML(n)+`<div class="eq sm">= ${SLOT}</div>`, answer:String(n), explain:`${t} tens and ${o} ones make ${n}`}); }
+  if(lv===3){ const n=R(11,59), t=Math.floor(n/10), o=n%10; return P({text:`${t} tens and ${o} ones`, speak:`What number is ${t} tens and ${o} ones?`, html:`<div class="eq sm">${t} tens + ${o} ones = ${SLOT}</div>`, answer:String(n), explain:`${t} tens and ${o} ones make ${n}`}); }
+  if(lv===5){ const n=R(21,99), t=Math.floor(n/10); return P({text:`How many tens in ${n}?`, speak:`How many tens are in ${n}?`, html:`<div class="eq">${n} → ${SLOT} tens</div>`, answer:String(t), explain:`${n} has ${t} tens`}); }
+  if(lv===6){ const n=R(21,99), o=n%10; return P({text:`How many ones in ${n}?`, speak:`How many ones are in ${n}?`, html:`<div class="eq">${n} → ${SLOT} ones</div>`, answer:String(o), explain:`${n} has ${o} ones`}); }
+  if(lv===7){ const n=R(15,89), up=Math.random()<.5, a=up?n+10:n-10; return P({text:`10 ${up?'more':'less'} than ${n}`, speak:`What is 10 ${up?'more':'less'} than ${n}?`, html:`<div class="eq">${n} ${up?'+':'−'} 10 = ${SLOT}</div>`, answer:String(a), explain:`10 ${up?'more':'less'} than ${n} is ${a}`}); }
+  if(lv===8){ const h=R(1,9), t=R(0,9), o=R(0,9), n=h*100+t*10+o; return P({text:'Build the number', speak:`What number is ${h} hundreds, ${t} tens and ${o} ones?`, html:`<div class="eq sm">${h} hundreds + ${t} tens + ${o} ones = ${SLOT}</div>`, answer:String(n), explain:`That makes ${n}`}); }
+  if(lv===9){ const n=R(150,850), up=Math.random()<.5, a=up?n+100:n-100; return P({text:`100 ${up?'more':'less'} than ${n}`, speak:`What is 100 ${up?'more':'less'} than ${n}?`, html:`<div class="eq">${n} ${up?'+':'−'} 100 = ${SLOT}</div>`, answer:String(a), explain:`100 ${up?'more':'less'} than ${n} is ${a}`}); }
+  let d; do{ d=shuffle([1,2,3,4,5,6,7,8,9]).slice(0,3); }while(false);
+  const n=d[0]*100+d[1]*10+d[2], pos=R(0,2), val=d[pos]*[100,10,1][pos];
+  return P({text:`What is the ${d[pos]} worth in ${n}?`, speak:`What is the ${d[pos]} worth in ${n}?`, html:`<div class="eq">${n}</div><div class="eq sm">the ${d[pos]} is worth ${SLOT}</div>`, answer:String(val), explain:`The ${d[pos]} is in the ${['hundreds','tens','ones'][pos]} place, so it is worth ${val}`});
+}
+function gCompare(lv){
+  const L = lv===10 ? pick([7,8,9]) : lv;
+  let lt, rt, lval, rval;
+  const pair=max=>{ const a=R(0,max), b=Math.random()<.2?a:R(0,max); return [a,b]; };
+  if(L<=4){ [lval,rval]=pair(T(L,[10,20,50,100])); lt=lval; rt=rval; }
+  else if(L===5){ do{ lval=R(12,98); }while(lval%10===0 || Math.floor(lval/10)===lval%10); rval=Math.random()<.75?(lval%10)*10+Math.floor(lval/10):lval; lt=lval; rt=rval; }
+  else if(L===6){ const a=R(1,9),b=R(1,9); lval=a+b; rval=Math.random()<.25?lval:lval+pick([-2,-1,1,2]); lt=`${a} + ${b}`; rt=rval; }
+  else if(L===7){ lval=R(100,999); rval=Math.random()<.2?lval:Math.max(100,Math.min(999,lval+pick([-100,-10,-1,1,10,100,R(-300,300)]))); lt=lval; rt=rval; }
+  else if(L===8){ const a=R(2,12),b=R(2,12),c=R(2,12); let d=a+b-c; if(Math.random()<.6) d+=pick([-1,1,2]); d=Math.max(1,d); lval=a+b; rval=c+d; lt=`${a} + ${b}`; rt=`${c} + ${d}`; }
+  else { const a=R(10,30), b=R(2,a-1); lval=a-b; rval=Math.random()<.25?lval:Math.max(0,lval+pick([-2,-1,1,2])); lt=`${a} − ${b}`; rt=rval; }
+  const ans=lval>rval?'>':lval<rval?'<':'=', word={'>':'is greater than','<':'is less than','=':'is equal to'}[ans];
+  return {text:'Pick the right sign', speak:speakify(`Pick the sign. Compare ${lt} and ${rt}.`),
+    html:`<div class="eq sm">${lt} <span class="qmark">?</span> ${rt}</div>`+choices(['<','=','>'].map(s=>`<button class="opt word" data-choice="${s}" aria-label="${s==='<'?'less than':s==='>'?'greater than':'equal to'}" style="font-size:40px">${s}</button>`)),
+    answer:ans, async after(st){ fillQ(st,ans); await say(speakify(`Yes! ${lt} ${word} ${rt}.`)); }};
+}
+function gSkip(lv){
+  let step, start;
+  switch(lv){
+    case 1: step=2; start=2*R(0,3); break;
+    case 2: step=10; start=10*R(0,4); break;
+    case 3: step=5; start=5*R(0,4); break;
+    case 4: step=pick([2,5,10]); start=step*R(3,10); break;
+    case 5: step=-pick([1,2]); start=R(8,20); break;
+    case 6: step=-pick([5,10]); start=Math.abs(step)*R(6,12); break;
+    case 7: step=3; start=R(0,9); break;
+    case 8: step=4; start=R(0,12); break;
+    case 9: step=-pick([3,4]); start=R(25,45); break;
+    default: step=pick([25,50,100]); start=step*R(0,6);
+  }
+  const seq=[0,1,2,3,4].map(i=>start+i*step), ans=seq[4];
+  return P({text:'What comes next?', speak:'What number comes next?', html:`<div class="eq sm">${seq.slice(0,4).join(', ')}, ${SLOT}</div>`, answer:String(ans), explain:`Each jump is ${step>0?'+':'−'}${Math.abs(step)}, so the answer is ${ans}`});
+}
+function gStory(lv){
+  const n1=pick(NAMES), n2=pick(NAMES.filter(x=>x!==n1)), it=pick(ITEMS); let s, ans, ex;
+  switch(lv){
+    case 1: { const a=R(2,6),b=R(1,4); ans=a+b; s=`${n1} has ${a} ${it.w}. ${n1} gets ${b} more. How many ${it.w} now?`; ex=`${a} + ${b} = ${ans}`; break; }
+    case 2: { const a=R(5,10),b=R(1,a-1); ans=a-b; s=`${n1} has ${a} ${it.w} and gives away ${b}. How many are left?`; ex=`${a} − ${b} = ${ans}`; break; }
+    case 3: { const a=R(6,12),b=R(3,8); ans=a+b; s=`${n1} has ${a} ${it.w}. ${n2} has ${b}. How many do they have together?`; ex=`${a} + ${b} = ${ans}`; break; }
+    case 4: { const a=R(11,20),b=R(3,a-2); ans=a-b; s=`There are ${a} ${it.w}. ${b} are taken away. How many are left?`; ex=`${a} − ${b} = ${ans}`; break; }
+    case 5: { const a=R(6,12),b=R(2,a-1); ans=a-b; s=`${n1} has ${a} ${it.w}. ${n2} has ${b}. How many more does ${n1} have?`; ex=`${a} − ${b} = ${ans}`; break; }
+    case 6: { const a=R(15,35),b=R(8,20); ans=a+b; s=`A shop has ${a} ${it.w} and gets ${b} more. How many now?`; ex=`${a} + ${b} = ${ans}`; break; }
+    case 7: { const a=R(30,60),b=R(8,25); ans=a-b; s=`There were ${a} ${it.w}. ${b} were sold. How many are left?`; ex=`${a} − ${b} = ${ans}`; break; }
+    case 8: { const a=R(5,12),b=R(3,8),c=R(2,a+b-1); ans=a+b-c; s=`${n1} has ${a} ${it.w}, gets ${b} more, then gives ${c} to ${n2}. How many now?`; ex=`${a} + ${b} − ${c} = ${ans}`; break; }
+    case 9: { const g=R(2,5),e=R(2,5); ans=g*e; s=`There are ${g} bags with ${e} ${it.w} in each bag. How many ${it.w} altogether?`; ex=`${e} + `.repeat(g-1)+`${e} = ${ans}`; break; }
+    default: { const a=R(20,40),b=R(10,25),c=R(5,a+b-5); ans=a+b-c; s=`A farmer has ${a} ${it.w}. She buys ${b} more and sells ${c}. How many does she have now?`; ex=`${a} + ${b} − ${c} = ${ans}`; }
+  }
+  return P({text:'Story sum', speak:s, html:`<div class="story"><span class="se">${it.e}</span>${esc(s)}</div><div class="eq sm">${SLOT}</div>`, answer:String(ans), explain:ex});
+}
+const H12 = n => ((n-1+120)%12)+1;
+function timeWords(h,m){ if(m===0) return `${h} o'clock`; if(m===30) return `half past ${h}`; if(m===15) return `quarter past ${h}`; if(m===45) return `quarter to ${H12(h+1)}`; return m<30?`${m} minutes past ${h}`:`${60-m} minutes to ${H12(h+1)}`; }
+function gClock(lv){
+  const FIVE=[5,10,20,25,35,40,50,55];
+  const mins=T(lv,[[0],[0],[30],[0,30],[15],[45],[0,15,30,45],FIVE,FIVE,[0,15,30,45]]), k=T(lv,[3,4,3,4,3,3,4,3,4,4]);
+  const h=R(1,12), m=pick(mins), ts=(H,M)=>`${H}:${pad2(M)}`;
+  let ans, text, sp, show=[h,m];
+  if(lv===10){ const add=pick([[1,0],[2,0],[0,30]]); let M=m+add[1], Hh=h+add[0]+Math.floor(M/60); M%=60; ans=ts(H12(Hh),M);
+    const label = add[0] ? `${add[0]} hour${add[0]>1?'s':''}` : '30 minutes';
+    text=`What time will it be in ${label}?`; sp=text;
+  } else { ans=ts(h,m); text='What time is it?'; sp='What time does the clock show?'; }
+  const opts=new Set([ans]);
+  if(lv>=5 && m%5===0 && m>0 && lv!==10) opts.add(ts(m/5, (h%12)*5));
+  let g=0; while(opts.size<k && g++<100){ const H=lv===9?h:R(1,12), M=pick(lv===9?FIVE:mins); opts.add(ts(H,M)); }
+  return {text, speak:sp, html:clockSVG(show[0],show[1])+wordBtns(shuffle([...opts])), answer:ans, praise: lv===10?`It will be ${ans}.`:`Yes! It is ${timeWords(h,m)}.`};
+}
+function gMoney(lv){
+  if(lv<=7){
+    const vals=T(lv,[[1],[1,2],[1,2,5],[1,2,5,10],[2,5,10],[5,10,20],[10,20,50]]), max=T(lv,[5,10,15,30,50,70,100]);
+    let coins=[], tot=0; const n=R(2,lv<=2?5:6);
+    for(let i=0;i<n;i++){ const ok=vals.filter(v=>tot+v<=max); if(!ok.length) break; const v=pick(ok); coins.push(v); tot+=v; }
+    coins.sort((a,b)=>b-a);
+    return P({text:'How much money is here?', speak:'Add up the coins. How much money is there?', html:`<div class="coins">${coins.map(coinSVG).join('')}</div><div class="eq sm">= ${SLOT}</div>`, answer:String(tot), explain:`${coins.join(' + ')} = ${tot}`});
+  }
+  const pay=lv===8?10:lv===9?pick([20,50]):100, cost=lv===8?R(1,9):lv===9?R(5,pay-1):R(11,99), it=pick(ITEMS), ch=pay-cost;
+  const s=`You pay with a ${pay} coin for something that costs ${cost}. How much change do you get?`;
+  return P({text:'How much change?', speak:s, html:`<div class="story"><span class="se">${it.e}</span>Price: <b>${cost}</b> · You pay: <b>${pay}</b></div><div class="eq sm">Change = ${SLOT}</div>`, answer:String(ch), explain:`${pay} − ${cost} = ${ch}`});
+}
+function gDoubles(lv){
+  const L = lv===5 ? pick([2,4]) : lv;
+  let txt, ans, ex;
+  switch(L){
+    case 1: { const a=R(1,5); ans=2*a; txt=`Double ${a}`; ex=`${a} + ${a} = ${ans}`; break; }
+    case 2: { const a=R(1,10); ans=2*a; txt=`Double ${a}`; ex=`${a} + ${a} = ${ans}`; break; }
+    case 3: { const a=R(1,5)*2; ans=a/2; txt=`Half of ${a}`; ex=`${ans} + ${ans} = ${a}`; break; }
+    case 4: { const a=R(1,10)*2; ans=a/2; txt=`Half of ${a}`; ex=`${ans} + ${ans} = ${a}`; break; }
+    case 6: { const a=R(11,25); ans=2*a; txt=`Double ${a}`; ex=`${a} + ${a} = ${ans}`; break; }
+    case 7: { const a=R(10,25)*2; ans=a/2; txt=`Half of ${a}`; ex=`${ans} + ${ans} = ${a}`; break; }
+    case 8: { const a=R(1,10)*5; ans=2*a; txt=`Double ${a}`; ex=`${a} + ${a} = ${ans}`; break; }
+    case 9: { const a=R(10,50)*2; ans=a/2; txt=`Half of ${a}`; ex=`${ans} + ${ans} = ${a}`; break; }
+    default: { const a=R(5,15); ans=2*a+1; return P({text:'Near doubles', speak:`What is ${a} plus ${a+1}?`, html:`<div class="eq">${a} + ${a+1} = ${SLOT}</div>`, answer:String(ans), explain:`Double ${a} is ${2*a}, plus 1 is ${ans}`}); }
+  }
+  return P({text:txt, speak:`What is ${txt.toLowerCase()}?`, html:`<div class="eq">${txt} = ${SLOT}</div>`, answer:String(ans), explain:ex});
+}
+function gGroups(lv){
+  const arr=(r,c)=>`<div class="array" style="grid-template-columns:repeat(${c},20px)">${'<i></i>'.repeat(r*c)}</div>`;
+  let r,c;
+  switch(lv){
+    case 1: r=2; c=R(2,3); break; case 2: r=R(2,3); c=R(2,3); break; case 3: r=R(2,4); c=R(2,4); break; case 4: r=R(2,5); c=R(2,5); break;
+    case 5: { const g=R(2,4), e=R(2,4), t=pick(THINGS); return P({text:`${g} groups of ${e}`, speak:`There are ${g} groups with ${e} in each. How many altogether?`, html:`<div class="groupsbox">${Array.from({length:g},()=>`<div>${t.e.repeat(e)}</div>`).join('')}</div><div class="eq sm">= ${SLOT}</div>`, answer:String(g*e), explain:`${g} groups of ${e} is ${g*e}`}); }
+    case 6: r=R(3,5); c=R(3,5); break;
+    case 7: { const g=R(3,5), e=R(2,6); return P({text:'Add the same number', speak:`Add them up.`, html:`<div class="eq sm">${Array(g).fill(e).join(' + ')} = ${SLOT}</div>`, answer:String(g*e), explain:`${g} lots of ${e} is ${g*e}`}); }
+    case 8: r=R(2,5); c=R(5,10); break;
+    case 9: { const g=R(2,9); return P({text:`${g} groups of 10`, speak:`How much is ${g} groups of ten?`, html:arr(g,10)+`<div class="eq sm">${g} × 10 = ${SLOT}</div>`, answer:String(g*10), explain:`${g} tens make ${g*10}`}); }
+    default: r=R(2,5); c=R(3,10); return P({text:'Rows times columns', speak:`What is ${r} times ${c}?`, html:arr(r,c)+`<div class="eq sm">${r} × ${c} = ${SLOT}</div>`, answer:String(r*c), explain:`${r} rows of ${c} = ${r*c}`});
+  }
+  return P({text:'How many dots?', speak:`How many dots? There are ${r} rows.`, html:arr(r,c)+`<div class="eq sm">= ${SLOT}</div>`, answer:String(r*c), explain:`${r} rows of ${c} make ${r*c}`});
+}
+
+/* ================= AGES 9–12 ================= */
+const TSETS=[[2,10],[5],[3,4],[2,3,4,5,10],[6],[7,8],[9,11,12],[2,3,4,5,6,7,8,9,10,11,12]];
+function gTimes(lv){
+  let a,b; if(lv<=8){ a=pick(TSETS[lv-1]); b=R(2,lv<=4?10:12); } else if(lv===9){ a=R(11,25); b=R(2,9); } else { a=R(26,60); b=R(3,9); }
+  if(Math.random()<.5) [a,b]=[b,a];
+  return P({text:'Multiply', speak:`What is ${a} times ${b}?`, html:`<div class="eq">${a} × ${b} = ${SLOT}</div>`, answer:String(a*b), explain:`${a} × ${b} = ${a*b}`});
+}
+function gDivide(lv){
+  let d,q;
+  if(lv<=8){ d=pick(TSETS[lv-1]); q=R(2,lv<=4?10:12); } else if(lv===9){ d=R(3,9); q=R(11,25); }
+  else { d=R(3,12); q=R(3,12); const n=d*q;
+    return Math.random()<.5 ? P({text:'Find the missing factor', speak:`What times ${d} equals ${n}?`, html:`<div class="eq">${SLOT} × ${d} = ${n}</div>`, answer:String(q), explain:`${q} × ${d} = ${n}`})
+                            : P({text:'Find the missing number', speak:`${n} divided by what equals ${q}?`, html:`<div class="eq">${n} ÷ ${SLOT} = ${q}</div>`, answer:String(d), explain:`${n} ÷ ${d} = ${q}`}); }
+  const n=d*q;
+  return P({text:'Divide', speak:`What is ${n} divided by ${d}?`, html:`<div class="eq">${n} ÷ ${d} = ${SLOT}</div>`, answer:String(q), explain:`${n} ÷ ${d} = ${q}, because ${d} × ${q} = ${n}`});
+}
+function gFractions(lv){
+  if(lv<=3){
+    const d=pick(T(lv,[[2,4],[2,3,4,6],[3,4,5,6,8]])), k=R(1,d-1), want=lv===3?4:3, opts=[[k,d]];
+    for(const c of shuffle([[d-k,d],[k,d+1],[k+1,d],[k,d-1],[1,k+1],[k,2*d],[d,k+d]].filter(([a,b])=>a>0&&b>1&&a<b))){ if(opts.length>=want) break; if(!opts.some(([a,b])=>Math.abs(a/b-c[0]/c[1])<1e-9)) opts.push(c); }
+    return {text:'What fraction is shaded?', speak:'What fraction of the circle is shaded?', html:`<div class="fig">${pieSVG(k,d)}</div>`+choices(shuffle(opts).map(([a,b])=>`<button class="opt word" data-choice="${a}/${b}" aria-label="${a} over ${b}" style="font-size:30px">${frac(a,b)}</button>`)), answer:`${k}/${d}`, praise:`Yes! ${k} out of ${d} equal parts.`};
+  }
+  if(lv===4||lv===5){
+    let A,B;
+    if(lv===4){ const d=R(3,10); let x=R(1,d-1),y; do{y=R(1,d-1);}while(y===x); A=[x,d]; B=[y,d]; }
+    else { let x=R(2,10),y; do{y=R(2,10);}while(y===x); A=[1,x]; B=[1,y]; }
+    const ans=A[0]/A[1]>B[0]/B[1]?'L':'R', big=ans==='L'?A:B;
+    return {text:'Which fraction is bigger?', speak:'Which fraction is bigger?', html:`<div class="vs"><button class="opt wide" data-choice="L" style="font-size:52px;font-weight:700">${frac(A[0],A[1])}</button><button class="opt wide" data-choice="R" style="font-size:52px;font-weight:700">${frac(B[0],B[1])}</button></div>`,
+      answer:ans, praise: lv===5?`Yes! ${big[0]} over ${big[1]}. Fewer parts means bigger parts.`:`Yes! ${big[0]} over ${big[1]} is bigger.`};
+  }
+  if(lv===6||lv===7){ const d=pick([2,3,4,5,8,10]), k=lv===6?1:R(2,d-1), m=R(2,lv===6?10:12), n=d*m;
+    return P({text:'Fraction of a number', speak:`What is ${k} over ${d} of ${n}?`, html:`<div class="eq">${frac(k,d)} of ${n} = ${SLOT}</div>`, answer:String(k*m), explain:`${n} ÷ ${d} = ${m}, then × ${k} = ${k*m}`}); }
+  if(lv===8){ let d=R(2,6),k=R(1,d-1); while(gcd(k,d)!==1) k=R(1,d-1); const m=R(2,4);
+    return P({text:'Equivalent fractions', speak:`${k} over ${d} equals what over ${d*m}?`, html:`<div class="eq">${frac(k,d)} = ${frac(SLOT,d*m)}</div>`, answer:String(k*m), explain:`Multiply top and bottom by ${m}: ${k*m} over ${d*m}`}); }
+  if(lv===9){ const d=R(5,12), a=R(1,d-2), b=R(1,d-1-a);
+    return P({text:'Add the fractions', speak:`What is ${a} over ${d} plus ${b} over ${d}?`, html:`<div class="eq">${frac(a,d)} + ${frac(b,d)} = ${frac(SLOT,d)}</div>`, answer:String(a+b), explain:`Same bottom number, so add the tops: ${a} + ${b} = ${a+b}`}); }
+  let d=R(2,6),k=R(1,d-1); while(gcd(k,d)!==1) k=R(1,d-1); const m=R(2,5);
+  return P({text:'Simplify', speak:`Simplify ${k*m} over ${d*m}. ${k} over what?`, html:`<div class="eq">${frac(k*m,d*m)} = ${frac(k,SLOT)}</div>`, answer:String(d), explain:`Divide top and bottom by ${m}: ${k} over ${d}`});
+}
+function gDecimals(lv){
+  const D=o=>P(Object.assign({decimal:true},o));
+  if(lv===1||lv===4){
+    let a,b;
+    if(lv===1){ a=R(1,9)/10; do{ b=R(1,9)/10; }while(b===a); }
+    else { a=R(2,9)/10; b=Math.round((a - pick([0.01,0.05,0.09]) + pick([0,0.1]))*100)/100; if(b===a) b=a+0.05; b=Math.round(b*100)/100; }
+    const ans=a>b?'L':'R', big=Math.max(a,b);
+    return {text:'Which is bigger?', speak:'Which number is bigger?', html:`<div class="vs"><button class="opt wide" data-choice="L" style="font-size:48px;font-weight:700">${fmt(a)}</button><button class="opt wide" data-choice="R" style="font-size:48px;font-weight:700">${fmt(b)}</button></div>`, answer:ans, praise:`Yes! ${fmt(big)} is bigger.`};
+  }
+  let a,b,op,ans;
+  switch(lv){
+    case 2: a=R(1,8)/10; b=R(1,9-a*10)/10; op='+'; break;
+    case 3: a=R(3,9)/10; b=R(Math.max(1,10-a*10),9)/10; op='+'; break;
+    case 5: a=R(1,15)*5/100; b=R(1,15)*5/100; op='+'; break;
+    case 6: a=R(15,50)/10; b=R(1,9)/10; op='−'; break;
+    case 7: a=R(11,99)/10; b=10; op='×'; break;
+    case 8: a=R(11,99); b=10; op='÷'; break;
+    case 9: if(Math.random()<.5){ a=R(101,999)/100; b=100; op='×'; } else { a=R(11,999); b=100; op='÷'; } break;
+    default: a=R(5,50)/10; b=R(5,60)*5/100; op='+';
+  }
+  ans = op==='+'?a+b : op==='−'?a-b : op==='×'?a*b : a/b;
+  return D({text:'Work it out', speak:speakify(`What is ${fmt(a)} ${op} ${fmt(b)}?`), html:`<div class="eq">${fmt(a)} ${op} ${fmt(b)} = ${SLOT}</div>`, answer:fmt(ans), explain:`${fmt(a)} ${op} ${fmt(b)} = ${fmt(ans)}`});
+}
+function gPercent(lv){
+  const L = lv===6 ? pick([1,2,3,4,5]) : lv===10 ? pick([7,8,9]) : lv;
+  let txt, ans, ex;
+  if(L<=5){
+    const [p,base]=T(L,[[50,R(1,50)*2],[25,R(1,25)*4],[10,R(1,20)*10],[75,R(1,25)*4],pick([[20,R(1,10)*20],[5,R(1,10)*20]])]);
+    ans=base*p/100; txt=`${p}% of ${base}`; ex=`${p}% means ${p} out of 100. ${base} × ${p} ÷ 100 = ${ans}`;
+  } else if(L===7){ const p=pick([10,20,25,50,75]), whole=pick([20,40,60,80,100].filter(w=>w*p%100===0)), part=whole*p/100;
+    return P({text:'What percent?', speak:`${part} out of ${whole} is what percent?`, html:`<div class="eq">${part} out of ${whole} = ${SLOT} %</div>`, answer:String(p), explain:`${part} ÷ ${whole} = ${p/100}, which is ${p}%`});
+  } else if(L===8){ const p=pick([10,50]), base=R(2,20)*10; ans=base+base*p/100; txt=`${base} increased by ${p}%`; ex=`${p}% of ${base} is ${base*p/100}, so ${base} + ${base*p/100} = ${ans}`; }
+  else { const p=pick([10,25,50]), base=p===10?R(2,20)*10:R(2,25)*4; ans=base-base*p/100; txt=`${base} with ${p}% off`; ex=`${p}% of ${base} is ${base*p/100}, so ${base} − ${base*p/100} = ${ans}`; }
+  return P({text:'Percentages', speak:`What is ${txt}?`, html:`<div class="eq sm">${txt} = ${SLOT}</div>`, answer:String(ans), explain:ex});
+}
+function gSequence(lv){
+  let seq, rule; const six=f=>[0,1,2,3,4,5].map(f);
+  switch(lv){
+    case 1: { const s=R(3,9),a=R(1,20); seq=six(i=>a+i*s); rule=`add ${s}`; break; }
+    case 2: { const s=R(11,25),a=R(5,40); seq=six(i=>a+i*s); rule=`add ${s}`; break; }
+    case 3: { const s=R(3,12),a=R(70,130); seq=six(i=>a-i*s); rule=`subtract ${s}`; break; }
+    case 4: { const a=R(1,5); seq=six(i=>a*Math.pow(2,i)); rule='double each time'; break; }
+    case 5: { const a=R(1,3); seq=six(i=>a*Math.pow(3,i)); rule='multiply by 3'; break; }
+    case 6: { const a=R(1,10),s0=R(1,3); seq=[a]; for(let i=1;i<6;i++) seq.push(seq[i-1]+s0+i-1); rule='the jump grows by 1 each time'; break; }
+    case 7: { const o=R(1,4); seq=six(i=>(i+o)*(i+o)); rule='square numbers'; break; }
+    case 8: { const o=R(0,2); seq=six(i=>(i+o+1)*(i+o+2)/2); rule='add 1 more each time (triangle numbers)'; break; }
+    case 9: { const a=R(1,3),b=R(a,a+3); seq=[a,b]; for(let i=2;i<6;i++) seq.push(seq[i-1]+seq[i-2]); rule='add the two numbers before'; break; }
+    default: { const t=pick(['half','cube','alt']);
+      if(t==='half'){ const a=pick([3,5,7])*32; seq=six(i=>a/Math.pow(2,i)); rule='halve each time'; }
+      else if(t==='cube'){ seq=six(i=>(i+1)**3); rule='cube numbers'; }
+      else { const a=R(2,10),x=R(3,6),y=R(1,2); seq=[a]; for(let i=1;i<6;i++) seq.push(seq[i-1]+(i%2?x:-y)); rule=`add ${x}, subtract ${y}, repeat`; } }
+  }
+  return P({text:'What comes next?', speak:'What number comes next in the pattern?', html:`<div class="eq sm">${seq.slice(0,5).join(', ')}, ${SLOT}</div>`, answer:String(seq[5]), explain:`Rule: ${rule}. Next is ${seq[5]}`});
+}
+function gLogic(lv){
+  const [X,Y,Z]=shuffle(['🍎','🍌','🍇','⭐','🐸','🌙','🔺','🔷']); let lines, ans, ex;
+  switch(lv){
+    case 1: { const a=R(2,12); lines=[`${X} + ${X} = ${2*a}`,`${X} = ${SLOT}`]; ans=a; ex=`${2*a} ÷ 2 = ${a}`; break; }
+    case 2: { const a=R(2,12),b=R(2,12); lines=[`${X} + ${Y} = ${a+b}`,`${X} = ${a}`,`${Y} = ${SLOT}`]; ans=b; ex=`${a+b} − ${a} = ${b}`; break; }
+    case 3: { const a=R(2,10),b=R(2,10); lines=[`${X} + ${X} = ${2*a}`,`${X} + ${Y} = ${a+b}`,`${Y} = ${SLOT}`]; ans=b; ex=`${X} = ${a}, so ${Y} = ${b}`; break; }
+    case 4: { const k=R(3,6),a=R(2,9); lines=[`${X} × ${k} = ${k*a}`,`${X} = ${SLOT}`]; ans=a; ex=`${k*a} ÷ ${k} = ${a}`; break; }
+    case 5: { const a=R(8,20),b=R(2,a-1); lines=[`${X} − ${Y} = ${a-b}`,`${X} = ${a}`,`${Y} = ${SLOT}`]; ans=b; ex=`${a} − ${a-b} = ${b}`; break; }
+    case 6: { const a=R(2,9),b=R(2,9),c=R(2,9); lines=[`${X} + ${X} + ${X} = ${3*a}`,`${X} + ${Y} = ${a+b}`,`${Y} + ${Z} = ${b+c}`,`${Z} = ${SLOT}`]; ans=c; ex=`${X} = ${a}, ${Y} = ${b}, so ${Z} = ${c}`; break; }
+    case 7: { const a=R(3,12); lines=[`${X} × ${X} = ${a*a}`,`${X} = ${SLOT}`]; ans=a; ex=`${a} × ${a} = ${a*a}`; break; }
+    case 8: { const a=R(2,8),b=R(2,8); lines=[`${X} + ${X} + ${Y} = ${2*a+b}`,`${X} + ${Y} = ${a+b}`,`${Y} = ${SLOT}`]; ans=b; ex=`Subtract: ${X} = ${a}, so ${Y} = ${b}`; break; }
+    case 9: { const a=R(2,12)*2,b=R(2,9); lines=[`${X} ÷ 2 = ${a/2}`,`${X} − ${Y} = ${a-b}`,`${Y} = ${SLOT}`]; ans=b; ex=`${X} = ${a}, so ${Y} = ${b}`; break; }
+    default: { const a=R(2,6),b=R(2,6),c=R(2,9); lines=[`${X} × ${Y} = ${a*b}`,`${X} + ${Y} = ${a+b}`,`${X} > ${Y}`.replace('>', a>=b?'≥':'≤'),`${X} × ${Y} + ${Z} = ${a*b+c}`,`${Z} = ${SLOT}`]; ans=c; ex=`${a*b+c} − ${a*b} = ${c}`; }
+  }
+  return P({text:'Solve the puzzle', speak:'Each picture stands for a number. Find the missing number.', html:`<div class="eqlines">${lines.map(l=>`<div>${l}</div>`).join('')}</div>`, answer:String(ans), explain:ex});
+}
+function gArea(lv){
+  let w,h,html,ans,txt,ex;
+  switch(lv){
+    case 1: w=R(2,4); h=R(2,3); html=rectFig(w,h,{grid:1,labels:false}); ans=w*h; txt='How many squares?'; ex=`${h} rows of ${w} = ${ans} squares`; break;
+    case 2: w=R(2,5); h=R(2,5); html=rectFig(w,h,{grid:1}); ans=w*h; txt='Area (cm²)'; ex=`Area = ${w} × ${h} = ${ans} cm²`; break;
+    case 3: w=R(2,5); h=R(2,4); html=rectFig(w,h,{grid:1}); ans=2*(w+h); txt='Perimeter (cm)'; ex=`Perimeter = ${w} + ${h} + ${w} + ${h} = ${ans} cm`; break;
+    case 4: w=R(4,8); h=R(3,6); html=rectFig(w,h,{grid:1}); ans=w*h; txt='Area (cm²)'; ex=`${w} × ${h} = ${ans} cm²`; break;
+    case 5: w=R(4,8); h=R(3,6); html=rectFig(w,h,{grid:1}); ans=2*(w+h); txt='Perimeter (cm)'; ex=`2 × (${w} + ${h}) = ${ans} cm`; break;
+    case 6: w=R(3,12); h=R(3,10); html=rectFig(w,h); ans=w*h; txt='Area (cm²)'; ex=`${w} × ${h} = ${ans} cm²`; break;
+    case 7: w=R(3,15); h=R(3,12); html=rectFig(w,h); ans=2*(w+h); txt='Perimeter (cm)'; ex=`2 × (${w} + ${h}) = ${ans} cm`; break;
+    case 8: w=R(3,10); h=R(3,10); html=rectFig(w,h,{hl:'? cm'})+`<div class="story">Area = <b>${w*h} cm²</b></div>`; ans=h; txt='Find the missing side'; ex=`${w*h} ÷ ${w} = ${h} cm`; break;
+    case 9: { const w1=R(2,6),h1=R(2,6),w2=R(2,6),h2=R(2,6); html=twoRectFig(w1,h1,w2,h2); ans=w1*h1+w2*h2; txt='Total area (cm²)'; ex=`${w1}×${h1} + ${w2}×${h2} = ${ans} cm²`; break; }
+    default: w=R(3,12); h=R(3,10); html=rectFig(w,h,{hl:'? cm'})+`<div class="story">Perimeter = <b>${2*(w+h)} cm</b></div>`; ans=h; txt='Find the missing side'; ex=`${2*(w+h)} ÷ 2 = ${w+h}, then − ${w} = ${h} cm`;
+  }
+  return P({text:txt, speak:txt.replace('cm²','square centimetres').replace('(cm)',''), html:html+`<div class="eq sm">${SLOT}</div>`, answer:String(ans), explain:ex});
+}
+function gOrderOps(lv){
+  const L = lv===10 ? pick([6,7,8,9]) : lv; let e, ans, ex;
+  switch(L){
+    case 1: { const a=R(1,9),b=R(2,6),c=R(2,6); e=`${a} + ${b} × ${c}`; ans=a+b*c; ex=`Multiply first: ${b}×${c} = ${b*c}, then + ${a} = ${ans}`; break; }
+    case 2: { const a=R(2,6),b=R(2,6),c=R(1,9); e=`${a} × ${b} + ${c}`; ans=a*b+c; ex=`${a}×${b} = ${a*b}, then + ${c} = ${ans}`; break; }
+    case 3: { const b=R(2,5),c=R(2,5),a=b*c+R(1,15); e=`${a} − ${b} × ${c}`; ans=a-b*c; ex=`${b}×${c} = ${b*c}, then ${a} − ${b*c} = ${ans}`; break; }
+    case 4: { const a=R(1,6),b=R(1,6),c=R(2,6); e=`(${a} + ${b}) × ${c}`; ans=(a+b)*c; ex=`Brackets first: ${a+b}, then × ${c} = ${ans}`; break; }
+    case 5: { const c=R(2,6),b=c*R(2,6),a=R(1,12); e=`${a} + ${b} ÷ ${c}`; ans=a+b/c; ex=`Divide first: ${b}÷${c} = ${b/c}, then + ${a} = ${ans}`; break; }
+    case 6: { const a=R(2,6),c=R(1,6),b=c+R(1,6); e=`${a} × (${b} − ${c})`; ans=a*(b-c); ex=`Brackets: ${b-c}, then × ${a} = ${ans}`; break; }
+    case 7: { const b=R(2,5),c=R(2,5),a=R(1,10),d=R(1,a+b*c-1); e=`${a} + ${b} × ${c} − ${d}`; ans=a+b*c-d; ex=`${b}×${c} = ${b*c}; ${a} + ${b*c} − ${d} = ${ans}`; break; }
+    case 8: { const a=R(1,6),b=R(1,6),d=R(1,5),c=d+R(1,5); e=`(${a} + ${b}) × (${c} − ${d})`; ans=(a+b)*(c-d); ex=`${a+b} × ${c-d} = ${ans}`; break; }
+    default: { const a=R(2,9),b=R(1,20); e=`${a}² + ${b}`; ans=a*a+b; ex=`${a}² = ${a*a}, then + ${b} = ${ans}`; }
+  }
+  return P({text:'Brackets and order', speak:speakify(`Work out ${e}. Remember the order of operations.`), html:`<div class="eq sm">${e} = ${SLOT}</div>`, answer:String(ans), explain:ex});
+}
+function gWords(lv){
+  const n1=pick(NAMES), n2=pick(NAMES.filter(x=>x!==n1)); let s, ans, ex;
+  switch(lv){
+    case 1: { const a=R(120,400),b=R(35,a-20); ans=a-b; s=`A shop had ${a} mangoes and sold ${b}. How many mangoes are left?`; ex=`${a} − ${b} = ${ans}`; break; }
+    case 2: { const b=R(4,9),e=R(6,12); ans=b*e; s=`There are ${b} boxes with ${e} pencils in each. How many pencils in total?`; ex=`${b} × ${e} = ${ans}`; break; }
+    case 3: { const k=R(3,9),e=R(4,12); ans=e; s=`${k*e} sweets are shared equally between ${k} children. How many does each child get?`; ex=`${k*e} ÷ ${k} = ${e}`; break; }
+    case 4: { const p=R(3,6),e=R(6,12),g=R(5,p*e-5); ans=p*e-g; s=`${n1} buys ${p} packs of ${e} stickers and gives ${g} to ${n2}. How many stickers are left?`; ex=`${p} × ${e} = ${p*e}, minus ${g} = ${ans}`; break; }
+    case 5: { const a=R(12,40),b=R(10,40),pay=Math.ceil((a+b+1)/10)*10+pick([0,10,20]); ans=pay-a-b; s=`${n1} buys a book for $${a} and a bag for $${b}, and pays with $${pay}. How much change?`; ex=`${a} + ${b} = ${a+b}; ${pay} − ${a+b} = ${ans}`; break; }
+    case 6: { const h1=R(7,10),m1=pick([0,10,20,30,40,50]),dur=R(5,20)*5,tot=h1*60+m1+dur; ans=dur; s=`A bus leaves at ${h1}:${pad2(m1)} and arrives at ${Math.floor(tot/60)}:${pad2(tot%60)}. How many minutes is the trip?`; ex=`From ${h1}:${pad2(m1)} to ${Math.floor(tot/60)}:${pad2(tot%60)} is ${dur} minutes`; break; }
+    case 7: { const d=pick([3,4,5]),k=R(1,d-1),cl=d*R(5,8); ans=cl*k/d; s=`A class has ${cl} pupils. ${k}/${d} of them walk to school. How many walk?`; ex=`${cl} ÷ ${d} = ${cl/d}, × ${k} = ${ans}`; break; }
+    case 8: { const p=pick([10,20,25,50]),price=p===10||p===20?R(2,20)*10:R(2,25)*4; ans=price-price*p/100; s=`A pair of shoes costs $${price}. In a sale they are ${p}% off. What is the sale price?`; ex=`${p}% of ${price} = ${price*p/100}; ${price} − ${price*p/100} = ${ans}`; break; }
+    case 9: { const sp=pick([40,50,60,80]),h=R(2,6); ans=sp*h; s=`A car travels ${sp} km every hour. How far does it go in ${h} hours?`; ex=`${sp} × ${h} = ${ans} km`; break; }
+    default: { const f=pick([2,3,4,6]),pz=R(2,4),sl=pick([6,8,12]); if((pz*sl)%f){ return gWords(10); } ans=pz*sl/f; s=`${f} friends share ${pz} pizzas. Each pizza is cut into ${sl} slices. How many slices does each friend get?`; ex=`${pz} × ${sl} = ${pz*sl} slices; ÷ ${f} = ${ans}`; }
+  }
+  return P({text:'Word problem', speak:s, html:`<div class="story">${esc(s)}</div><div class="eq sm">${SLOT}</div>`, answer:String(ans), explain:ex});
+}
+
+/* ================= catalogue ================= */
+const GAMES = {
+  count:{name:'Counting', icon:'🍎', acc:'#E0567A', learn:'Count objects up to 10', make:gCount},
+  findnum:{name:'Find the Number', icon:'🔢', acc:'#3657E0', learn:'Know the numbers 1 to 10', make:gFind},
+  order:{name:'Number Order', icon:'➡️', acc:'#0F9BB5', learn:'What comes before and after', make:gOrder},
+  shapes:{name:'Shapes', icon:'🔺', acc:'#8B5CF6', learn:'Name and spot shapes', make:gShapes},
+  colours:{name:'Colours', icon:'🎨', acc:'#E8862A', learn:'Learn ten colours', make:gColours},
+  more:{name:'More or Less', icon:'⚖️', acc:'#22955A', learn:'Compare groups and numbers', make:gMore},
+  sizes:{name:'Big and Small', icon:'🐘', acc:'#C2410C', learn:'Biggest, smallest, tallest', make:gSizes},
+  odd:{name:'Odd One Out', icon:'🔍', acc:'#BE185D', learn:'Spot what is different', make:gOdd},
+  pattern:{name:'Patterns', icon:'🔴', acc:'#D19A06', learn:'Find what comes next', make:gPattern},
+  addpics:{name:'Adding', icon:'➕', acc:'#1D4ED8', learn:'Put groups together', make:gAdd},
+  takeaway:{name:'Taking Away', icon:'➖', acc:'#4D7C0F', learn:'How many are left?', make:gTake},
+
+  addsub:{name:'Plus and Minus', icon:'➕', acc:'#E8862A', learn:'Adding and subtracting to 100', make:gAddSub, sprint:true},
+  missing:{name:'Missing Number', icon:'❓', acc:'#8B5CF6', learn:'Find the hidden number', make:gMissing, sprint:true},
+  place:{name:'Tens and Ones', icon:'🧱', acc:'#3657E0', learn:'Place value to 1000', make:gPlace},
+  compare:{name:'Greater or Less', icon:'⚖️', acc:'#22955A', learn:'Use <, = and >', make:gCompare},
+  skip:{name:'Number Jumps', icon:'🦘', acc:'#0F9BB5', learn:'Count in 2s, 5s, 10s and more', make:gSkip},
+  story:{name:'Story Sums', icon:'📖', acc:'#E0567A', learn:'Maths in everyday stories', make:gStory},
+  clock:{name:'Telling Time', icon:'🕒', acc:'#1D4ED8', learn:'Read a clock', make:gClock},
+  money:{name:'Coins and Change', icon:'🪙', acc:'#D19A06', learn:'Count money and give change', make:gMoney},
+  doubles:{name:'Doubles and Halves', icon:'✌️', acc:'#BE185D', learn:'Double and halve numbers', make:gDoubles, sprint:true},
+  groups:{name:'Equal Groups', icon:'🔵', acc:'#C2410C', learn:'First steps to multiplying', make:gGroups},
+
+  times:{name:'Times Tables', icon:'✖️', acc:'#E8862A', learn:'All tables up to 12 × 12', make:gTimes, sprint:true},
+  divide:{name:'Division', icon:'➗', acc:'#3657E0', learn:'Share and divide', make:gDivide, sprint:true},
+  fractions:{name:'Fractions', icon:'🍕', acc:'#E0567A', learn:'Parts of a whole', make:gFractions},
+  decimals:{name:'Decimals', icon:'🔟', acc:'#0F9BB5', learn:'Tenths and hundredths', make:gDecimals},
+  percent:{name:'Percentages', icon:'💯', acc:'#BE185D', learn:'Percent of an amount', make:gPercent},
+  sequence:{name:'Number Patterns', icon:'📈', acc:'#22955A', learn:'Crack the rule', make:gSequence},
+  logic:{name:'Brain Puzzles', icon:'🧩', acc:'#8B5CF6', learn:'Picture algebra', make:gLogic},
+  area:{name:'Area and Perimeter', icon:'📐', acc:'#1D4ED8', learn:'Measure shapes', make:gArea},
+  orderops:{name:'Order of Operations', icon:'🧮', acc:'#C2410C', learn:'Brackets first, then × ÷', make:gOrderOps, sprint:true},
+  words:{name:'Word Problems', icon:'📝', acc:'#4D7C0F', learn:'Real-life problem solving', make:gWords},
+
+  sprint:{name:'60-Second Challenge', icon:'⏱️', acc:'#D63E55', learn:'Quick-fire mixed questions', isSprint:true}
+};
+const GROUPS = {
+  little:{label:'Ages 3–5', games:['count','findnum','order','shapes','colours','more','sizes','odd','pattern','addpics','takeaway'], perLevel:5, voice:true},
+  middle:{label:'Ages 6–8', games:['addsub','missing','place','compare','skip','story','clock','money','doubles','groups','sprint'], perLevel:6, voice:true},
+  older:{label:'Ages 9–12', games:['times','divide','fractions','decimals','percent','sequence','logic','area','orderops','words','sprint'], perLevel:8, voice:false}
+};
+const groupOf = age => age<=5?'little':age<=8?'middle':'older';
+const G = () => GROUPS[groupOf(me.age)];
+
+/* ================= storage ================= */
+const KEY='cwm.v2';
+let store={profiles:[],sessions:[]};
+function load(){
+  try{ const raw=localStorage.getItem(KEY); if(raw) store=JSON.parse(raw); }catch(e){}
+  if(!Array.isArray(store.profiles)) store.profiles=[];
+  if(!Array.isArray(store.sessions)) store.sessions=[];
+  // remove the old placeholder profiles
+  store.profiles = store.profiles.filter(p=>!((p.id==='p1'&&p.name==='Little Star')||(p.id==='p2'&&p.name==='Big Star')));
+  store.profiles.forEach((p,i)=>{ if(!p.games) p.games={}; if(!p.best) p.best={}; if(!p.color) p.color=AVCOL[i%AVCOL.length]; });
+  if(!store.device) store.device='tab-'+Math.random().toString(36).slice(2,7);
+  try{ const to=new URLSearchParams(location.search).get('to'); if(validEmail(to)) store.sendTo=to; }catch(e){}
+  if(store.version!==3){ store.version=3; }
+  save();
+}
+function save(){ try{ localStorage.setItem(KEY,JSON.stringify(store)); }catch(e){} }
+function gp(p,id){ if(!p.games[id]) p.games[id]={unlocked:1,stars:{},plays:0,right:0,tries:0,last:0}; return p.games[id]; }
+const starTotal = p => Object.values(p.games||{}).reduce((a,g)=>a+Object.values(g.stars||{}).reduce((x,y)=>x+y,0),0) + (p.bonus||0);
+const levelsDone = g => Object.keys(g.stars||{}).length;
+const initials = n => n.trim().split(/\s+/).map(w=>w[0]).slice(0,2).join('').toUpperCase();
+const avatar = (p,lg) => `<span class="av${lg?' lg':''}" style="background:${p.color}">${esc(initials(p.name))}</span>`;
+
+/* ================= results log ================= */
+let round=null, dbRef=null, dbState='checking', dlRef=null;
+const STANDALONE = (()=>{ try{ return window.self===window.top; }catch(e){ return false; } })();
+const validEmail = v => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v||'');
+function logRound(completed){
+  if(!round||round.logged||!me) return;
+  round.logged=true;
+  const items=round.items; if(!items.length){ round=null; return; }
+  const d=new Date(round.started), right=items.filter(i=>i.ok).length;
+  const rec={
+    id:'s'+Date.now().toString(36)+Math.random().toString(36).slice(2,6),
+    date:`${d.getFullYear()}-${pad2(d.getMonth()+1)}-${pad2(d.getDate())}`, time:`${pad2(d.getHours())}:${pad2(d.getMinutes())}`,
+    child:me.name, child_age:me.age, child_id:me.id, age_group:GROUPS[groupOf(me.age)].label.replace('Ages ',''),
+    game:GAMES[round.game].name, game_id:round.game, level:round.level,
+    questions:items.length, right_first_try:right, wrong_tries:items.reduce((a,i)=>a+i.wrong,0), answers_shown:items.filter(i=>i.shown).length,
+    stars:round.stars||0, passed:!!round.passed, seconds:Math.round((Date.now()-round.started)/1000), completed:!!completed,
+    sprint_score: round.game==='sprint'?right:null, device:store.device, items, synced:false
+  };
+  store.sessions.push(rec); if(store.sessions.length>1500) store.sessions=store.sessions.slice(-1500);
+  save(); round=null; syncPending();
+}
+let syncing=false;
+async function syncPending(){
+  if(!dbRef||syncing) return; syncing=true;
+  try{ for(const rec of store.sessions.filter(r=>!r.synced).slice(0,40)){ const {synced,...data}=rec;
+      try{ await dbRef.collection('sessions').doc(rec.id).set(data); rec.synced=true; save(); }
+      catch(e){ dbState=(e&&/permission|not_granted|denied|auth/i.test(e.code||''))?'denied':'error'; break; } }
+  } finally { syncing=false; if(current==='sParent') renderParent(); }
+}
+(async()=>{ try{ if(!window.claude||!window.claude.use){ dbState='off'; return; }
+  const [db,dl]=await Promise.all([claude.use('db'),claude.use('downloads')]); dbRef=db; dlRef=dl; dbState=db?'on':'off';
+  if(current==='sParent') renderParent(); syncPending(); }catch(e){ dbState='off'; } })();
+const CSV_COLS=['id','date','time','child','child_age','age_group','game','level','questions','right_first_try','wrong_tries','answers_shown','stars','passed','seconds','completed','sprint_score','device'];
+function toCSV(){ const q=v=>{ if(v===null||v===undefined) return ''; const s=String(v); return /[",\n]/.test(s)?'"'+s.replace(/"/g,'""')+'"':s; };
+  return [CSV_COLS.join(',')].concat(store.sessions.map(r=>CSV_COLS.map(c=>q(r[c])).join(','))).join('\n'); }
+function totals(p){ const rs=store.sessions.filter(r=>r.child_id===p.id); return {rounds:rs.length, answers:rs.reduce((a,r)=>a+r.questions,0), right:rs.reduce((a,r)=>a+r.right_first_try,0), wrong:rs.reduce((a,r)=>a+r.wrong_tries,0)}; }
+const canEmail = () => STANDALONE && validEmail(store.sendTo);
+const canShare = () => STANDALONE && !!navigator.share;
+function sendHelp(){
+  if(canEmail()) return `Tap <b>Email results</b> to send them to ${esc(store.sendTo)}${canShare()?', or <b>Send results</b> to choose WhatsApp or another app':''}.`;
+  if(canShare()) return 'Tap <b>Send results</b> and choose Gmail or WhatsApp.';
+  return 'Tap <b>Copy results message</b> and paste it into an email or WhatsApp message.';
+}
+function csvName(){ const d=new Date(); return `tiri-${store.device}-${d.getFullYear()}-${pad2(d.getMonth()+1)}-${pad2(d.getDate())}.csv`; }
+function summaryText(){ return resultsMessage().split('\n--- Spreadsheet data')[0].trim(); }
+async function shareResults(){
+  const summary=summaryText();
+  try{
+    const file = typeof File==='function' ? new File([toCSV()], csvName(), {type:'text/csv'}) : null;
+    if(file && navigator.canShare && navigator.canShare({files:[file]})) await navigator.share({title:'Tiri results', text:summary, files:[file]});
+    else await navigator.share({title:'Tiri results', text:resultsMessage()});
+    dataMsg='';
+  }catch(err){ if(!(err&&err.name==='AbortError')) dataMsg='Sharing did not open. Use “Copy results message” instead.'; }
+}
+function emailResults(){
+  let body=resultsMessage();
+  if(body.length>7000){ const lines=body.split('\n'); while(lines.join('\n').length>6800 && lines.length>12) lines.splice(lines.findIndex(l=>/^s[a-z0-9]+,/.test(l)),1); body=lines.join('\n')+'\n(Older rounds left out to fit the email. Use Download spreadsheet for everything.)'; }
+  const names=store.profiles.map(p=>p.name).join(', ');
+  location.href=`mailto:${encodeURIComponent(store.sendTo)}?subject=${encodeURIComponent('Tiri results'+(names?' — '+names:''))}&body=${encodeURIComponent(body)}`;
+}
+function resultsMessage(){
+  const d=new Date(), today=`${d.getFullYear()}-${pad2(d.getMonth()+1)}-${pad2(d.getDate())}`;
+  const lines=[`Tiri results — ${today} — device ${store.device}`,''];
+  store.profiles.forEach(p=>{ const t=totals(p), acc=t.answers?Math.round(100*t.right/t.answers):0;
+    const lv=GROUPS[groupOf(p.age)].games.filter(id=>!GAMES[id].isSprint&&p.games[id]&&levelsDone(p.games[id])).map(id=>`${GAMES[id].name} ${levelsDone(p.games[id])}/10`).join(', ');
+    lines.push(`${p.name} (age ${p.age}): ${t.rounds} rounds played, ${t.answers} answers, ${t.right} right first time (${acc}%), ${t.wrong} wrong tries.${lv?` Levels completed: ${lv}.`:''}`); });
+  lines.push('','--- Spreadsheet data (paste into Excel; each round has a unique id) ---',toCSV());
+  return lines.join('\n');
+}
+
+/* ================= navigation ================= */
+let lastAnswer=null, me=null, game=null, level=1, qi=0, q=null, locked=false, tries=0, typed='', sprint=null;
+const SCREENS=['sHome','sEdit','sGames','sLevels','sPlay','sDone','sParent'];
+let current='sHome';
+const ICON_SOUND_ON='<svg viewBox="0 0 24 24"><path d="M4 9v6h4l5 4V5L8 9H4z"/><path d="M16.5 8.5a5 5 0 010 7"/><path d="M19 6a8.5 8.5 0 010 12"/></svg>';
+const ICON_SOUND_OFF='<svg viewBox="0 0 24 24"><path d="M4 9v6h4l5 4V5L8 9H4z"/><path d="M17 9l5 6M22 9l-5 6"/></svg>';
+const ICON_LOCK='<svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 018 0v3"/></svg>';
+function show(id){
+  current=id; SCREENS.forEach(s=>$(s).hidden=s!==id);
+  $('backBtn').hidden = id==='sHome';
+  const mid=$('topMid');
+  if(me && ['sGames','sLevels','sPlay','sDone'].includes(id)) mid.innerHTML=`<div class="childchip">${avatar(me)}<b>${esc(me.name)}</b><span class="starcount">★ ${starTotal(me)}</span></div>`;
+  else if(id==='sParent') mid.innerHTML=`<div class="brand">Parent area</div>`;
+  else mid.innerHTML=`<div class="brand"><span class="mark">123</span>Tiri</div>`;
+  if(id==='sPlay') document.querySelector('.app').style.setProperty('--acc', GAMES[game].acc);
+}
+function goBack(){
+  if(current==='sEdit') return editReturn==='sParent'?openParent():goHome();
+  if(current==='sParent'||current==='sGames') return goHome();
+  if(current==='sLevels') return openGames();
+  if(current==='sPlay'||current==='sDone'){ logRound(false); stopSprint(); return GAMES[game].isSprint?openGames():openLevels(game); }
+}
+
+/* ---------- home ---------- */
+function goHome(){ logRound(false); stopSprint(); me=null; renderHome(); show('sHome'); }
+function installCard(){
+  if(!STANDALONE || INSTALLED) return '';
+  if(deferredInstall) return `<div class="card panel" style="margin-top:18px;flex-direction:row;align-items:center;flex-wrap:wrap"><div style="flex:1;min-width:200px"><h3>Put the game on this phone</h3><p>Adds an icon to the home screen. Works without internet after that.</p></div><button class="btn primary" id="installBtn">Install</button></div>`;
+  if(IOS) return `<div class="card panel" style="margin-top:18px"><h3>Put the game on this phone</h3><p>In Safari, tap the Share button, then <b>Add to Home Screen</b>.</p></div>`;
+  return '';
+}
+function renderHome(){
+  const ps=store.profiles;
+  $('homeBody').innerHTML = (ps.length ? `<div class="head"><h1>Who is playing?</h1><p>Tap your name to start.</p></div>
+    <div class="kids">${ps.map(p=>`<button class="card kid tap" data-kid="${p.id}">${avatar(p,true)}<b>${esc(p.name)}</b><span>Age ${p.age} · ★ ${starTotal(p)}</span></button>`).join('')}
+    <button class="card kid add tap" id="addKid"><span class="plus">+</span>Add a child</button></div>`
+  : `<div class="card empty"><div class="big">👋</div><h1 style="font-size:24px">Welcome to Tiri</h1><p>Maths games for children aged 3 to 12. Add each child with their name and age, and the right games appear for them.</p><button class="btn primary" id="addKid">Add a child</button></div>`)
+  + installCard()
+  + `<div class="parentlink"><button class="btn small hold" id="parentBtn"><span class="fill"></span>${ICON_LOCK.replace('<svg','<svg width="18" height="18" style="stroke:currentColor;fill:none;stroke-width:2.2"')} Parent area</button><p class="hint">Press and hold to open</p></div>`;
+  wireHold();
+}
+
+/* ---------- add / edit child ---------- */
+let editing=null, edAge=null, editReturn='sHome';
+function openEditor(p,from){
+  editing=p||null; editReturn=from||'sHome'; edAge=p?p.age:null;
+  $('editTitle').textContent=p?`Edit ${p.name}`:'Add a child';
+  $('fName').value=p?p.name:''; $('fErr').hidden=true; $('fRemove').hidden=!p; $('fRemove').textContent='Remove child'; removeArmed=false;
+  renderAges(); show('sEdit'); setTimeout(()=>{ if(!p) $('fName').focus(); },50);
+}
+function renderAges(){
+  $('ages').innerHTML=[3,4,5,6,7,8,9,10,11,12].map(a=>`<button class="age" data-age="${a}" aria-pressed="${a===edAge}">${a}</button>`).join('');
+  $('ageHint').textContent = edAge ? `${GROUPS[groupOf(edAge)].label} games: ${GROUPS[groupOf(edAge)].games.filter(g=>!GAMES[g].isSprint).slice(0,4).map(g=>GAMES[g].name).join(', ')} and more.` : 'Pick the child’s age.';
+}
+let removeArmed=false;
+function saveChild(){
+  const name=$('fName').value.trim().replace(/\s+/g,' ');
+  const err=!name?'Type the child’s name.':!edAge?'Pick the child’s age.':'';
+  if(err){ $('fErr').textContent=err; $('fErr').hidden=false; return; }
+  if(editing){ editing.name=name; editing.age=edAge; }
+  else store.profiles.push({id:'k'+Date.now().toString(36), name, age:edAge, color:AVCOL[store.profiles.length%AVCOL.length], games:{}, best:{}, last:0});
+  save(); editReturn==='sParent'?openParent():goHome();
+}
+
+/* ---------- games ---------- */
+function openGames(){
+  logRound(false); stopSprint(); show('sGames');
+  const grp=G();
+  $('gamesTitle').textContent=`Hi ${me.name}!`;
+  $('gamesSub').innerHTML=`<span class="tag">${grp.label}</span>&nbsp; Pick a game. Each game has 10 levels.`;
+  $('games').innerHTML=grp.games.map(id=>{
+    const g=GAMES[id];
+    if(g.isSprint) return `<button class="card game tap" data-game="${id}" style="--acc:${g.acc}"><span class="gicon">${g.icon}</span><b>${g.name}</b><small>${g.learn}</small><div class="gprog">Best score: ${me.best.sprint||0}</div></button>`;
+    const s=gp(me,id), done=levelsDone(s);
+    return `<button class="card game tap" data-game="${id}" style="--acc:${g.acc}"><span class="gicon">${g.icon}</span><b>${g.name}</b><small>${g.learn}</small><div class="gprog"><span class="bar"><i style="width:${done*10}%"></i></span>${done}/10</div></button>`;
+  }).join('');
+  if(grp.voice) say(`Hi ${me.name}! Pick a game.`);
+}
+
+/* ---------- levels ---------- */
+function starsHTML(n){ return `<span class="st">${[1,2,3].map(i=>i<=n?'★':'<span class="off">★</span>').join('')}</span>`; }
+function openLevels(id){
+  game=id; show('sLevels');
+  const g=GAMES[id], s=gp(me,id);
+  document.querySelector('.app').style.setProperty('--acc', g.acc);
+  $('ltop').innerHTML=`<span class="gicon" style="--acc:${g.acc}">${g.icon}</span><div><h1>${g.name}</h1><p>${g.learn}</p></div>`;
+  $('levels').innerHTML=Array.from({length:10},(_,i)=>{ const n=i+1, locked=n>s.unlocked, st=s.stars[n]||0, cur=n===s.unlocked&&!st;
+    return locked ? `<button class="lvl locked" disabled aria-label="Level ${n} locked">${ICON_LOCK}<span style="font-size:13px">${n}</span></button>`
+                  : `<button class="card lvl tap${cur?' current':''}" data-level="${n}" aria-label="Level ${n}">${n}${starsHTML(st)}</button>`; }).join('');
+  const per=G().perLevel, need=Math.ceil(per*0.5);
+  $('legend').textContent = groupOf(me.age)==='little' ? `Each level has ${per} questions. Finish a level to open the next one.` : `Each level has ${per} questions. Get at least ${need} right first time to open the next level. Get them all right for 3 stars.`;
+  if(G().voice) say(`${g.name}. Pick a level.`);
+}
+
+/* ---------- play ---------- */
+function startLevel(n){
+  logRound(false);
+  level=n; qi=0; game=game;
+  round={game, level:n, started:Date.now(), items:[], logged:false};
+  me.last=Date.now(); save();
+  show('sPlay');
+  $('pTitle').textContent = GAMES[game].isSprint ? GAMES[game].name : `${GAMES[game].name} · Level ${n}`;
+  if(GAMES[game].isSprint){ startSprint(); return; }
+  setBar(); nextQ();
+}
+function setBar(){ $('qbar').style.width = `${100*qi/G().perLevel}%`; }
+function nextQ(){
+  if(qi>=G().perLevel){ finishLevel(); return; }
+  let g=0; do{ q=GAMES[game].make(level); }while(!q.pad && q.answer===lastAnswer && g++<8);
+  lastAnswer=q.answer; renderQ();
+  if(G().voice) setTimeout(()=>say(questionParts(q)),250);
+}
+function renderQ(){
+  $('pText').textContent=q.text;
+  $('stage').innerHTML = q.html + (q.pad ? padHTML(q.decimal) : '');
+  typed=''; tries=0; locked=false;
+}
+function padHTML(dec){
+  const k=[1,2,3,4,5,6,7,8,9].map(n=>`<button data-key="${n}">${n}</button>`).join('');
+  const del=`<button data-key="del" aria-label="Delete"><svg viewBox="0 0 24 24" width="24" height="24" style="stroke:currentColor;fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round"><path d="M9 5h11v14H9l-6-7z"/><path d="M12 9l5 6M17 9l-5 6"/></svg></button>`;
+  return dec ? `<div class="pad">${k}<button data-key=".">.</button><button data-key="0">0</button>${del}<button class="go span" data-key="go">Check</button></div>`
+             : `<div class="pad">${k}${del}<button data-key="0">0</button><button class="go" data-key="go" aria-label="Check">✓</button></div>`;
+}
+function updateSlot(){ const s=$('slot'); if(!s) return; s.textContent=typed||'?'; s.classList.toggle('empty',!typed); }
+function onKey(k){
+  if(locked) return; audio();
+  if(k==='del'){ typed=typed.slice(0,-1); updateSlot(); return; }
+  if(k==='go'){ if(typed&&typed!=='.') submitTyped(); return; }
+  if(k==='.'&&typed.includes('.')) return;
+  if(typed.length>=7) return;
+  typed+=k; updateSlot(); tick();
+  if(sprint && typed.length>=q.answer.length) setTimeout(()=>{ if(sprint&&typed) submitTyped(); },140);
+}
+const isRight = () => q.decimal ? Math.abs(parseFloat(typed)-parseFloat(q.answer))<1e-9 : typed.replace(/^0+(?=\d)/,'')===q.answer;
+function submitTyped(){
+  if(sprint){ sprintAnswer(isRight()); return; }
+  const s=$('slot');
+  if(isRight()){ locked=true; s.classList.add('ok'); ding(); burst(s); completeQ(tries===0, false, async()=>{ if(G().voice) await say(`Correct! ${speakify(q.explain)}.`); else await wait(700); }); return; }
+  tries++; boop(); s.classList.remove('shake'); void s.offsetWidth; s.classList.add('shake'); typed=''; setTimeout(updateSlot,300);
+  if(tries>=2){ locked=true;
+    setTimeout(async()=>{ s.textContent=q.answer; s.classList.remove('empty'); s.classList.add('reveal'); $('pText').textContent=q.explain;
+      await say(speakify(q.explain)+'.',{silentMs:2400}); await wait(900); completeQ(false,true); },350);
+  } else if(G().voice) say('Not quite. Try again.');
+}
+function onChoice(btn){
+  if(locked) return; audio();
+  if(btn.dataset.choice===q.answer){ locked=true; btn.classList.add('right'); ding(); burst(btn);
+    completeQ(tries===0,false, q.after ? ()=>q.after($('stage')) : ()=>say(`${pick(['Well done!','Great!','Yes!'])} ${q.praise||''}`)); }
+  else { tries++; btn.classList.add('wrong'); boop(); if(G().voice) say(pick(['Try again.','Not that one. Try again.','Almost! Try again.'])); }
+}
+async function completeQ(firstTry, shown, celebrate){
+  if(celebrate) await celebrate();
+  const s=gp(me,game); s.tries++; if(firstTry) s.right++; s.last=Date.now();
+  if(round) round.items.push({answer:q.answer, ok:!!firstTry, wrong:tries, shown:!!shown});
+  save(); qi++; setBar(); await wait(350); nextQ();
+}
+function finishLevel(){
+  const items=round?round.items:[], per=G().perLevel, right=items.filter(i=>i.ok).length, ratio=right/per, little=groupOf(me.age)==='little';
+  let stars = ratio>=0.99?3 : ratio>=0.7?2 : ratio>=0.5?1 : 0;
+  if(little) stars=Math.max(1,stars);
+  const passed=stars>=1, s=gp(me,game);
+  s.plays++;
+  if(passed){ s.stars[level]=Math.max(s.stars[level]||0,stars); if(level===s.unlocked&&level<10) s.unlocked=level+1; }
+  if(round){ round.stars=stars; round.passed=passed; }
+  save(); logRound(true);
+  show('sDone'); if(passed) fanfare();
+  const last=level===10;
+  $('result').innerHTML=`<div class="bigstars">${[1,2,3].map(i=>`<span class="${i<=stars?'on':''}">★</span>`).join('')}</div>
+    <h2>${passed?(last?`You finished all 10 levels!`:`Level ${level} complete!`):'Nearly there!'}</h2>
+    <p>${right} of ${per} right first time${passed?'':` · get ${Math.ceil(per*.5)} to pass`}</p>
+    <div class="btns">${passed&&!last?`<button class="btn primary" id="nextBtn">Next level ▶</button>`:''}<button class="btn${passed?'':' primary'}" id="againBtn">↻ Play again</button><button class="btn" id="levelsBtn">All levels</button></div>`;
+  if(G().voice) say(passed?(stars===3?`Perfect! Three stars!`:`Well done! Level ${level} complete.`):`Good try! Let's play again.`);
+  burst(document.querySelector('.bigstars'));
+}
+
+/* ---------- 60-second challenge ---------- */
+function startSprint(){
+  sprint={score:0,end:Date.now()+60000,timer:null};
+  if(G().voice) say('Ready, set, go!');
+  sprintQ(); sprintTick(); sprint.timer=setInterval(sprintTick,250);
+}
+function sprintQ(){
+  const pool=G().games.filter(id=>GAMES[id].sprint), id=pick(pool), s=gp(me,id);
+  q=GAMES[id].make(Math.max(1,Math.min(10,s.unlocked))); renderQ();
+}
+function sprintTick(){
+  if(!sprint) return;
+  const left=Math.max(0,sprint.end-Date.now());
+  $('qbar').style.width=(left/600)+'%';
+  $('pText').textContent=`${Math.ceil(left/1000)} s left · ${sprint.score} correct`;
+  if(left<=0) endSprint();
+}
+function sprintAnswer(ok){
+  const s=$('slot'); if(round) round.items.push({answer:q.answer, ok:!!ok, wrong:ok?0:1, shown:!ok});
+  locked=true;
+  if(ok){ sprint.score++; tick(); s.classList.add('ok'); setTimeout(()=>{ if(sprint) sprintQ(); },220); }
+  else { boop(); s.textContent=q.answer; s.classList.add('reveal'); setTimeout(()=>{ if(sprint) sprintQ(); },900); }
+  sprintTick();
+}
+function stopSprint(){ if(sprint){ clearInterval(sprint.timer); sprint=null; } }
+function endSprint(){
+  const score=sprint.score; stopSprint();
+  const prev=me.best.sprint||0, best=score>prev; if(best) me.best.sprint=score;
+  const bonus=Math.min(3,Math.floor(score/5)); me.bonus=(me.bonus||0)+bonus;
+  if(round){ round.stars=bonus; round.passed=true; } save(); logRound(true);
+  show('sDone'); fanfare();
+  $('result').innerHTML=`<div class="bigemoji">${best?'🏆':'⏱️'}</div><h2>${score} correct</h2><p>${best?'New personal best!':`Your best is ${prev}.`}${bonus?` +${bonus} ★`:''}</p>
+    <div class="btns"><button class="btn primary" id="againBtn">↻ Play again</button><button class="btn" id="levelsBtn">All games</button></div>`;
+  if(G().voice) say(best?`New best! ${score} correct!`:`${score} correct.`);
+}
+
+/* ---------- parent area ---------- */
+let pendingDel=null, copyText='', dataMsg='';
+function openParent(){ pendingDel=null; renderParent(); show('sParent'); }
+function ago(ts){ if(!ts) return 'Not played yet'; const d=Math.floor((Date.now()-ts)/86400000); return d<=0?'Played today':d===1?'Played yesterday':`Played ${d} days ago`; }
+function renderParent(){
+  const n=store.sessions.length, pending=store.sessions.filter(r=>!r.synced).length;
+  const st = dbState==='on' ? `<span class="status on"><i></i>${pending?`Sending to the owner's account (${pending} waiting)`:`Sent to the owner's account`}</span>`
+    : dbState==='checking' ? `<span class="status"><i></i>Checking…</span>`
+    : dbState==='denied' ? `<span class="status bad"><i></i>Saved on this device only</span>`
+    : dbState==='error' ? `<span class="status bad"><i></i>Sending paused, will retry</span>`
+    : `<span class="status"><i></i>Saved on this device only</span>`;
+  const kids = store.profiles.map(p=>{
+    const t=totals(p), acc=t.answers?Math.round(100*t.right/t.answers):null;
+    const ids=GROUPS[groupOf(p.age)].games.filter(id=>!GAMES[id].isSprint);
+    let weak=null; ids.forEach(id=>{ const s=p.games[id]; if(s&&s.tries>=6){ const a=s.right/s.tries; if(a<.6&&(!weak||a<weak.a)) weak={id,a}; } });
+    const flag = !t.rounds ? '' : weak ? `<span class="flag">Needs practice: ${GAMES[weak.id].name}</span>` : `<span class="flag ok">On track</span>`;
+    const rows = ids.map(id=>{ const s=p.games[id]||{stars:{},tries:0,right:0,plays:0}; const a=s.tries?Math.round(100*s.right/s.tries):null;
+      return `<tr><td>${GAMES[id].icon} ${GAMES[id].name}</td><td class="n">${levelsDone(s)}/10</td><td class="n">${s.plays||0}</td><td class="n ${a!==null&&a<60?'low':''}">${a===null?'–':a+'%'}</td></tr>`; }).join('');
+    return `<div class="card pkid">
+      <div class="who">${avatar(p,true)}<div><b>${esc(p.name)}</b><span>Age ${p.age} · ${GROUPS[groupOf(p.age)].label} · ${ago(p.last)}</span></div>
+        <div class="btns"><button class="btn small" data-edit="${p.id}">Edit</button></div></div>
+      <div class="kpis"><div class="kpi"><b>${t.rounds}</b><span>Levels played</span></div><div class="kpi"><b>${t.answers}</b><span>Questions</span></div><div class="kpi"><b>${t.right}</b><span>Right first time${acc!==null?` (${acc}%)`:''}</span></div><div class="kpi"><b>${t.wrong}</b><span>Wrong tries</span></div></div>
+      ${flag}
+      <div class="tablewrap"><table class="gtable"><thead><tr><th>Game</th><th class="n">Levels</th><th class="n">Plays</th><th class="n">Accuracy</th></tr></thead><tbody>${rows}</tbody></table></div>
+    </div>`; }).join('');
+  $('parentBody').innerHTML = `<div class="head"><h1>Progress</h1><p>How each child is doing, game by game.</p></div>
+    <div class="card panel"><h3>Results log</h3>
+      <p>${n} level${n===1?'':'s'} recorded on this device. ${st}</p>
+      ${STANDALONE?`<label class="label" for="rEmail" style="font-size:14px">Send results to (email)</label>
+      <input class="input" id="rEmail" type="email" inputmode="email" autocomplete="email" placeholder="name@gmail.com" value="${esc(store.sendTo||'')}" style="font-size:16px;padding:10px 12px">`:''}
+      <p>${sendHelp()}</p>
+      <div class="btns">${canEmail()?`<button class="btn primary small" id="emailRes">Email results</button>`:''}${canShare()?`<button class="btn ${canEmail()?'':'primary '}small" id="shareRes">Send results</button>`:''}<button class="btn ${canEmail()||canShare()?'':'primary '}small" id="copyMsg">Copy results message</button>${dlRef||STANDALONE?`<button class="btn small" id="dlCsv">Download spreadsheet (CSV)</button>`:''}<button class="btn small" id="copyCsv">Copy spreadsheet data</button></div>
+      ${dataMsg?`<p>${esc(dataMsg)}</p>`:''}${copyText?`<textarea id="copyBox" readonly aria-label="Text to copy">${esc(copyText)}</textarea>`:''}
+    </div>
+    ${kids || `<div class="card empty"><p>No children added yet.</p></div>`}
+    <div class="btns" style="margin-top:6px"><button class="btn primary" id="pAdd">Add a child</button></div>`;
+}
+
+/* ================= events ================= */
+document.addEventListener('click', async e=>{
+  const t=e.target;
+  if(t.closest('#addKid')||t.closest('#pAdd')){ openEditor(null, current==='sParent'?'sParent':'sHome'); return; }
+  const kid=t.closest('[data-kid]'); if(kid){ audio(); me=store.profiles.find(p=>p.id===kid.dataset.kid); openGames(); return; }
+  const ag=t.closest('[data-age]'); if(ag){ edAge=+ag.dataset.age; renderAges(); return; }
+  const gm=t.closest('[data-game]'); if(gm){ audio(); game=gm.dataset.game; GAMES[game].isSprint?startLevel(1):openLevels(game); return; }
+  const lv=t.closest('[data-level]'); if(lv){ audio(); startLevel(+lv.dataset.level); return; }
+  const key=t.closest('[data-key]'); if(key){ onKey(key.dataset.key); return; }
+  const ch=t.closest('#stage [data-choice]'); if(ch){ onChoice(ch); return; }
+  if(t.closest('#nextBtn')){ startLevel(level+1); return; }
+  if(t.closest('#againBtn')){ startLevel(level); return; }
+  if(t.closest('#levelsBtn')){ GAMES[game].isSprint?openGames():openLevels(game); return; }
+  const ed=t.closest('[data-edit]'); if(ed){ openEditor(store.profiles.find(p=>p.id===ed.dataset.edit),'sParent'); return; }
+  const cp=t.closest('#copyMsg, #copyCsv');
+  if(cp){ const text=cp.id==='copyMsg'?resultsMessage():toCSV();
+    try{ await navigator.clipboard.writeText(text); dataMsg=cp.id==='copyMsg'?'Copied. Paste it into an email or WhatsApp message and send it.':'Copied. Paste it into Excel or Google Sheets.'; copyText=''; }
+    catch(err){ dataMsg='Select all the text below and copy it.'; copyText=text; }
+    renderParent(); const b=$('copyBox'); if(b){ b.focus(); b.select(); } return; }
+  if(t.closest('#installBtn')&&deferredInstall){ deferredInstall.prompt(); try{ await deferredInstall.userChoice; }catch(err){} deferredInstall=null; renderHome(); return; }
+  if(t.closest('#shareRes')){ await shareResults(); renderParent(); return; }
+  if(t.closest('#emailRes')){ emailResults(); return; }
+  if(t.closest('#dlCsv')&&!dlRef&&STANDALONE){ const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([toCSV()],{type:'text/csv'})); a.download=csvName(); document.body.appendChild(a); a.click(); setTimeout(()=>{ URL.revokeObjectURL(a.href); a.remove(); },1000); return; }
+  if(t.closest('#dlCsv')&&dlRef){ const d=new Date();
+    try{ await dlRef.save({filename:`tiri-${d.getFullYear()}-${pad2(d.getMonth()+1)}-${pad2(d.getDate())}.csv`,data:toCSV()}); dataMsg=''; }
+    catch(err){ dataMsg=err&&err.code==='declined'?'':'Download is not available here. Use “Copy spreadsheet data” instead.'; }
+    renderParent(); return; }
+});
+$('fSave').addEventListener('click',saveChild);
+document.addEventListener('change',e=>{ if(e.target.id==='rEmail'){ const v=e.target.value.trim(); store.sendTo=validEmail(v)?v:''; save(); renderParent(); } });
+$('fCancel').addEventListener('click',()=>editReturn==='sParent'?openParent():goHome());
+$('fName').addEventListener('keydown',e=>{ if(e.key==='Enter') saveChild(); });
+$('fRemove').addEventListener('click',()=>{
+  if(!editing) return;
+  if(!removeArmed){ removeArmed=true; $('fRemove').textContent='Tap again to remove'; return; }
+  store.profiles=store.profiles.filter(p=>p!==editing); save(); openParent();
+});
+$('backBtn').addEventListener('click',goBack);
+$('sayBtn').addEventListener('click',()=>{ audio(); if(q) say(questionParts(q)); });
+function renderMute(){ $('muteBtn').innerHTML=muted?ICON_SOUND_OFF:ICON_SOUND_ON; }
+$('muteBtn').addEventListener('click',()=>{ muted=!muted; try{ localStorage.setItem('cwm.muted',muted?'1':'0'); }catch(e){} if(muted){ try{speechSynthesis.cancel();}catch(e){} } renderMute(); });
+document.addEventListener('keydown',e=>{
+  if(current!=='sPlay'||!q||!q.pad) return;
+  if(/^[0-9]$/.test(e.key)) onKey(e.key); else if(e.key==='.'&&q.decimal) onKey('.'); else if(e.key==='Backspace') onKey('del'); else if(e.key==='Enter') onKey('go');
+});
+function wireHold(){
+  const b=$('parentBtn'); if(!b) return; let ht=null;
+  b.addEventListener('pointerdown',e=>{ e.preventDefault(); b.classList.add('holding'); ht=setTimeout(()=>{ b.classList.remove('holding'); openParent(); },1300); });
+  ['pointerup','pointerleave','pointercancel'].forEach(ev=>b.addEventListener(ev,()=>{ clearTimeout(ht); b.classList.remove('holding'); }));
+  b.addEventListener('click',e=>{ if(e.detail===0) openParent(); });
+  b.addEventListener('contextmenu',e=>e.preventDefault());
+}
+try{ speechSynthesis.getVoices(); }catch(e){}
+
+window.__cwm={GAMES,GROUPS};
+/* ---------- installable app (only when opened from its own web address) ---------- */
+let deferredInstall=null;
+const INSTALLED = (()=>{ try{ return matchMedia('(display-mode: standalone)').matches || navigator.standalone===true; }catch(e){ return false; } })();
+const IOS = /iphone|ipad|ipod/i.test(navigator.userAgent) || (navigator.platform==='MacIntel' && navigator.maxTouchPoints>1);
+window.addEventListener('beforeinstallprompt', e=>{ e.preventDefault(); deferredInstall=e; if(current==='sHome') renderHome(); });
+window.addEventListener('appinstalled', ()=>{ deferredInstall=null; toast('Installed. Look for Tiri on your home screen.'); if(current==='sHome') renderHome(); });
+if(STANDALONE && 'serviceWorker' in navigator && (location.protocol==='https:'||location.hostname==='localhost')){ try{ navigator.serviceWorker.register('sw.js').catch(()=>{}); }catch(e){} }
+load(); renderMute(); renderHome(); show('sHome');
+})();
+</script>
+</body>
+</html>
