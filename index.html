@@ -12,7 +12,59 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Tiri">
-<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);box-sizing:border-box;height:100%}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);box-sizing:border-box;height:100%}body{margin:0}img{max-width:100%}[hidden]{display:none!important}
+/* ---------- English ---------- */
+.subjtabs{display:flex;gap:8px;margin:-4px 0 14px;background:var(--surface);border:1px solid var(--line);border-radius:99px;padding:4px;width:max-content;max-width:100%}
+.subjtabs button{border:0;background:transparent;font:inherit;font-weight:700;font-size:16px;padding:9px 18px;border-radius:99px;color:var(--muted);cursor:pointer}
+.subjtabs button.on{background:var(--primary);color:#fff}
+.stephead{grid-column:1/-1;font-size:17px;margin:10px 2px 0;color:var(--ink)}
+.skill{display:inline-block;font-size:11px;font-weight:700;padding:1px 7px;border-radius:99px;background:color-mix(in srgb, var(--acc) 14%, #fff);color:var(--acc);margin-right:2px}
+.card.garden .pi{background:#E6F6EC}
+.opt.shake{animation:shake .45s}
+.opt.pic .sz{display:inline-block;line-height:1}
+.opt .sz.big{font-size:1.25em}.opt .sz.small{font-size:.6em}
+.opt.shape .sz{display:grid;place-items:center;width:100%}.opt.shape .sz.big svg{width:86%}.opt.shape .sz.small svg{width:44%}
+.opt.named{padding-bottom:18px}
+.stepno{position:absolute;top:4px;right:6px;width:24px;height:24px;border-radius:50%;background:var(--success);color:#fff;font-size:14px;font-weight:700;display:grid;place-items:center}
+.target{display:flex;flex-direction:column;align-items:center;gap:2px;padding:10px 22px;border-radius:20px;background:var(--surface);border:2px dashed var(--line)}
+.target .te{font-size:clamp(52px,14vw,72px);line-height:1.1}
+.target .tw{font-size:clamp(20px,5.5vw,26px);font-weight:700;letter-spacing:.02em}
+.target .sy{padding:0 3px;border-radius:6px;transition:background .2s}.target .sy+.sy{border-left:2px dotted var(--muted)}
+.target .sy.lit{background:#FFE7A3}
+.sylls{display:flex;gap:6px;font-size:22px;font-weight:700}.sylls span{background:#fff;border:1.5px solid #F2D27A;border-radius:10px;padding:2px 10px}
+.opt.claps{min-width:clamp(70px,19vw,96px);height:clamp(78px,19vw,96px);padding:6px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px}
+.opt.claps .cl{font-size:clamp(14px,3.8vw,19px);line-height:1.15;max-width:76px;text-align:center}
+.opt.claps b{font-size:clamp(20px,5vw,26px)}
+.pond{background:linear-gradient(#DDF1FB,#BFE3F5);border-radius:22px;padding:12px 10px}
+.opt.fishy{border-radius:50% 50% 46% 46%}
+.opt.scenebtn{width:clamp(118px,30vw,136px);aspect-ratio:1/1;padding:0;overflow:hidden}
+.scene{position:relative;width:108px;height:108px;display:block}
+.scene .thing{position:absolute;font-size:30px;line-height:1;transform:translateX(-50%);z-index:2}
+.scene.t-table .furn{position:absolute;left:34px;width:66px;top:54px;height:7px;background:#9A5B2E;border-radius:4px}
+.scene.t-table .furn::before,.scene.t-table .furn::after{content:"";position:absolute;top:7px;width:6px;height:36px;background:#9A5B2E;border-radius:3px}
+.scene.t-table .furn::before{left:4px}.scene.t-table .furn::after{right:4px}
+.scene.t-table.p-on .thing{left:67px;top:24px}.scene.t-table.p-under .thing{left:67px;top:64px}.scene.t-table.p-nextto .thing{left:17px;top:66px}
+.scene.t-box .furn{position:absolute;left:36px;width:60px;top:52px;height:44px;background:#B8742F;border-radius:4px 4px 6px 6px;z-index:1}
+.scene.t-box .boxfront{position:absolute;left:36px;width:60px;top:62px;height:34px;background:#E0A15A;border-radius:2px 2px 6px 6px;z-index:3;border-top:3px solid #C98A43}
+.scene.t-box.p-in .thing{left:66px;top:45px}.scene.t-box.p-on .thing{left:66px;top:19px}.scene.t-box.p-nextto .thing{left:17px;top:66px}
+.scene.t-box.p-behind .thing{left:84px;top:28px;z-index:0}
+.parrot{display:flex;align-items:flex-end;gap:10px}.pbird{font-size:clamp(56px,15vw,80px);line-height:1;transform-origin:bottom center}
+.pbird.talk{animation:pecks .3s ease-in-out infinite alternate}@keyframes pecks{to{transform:rotate(-12deg) scale(1.06)}}
+.ppic{font-size:clamp(44px,12vw,64px);line-height:1;background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:8px 12px}
+.pword{font-size:clamp(22px,6vw,32px);font-weight:700;text-align:center;max-width:560px;padding:0 12px}
+.micbtn{display:flex;flex-direction:column;align-items:center;gap:6px;border:0;background:transparent;font:inherit;cursor:pointer;color:var(--ink)}
+.micbtn .mi{width:88px;height:88px;border-radius:50%;display:grid;place-items:center;font-size:40px;background:var(--primary);box-shadow:0 4px 0 color-mix(in srgb, var(--primary) 60%, #000)}
+.micbtn .ml{font-weight:700;font-size:16px}
+.micbtn.on .mi{background:#E0567A;animation:pulse 1s ease-in-out infinite}
+.nbig{font-size:clamp(80px,24vw,120px)!important}
+.heard{margin:0;min-height:1.4em;font-weight:600;color:var(--muted);text-align:center;padding:0 12px}
+.bed{margin-bottom:12px}.bed h3{display:flex;justify-content:space-between;margin:0 0 8px;font-size:17px}.bed h3 span{color:var(--muted);font-weight:600;font-size:14px}
+.plots{display:grid;grid-template-columns:repeat(auto-fill,minmax(72px,1fr));gap:8px}
+.plot{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;border-radius:14px;padding:6px 2px;min-height:72px;font:inherit}
+.plot.grown{background:#EAF7EF;border:1.5px solid #9ED7B4;cursor:pointer}.plot.seed{background:#F4F1EA;border:1.5px dashed #D9D2C2;opacity:.7}
+.plot .pe{font-size:30px;line-height:1.1}.plot .pw{font-size:12px;font-weight:700;color:var(--ink);text-align:center;line-height:1.1}
+.plot.pop{animation:pop .35s ease-out}
+</style>
 </head>
 <body>
 <meta name="claude:viewport-fit-sides" content="cover">
@@ -343,6 +395,7 @@ h1,h2,h3{margin:0;text-wrap:balance}
 
   <section class="screen" id="sGames" hidden><div class="scroll">
     <div class="head"><h1 id="gamesTitle"></h1><p id="gamesSub"></p></div>
+    <div class="subjtabs" id="subjTabs" role="group" aria-label="Subject"></div>
     <div class="games" id="games"></div>
   </div></section>
 
@@ -361,6 +414,8 @@ h1,h2,h3{margin:0;text-wrap:balance}
   </section>
 
   <section class="screen" id="sDone" hidden><div class="result" id="result"></div></section>
+
+  <section class="screen" id="sGarden" hidden><div class="scroll" id="gardenBody"></div></section>
 
   <section class="screen" id="sParent" hidden><div class="scroll" id="parentBody"></div></section>
 </div>
@@ -512,7 +567,8 @@ async function say(parts,opts){
   const token=++sayToken;
   if(muted||!('speechSynthesis' in window)){ await wait(opts.silentMs||500); return; }
   try{ speechSynthesis.cancel(); }catch(e){}
-  const rate = opts.rate || (me ? {little:.75, middle:.82, older:.9}[bandOf(me)] : .82);
+  const base = me ? {little:.75, middle:.82, older:.9}[bandOf(me)] : .82;
+  const rate = opts.rate || (subject==='english' ? Math.min(base,.78) : base);
   for(let i=0;i<parts.length;i++){
     if(token!==sayToken) return;
     await speakOne(parts[i], rate, token);
@@ -520,7 +576,8 @@ async function say(parts,opts){
   }
 }
 /* the question, then its key word twice more, so the child hears it three times */
-const questionParts = q => q.key ? [q.speak, q.key+'.', q.key+'.'] : [q.speak];
+const questionParts = q => q.parts ? q.parts : q.key ? [q.speak, q.key+'.', q.key+'.'] : [q.speak];
+let subject='maths';   // 'maths' or 'english', remembered per child
 const reduceMotion = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
 function burst(el){
   if(reduceMotion||!el||!el.animate) return;
@@ -1094,6 +1151,314 @@ function gWords(lv){
 }
 
 /* ================= catalogue ================= */
+/* ================= ENGLISH · Step 1 Listening ears · Step 2 Sound play ================= */
+/* Most players speak Somali at home, so these games build spoken English first: hear it, find it, say it. */
+const WORLDS = {
+  animals:{name:'Animals', words:[['cat','🐱'],['dog','🐶'],['cow','🐄'],['goat','🐐'],['sheep','🐑'],['camel','🐪'],['hen','🐔'],['fish','🐟'],['bird','🐦'],['horse','🐴'],['lion','🦁'],['elephant','🐘'],['duck','🦆'],['rabbit','🐰'],['monkey','🐒'],['frog','🐸']]},
+  food:{name:'Food', words:[['mango','🥭'],['banana','🍌'],['apple','🍎'],['orange','🍊'],['milk','🥛'],['bread','🍞'],['egg','🥚'],['rice','🍚'],['water','💧'],['tea','🍵'],['cake','🍰'],['watermelon','🍉'],['carrot','🥕'],['tomato','🍅'],['meat','🍖'],['lemon','🍋']]},
+  home:{name:'Home', words:[['bed','🛏️'],['door','🚪'],['chair','🪑'],['cup','☕'],['spoon','🥄'],['plate','🍽️'],['house','🏠'],['key','🔑'],['clock','🕰️'],['phone','📱'],['book','📖'],['ball','⚽'],['bag','🎒'],['broom','🧹'],['soap','🧼'],['television','📺']]},
+  body:{name:'My body', words:[['eye','👁️'],['ear','👂'],['nose','👃'],['mouth','👄'],['hand','✋'],['foot','🦶'],['tooth','🦷'],['leg','🦵'],['arm','💪'],['tongue','👅'],['heart','❤️'],['finger','☝️']]},
+  people:{name:'People', words:[['mother','👩'],['father','👨'],['baby','👶'],['girl','👧'],['boy','👦'],['grandmother','👵'],['grandfather','👴'],['teacher','👩‍🏫'],['doctor','👨‍⚕️'],['police officer','👮']]},
+  clothes:{name:'Clothes', words:[['shirt','👕'],['dress','👗'],['shoe','👟'],['cap','🧢'],['sock','🧦'],['coat','🧥'],['trousers','👖'],['scarf','🧣'],['glasses','👓'],['gloves','🧤'],['ring','💍'],['umbrella','☂️']]},
+  outside:{name:'Outside', words:[['sun','☀️'],['moon','🌙'],['star','⭐'],['tree','🌳'],['flower','🌸'],['rain','🌧️'],['car','🚗'],['bus','🚌'],['boat','⛵'],['plane','✈️'],['bike','🚲'],['train','🚂'],['sea','🌊'],['mountain','⛰️'],['school','🏫'],['bajaj','🛺']]},
+  actions:{name:'Doing words', act:true, words:[['running','🏃'],['sleeping','😴'],['swimming','🏊'],['writing','✍️'],['crying','😢'],['laughing','😂'],['dancing','💃'],['drinking','🥤'],['singing','🎤'],['walking','🚶'],['clapping','👏'],['waving','👋'],['thinking','🤔'],['eating','😋'],['climbing','🧗']]}
+};
+const NOUN_WORLDS = ['animals','food','home','body','people','clothes','outside'];
+const wordsOf = keys => keys.flatMap(k=>WORLDS[k].words.map(([w,e])=>({w,e,world:k,act:!!WORLDS[k].act})));
+const ALL_WORDS = wordsOf(Object.keys(WORLDS));
+const VOCAB_LEVELS = [['animals'],['food'],['home'],['body'],['people'],['clothes'],['outside'],NOUN_WORLDS,['actions'],[...NOUN_WORLDS,'actions']];
+const findPhrase = it => it.act ? `Who is ${it.w}?` : `Find the ${it.w}.`;
+const thatIs = w => { const o=ALL_WORDS.find(x=>x.w===w); return o&&o.act ? `That is ${w}.` : `That is the ${w}.`; };
+const picBtns = (list,cls) => choices(list.map(it=>`<button class="opt pic${cls?' '+cls:''}" data-choice="${esc(it.w)}" aria-label="${esc(it.w)}">${it.e}${cls&&cls.includes('named')?`<span class="tagname">${esc(it.w)}</span>`:''}</button>`));
+const targetCard = (e,w,id) => `<div class="target"${id?` id="${id}"`:''}><span class="te">${e}</span><span class="tw">${esc(w)}</span></div>`;
+const choiceBtn = (st,v) => st.querySelector(`[data-choice="${v}"]`);
+function learnWord(w){ if(!me) return; me.words=me.words||{}; if(!me.words[w]) me.words[w]=Date.now(); }
+function hush(){ sayToken++; try{ speechSynthesis.cancel(); }catch(e){} }
+
+/* ---------- Tap What I Say (listening) ---------- */
+function eTap(lv){
+  const pool=wordsOf(T(lv,VOCAB_LEVELS)), k=T(lv,[2,3,3,3,4,4,4,4,4,6]);
+  const opts=shuffle(pool).slice(0,k), it=opts[0];
+  return {text: it.act?'Who is doing it?':'Tap the picture you hear', speak:findPhrase(it), key:it.w, word:it.w,
+    html:picBtns(shuffle(opts)), answer:it.w,
+    why:(st,c,btn)=>{ tagBtn(btn,c); return {say:`${thatIs(c)} ${findPhrase(it)} ${it.w}.`}; },
+    async after(st){ tagBtn(choiceBtn(st,it.w),it.w); await say(it.act?`Yes! ${it.w}!`:`Yes! The ${it.w}!`); }};
+}
+
+/* ---------- Sound Safari (listening) ---------- */
+const SOUNDS = {
+  farm:[{w:'cow',e:'🐄',s:'Moo! Moo!'},{w:'dog',e:'🐶',s:'Woof! Woof!'},{w:'cat',e:'🐱',s:'Meow! Meow!'},{w:'sheep',e:'🐑',s:'Baa! Baa!'},{w:'hen',e:'🐔',s:'Cluck, cluck, cluck!'},{w:'duck',e:'🦆',s:'Quack! Quack!'},{w:'goat',e:'🐐',s:'Maa! Maa!'},{w:'horse',e:'🐴',s:'Neigh!'}],
+  wild:[{w:'lion',e:'🦁',s:'Roar!'},{w:'snake',e:'🐍',s:'Hiss! Hiss!'},{w:'bee',e:'🐝',s:'Buzz! Buzz!'},{w:'bird',e:'🐦',s:'Tweet! Tweet!'},{w:'frog',e:'🐸',s:'Ribbit! Ribbit!'},{w:'owl',e:'🦉',s:'Hoo! Hoo!'},{w:'mouse',e:'🐭',s:'Squeak! Squeak!'},{w:'monkey',e:'🐒',s:'Ooh ooh! Aah aah!'}],
+  things:[{w:'clock',e:'🕰️',s:'Tick tock! Tick tock!',fx:'tick',thing:1},{w:'phone',e:'📱',s:'Ring ring! Ring ring!',fx:'ring',thing:1},{w:'bell',e:'🔔',s:'Ding dong!',fx:'bell',thing:1},{w:'car',e:'🚗',s:'Beep beep!',fx:'beep',thing:1},{w:'train',e:'🚂',s:'Choo choo!',thing:1},{w:'baby',e:'👶',s:'Waah! Waah!'},{w:'drum',e:'🥁',s:'Boom! Boom!',fx:'drum',thing:1},{w:'rain',e:'🌧️',s:'Pitter patter, pitter patter.',thing:1}]
+};
+const SOUND_ALL = [...SOUNDS.farm,...SOUNDS.wild,...SOUNDS.things];
+const FX = {
+  tick:()=>{ for(let i=0;i<4;i++) tone(i%2?1300:1700, i*.32, .05, 'square', .07); },
+  ring:()=>{ for(let r=0;r<2;r++) for(let i=0;i<10;i++) tone(i%2?620:760, r*.8+i*.055, .055, 'square', .05); },
+  bell:()=>{ tone(659,0,.9,'sine',.22); tone(523,.55,1.1,'sine',.22); },
+  beep:()=>{ tone(415,0,.18,'sawtooth',.08); tone(415,.3,.2,'sawtooth',.08); },
+  drum:()=>{ tone(100,0,.3,'sine',.4); tone(100,.4,.3,'sine',.4); }
+};
+const soundWord = it => it.s.split(/[!,.]/)[0].toLowerCase();
+const whoQ = it => it.thing ? `What goes ${soundWord(it)}?` : `Who says ${soundWord(it)}?`;
+const makesSound = it => `The ${it.w} ${it.thing?'goes':'says'} ${it.s}`;
+function eSafari(lv){
+  const pool=T(lv,[SOUNDS.farm,SOUNDS.farm,[...SOUNDS.farm,...SOUNDS.wild],SOUNDS.wild,SOUNDS.things,SOUNDS.things,SOUND_ALL,SOUND_ALL,SOUND_ALL,SOUND_ALL]);
+  const k=T(lv,[2,3,3,4,3,4,4,4,3,4]), opts=shuffle(pool).slice(0,k);
+  if(lv>=9){
+    const n=lv===9?2:3, heard=opts.slice(0,n), it=lv===9?heard[0]:heard[n-1], word=lv===9?'first':'last';
+    return {text:`Listen. Who came ${word}?`, parts:['Listen carefully.', ...heard.map(h=>h.s), `Who came ${word}?`], html:picBtns(shuffle(opts)), answer:it.w,
+      why:(st,c,btn)=>{ tagBtn(btn,c); return {say:`Listen again. ${heard.map(h=>h.s).join(' ')} Who came ${word}?`}; },
+      async after(st){ tagBtn(choiceBtn(st,it.w),it.w); await say(`Yes! The ${it.w} came ${word}.`); }};
+  }
+  const it=opts[0];
+  return {text: it.thing?'What makes this sound?':'Who makes this sound?', parts:['Listen!', it.s, whoQ(it)], html:picBtns(shuffle(opts)), answer:it.w,
+    pre: it.fx ? async()=>{ FX[it.fx](); await wait(1400); } : null,
+    why:(st,c,btn)=>{ const o=SOUND_ALL.find(x=>x.w===c); tagBtn(btn,c); return {say:`${makesSound(o)} Listen again. ${it.s} ${whoQ(it)}`}; },
+    async after(st){ tagBtn(choiceBtn(st,it.w),it.w); await say(`Yes! ${makesSound(it)}`); }};
+}
+
+/* ---------- Simon Says Tap (listening: follow instructions) ---------- */
+const SIMON_OBJS = [['ball','⚽'],['cat','🐱'],['cup','☕'],['car','🚗'],['cap','🧢'],['fish','🐟'],['apple','🍎'],['book','📖'],['dog','🐶'],['key','🔑'],['shoe','👟'],['banana','🍌'],['tree','🌳'],['goat','🐐'],['bus','🚌'],['spoon','🥄']].map(([w,e])=>({w,e}));
+const shapeBtn = o => `<button class="opt shape" data-choice="${o.v}" aria-label="${o.v}">${o.size?`<span class="sz ${o.size}">${shapeSVG(o.t,COL[o.c])}</span>`:shapeSVG(o.t,COL[o.c])}</button>`;
+function shapeSet(n, withSize){
+  const out=[], seen=new Set(); let g=0;
+  const cols=shuffle(C6).slice(0,3), types=shuffle(SB).slice(0,3);
+  while(out.length<n && g++<200){
+    const o={t:pick(types), c:pick(cols), size:withSize?pick(['big','small']):''};
+    o.v=[o.size,o.c,o.t].filter(Boolean).join(' ');
+    if(!seen.has(o.v)){ seen.add(o.v); out.push(o); }
+  }
+  return out;
+}
+const SCENES = { table:['on','under','next to'], box:['in','on','next to','behind'] };
+const sceneBtn = (kind,pos,e) => `<button class="opt scenebtn" data-choice="${pos}" aria-label="${pos} the ${kind}"><span class="scene t-${kind} p-${pos.replace(' ','')}"><span class="furn"></span><span class="thing">${e}</span>${kind==='box'?'<span class="boxfront"></span>':''}</span></button>`;
+function seqQ(items, n, render, label){
+  const seq=items.slice(0,n), list=seq.map(x=>label(x));
+  const sayIt = list.length===2 ? `Tap the ${list[0]}, then tap the ${list[1]}.` : `Tap the ${list[0]}, then the ${list[1]}, then the ${list[2]}.`;
+  return {text: n===2 ? 'Two things to tap' : 'Three things to tap', speak:sayIt, seq:seq.map(x=>x.v||x.w), answer:seq.map(x=>x.v||x.w).join(' > '), html:choices(shuffle(items).map(render)), seqSay:sayIt};
+}
+function eSimon(lv){
+  if(lv===1){ const opts=shuffle(SIMON_OBJS).slice(0,3), it=opts[0];
+    return {text:'Listen and tap', speak:`Tap the ${it.w}.`, key:it.w, html:picBtns(shuffle(opts)), answer:it.w, why:(st,c,btn)=>{ tagBtn(btn,c); return {say:`That is the ${c}. Tap the ${it.w}.`}; }, praise:`The ${it.w}!`}; }
+  if(lv===2){ const [a,b]=shuffle(SIMON_OBJS), size=pick(['big','small']);
+    const opts=[{w:`big ${a.w}`,e:a.e,sz:'big'},{w:`small ${a.w}`,e:a.e,sz:'small'},{w:`${pick(['big','small'])} ${b.w}`,e:b.e}];
+    opts[2].sz=opts[2].w.split(' ')[0]; const it=opts[size==='big'?0:1];
+    return {text:'Big or small?', speak:`Tap the ${it.w}.`, key:it.w, answer:it.w,
+      html:choices(shuffle(opts).map(o=>`<button class="opt pic" data-choice="${o.w}" aria-label="${o.w}"><span class="sz ${o.sz}">${o.e}</span></button>`)),
+      why:(st,c,btn)=>{ tagBtn(btn,c); return {say:`That is the ${c}. Tap the ${it.w}.`}; }, praise:`The ${it.w}!`}; }
+  if(lv===3||lv===4){ const opts=shapeSet(lv===3?3:4, lv===4), it=opts[0];
+    return {text:'Listen and tap', speak:`Tap the ${it.v}.`, key:it.v, answer:it.v, html:choices(shuffle(opts).map(shapeBtn)),
+      why:(st,c,btn)=>{ tagBtn(btn,c); return {say:`That is the ${c}. Tap the ${it.v}.`}; }, praise:`The ${it.v}!`}; }
+  if(lv===5||lv===6){ const kind=lv===5?'table':'box', poss=SCENES[kind], pos=pick(poss), th=pick([{w:'cat',e:'🐱'},{w:'dog',e:'🐶'},{w:'ball',e:'⚽'},{w:'duck',e:'🦆'},{w:'apple',e:'🍎'}]);
+    return {text:`Where is the ${th.w}?`, speak:`Tap the ${th.w} ${pos} the ${kind}.`, key:pos, answer:pos, html:choices(shuffle(poss).map(p=>sceneBtn(kind,p,th.e))),
+      why:(st,c,btn)=>{ tagBtn(btn,c); return {say:`There the ${th.w} is ${c} the ${kind}. Find the ${th.w} ${pos} the ${kind}.`}; }, praise:`Yes! ${pos} the ${kind}.`}; }
+  if(lv===7) return seqQ(shuffle(SIMON_OBJS).slice(0,4), 2, it=>`<button class="opt pic" data-choice="${it.w}" aria-label="${it.w}">${it.e}</button>`, it=>it.w);
+  if(lv===8) return seqQ(shapeSet(4,false), 2, shapeBtn, o=>o.v);
+  if(lv===9) return seqQ(shuffle(SIMON_OBJS).slice(0,5), 3, it=>`<button class="opt pic" data-choice="${it.w}" aria-label="${it.w}">${it.e}</button>`, it=>it.w);
+  return seqQ(shapeSet(6,true), 3, shapeBtn, o=>o.v);
+}
+
+/* ---------- microphone helpers (recordings never leave the phone) ---------- */
+const micOK = () => !!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia && window.MediaRecorder);
+async function recordClip(ms){
+  const stream=await navigator.mediaDevices.getUserMedia({audio:true});
+  return new Promise((res,rej)=>{
+    const chunks=[]; let rec;
+    try{ rec=new MediaRecorder(stream); }catch(e){ stream.getTracks().forEach(t=>t.stop()); return rej(e); }
+    rec.ondataavailable=e=>{ if(e.data&&e.data.size) chunks.push(e.data); };
+    rec.onstop=()=>{ stream.getTracks().forEach(t=>t.stop()); res(new Blob(chunks,{type:rec.mimeType||'audio/webm'})); };
+    rec.start(); setTimeout(()=>{ try{ rec.stop(); }catch(e){} }, ms);
+  });
+}
+function playParrot(blob){
+  return new Promise(res=>{
+    const a=new Audio(URL.createObjectURL(blob)); let done=false; const fin=()=>{ if(!done){ done=true; try{ URL.revokeObjectURL(a.src); }catch(e){} res(); } };
+    a.preservesPitch=false; a.mozPreservesPitch=false; a.webkitPreservesPitch=false; a.playbackRate=1.4;
+    a.onended=fin; a.onerror=fin; a.play().catch(fin); setTimeout(fin, 9000);
+  });
+}
+const squawk = () => { tone(1400,0,.08,'sawtooth',.06); tone(1800,.09,.1,'sawtooth',.06); };
+const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+function listenOnce(){
+  return new Promise(res=>{
+    let r; try{ r=new SR(); }catch(e){ return res({err:'nosr'}); }
+    r.lang='en-US'; r.interimResults=false; r.maxAlternatives=5;
+    let out=null;
+    r.onresult=e=>{ out=[...e.results[0]].map(a=>a.transcript.toLowerCase().trim()); };
+    r.onerror=e=>{ if(!out) out={err:e.error||'error'}; };
+    r.onend=()=>res(out||{err:'no-speech'});
+    try{ r.start(); }catch(e){ return res({err:'start'}); }
+    setTimeout(()=>{ try{ r.stop(); }catch(e){} }, 6000);
+  });
+}
+function lev(a,b){ const m=a.length,n=b.length; if(Math.abs(m-n)>1) return 9; const d=Array.from({length:m+1},(_,i)=>[i]); for(let j=1;j<=n;j++) d[0][j]=j;
+  for(let i=1;i<=m;i++) for(let j=1;j<=n;j++) d[i][j]=Math.min(d[i-1][j]+1,d[i][j-1]+1,d[i-1][j-1]+(a[i-1]===b[j-1]?0:1)); return d[m][n]; }
+const SYN = {mother:['mum','mom','mommy','mummy','mama'],father:['dad','daddy','papa'],grandmother:['grandma','granny','nana'],grandfather:['grandpa','granddad'],cup:['mug'],cap:['hat'],phone:['mobile','telephone'],bike:['bicycle'],plane:['aeroplane','airplane'],television:['tv','telly'],sea:['ocean','waves'],rabbit:['bunny'],hen:['chicken'],sheep:['lamb'],trousers:['pants','jeans'],bajaj:['tuk tuk','tuktuk','rickshaw'],'police officer':['police','policeman','policewoman'],house:['home'],plate:['dish'],tooth:['teeth'],foot:['feet'],glasses:['spectacles'],flower:['rose'],mountain:['hill'],doctor:['nurse'],baby:['child'],finger:['one'],heart:['love'],arm:['muscle'],laughing:['smiling'],drinking:['juice']};
+function saidRight(alts, it){
+  const targets=[it.w, ...(SYN[it.w]||[])];
+  const stem = it.act ? it.w.replace(/ing$/,'').replace(/([bcdfgklmnprstvz])\1$/,'$1') : null;
+  return alts.some(alt=>{ const toks=alt.replace(/[^a-z\s']/g,' ').split(/\s+/).filter(Boolean);
+    return targets.some(t=> t.includes(' ') ? alt.includes(t) : toks.some(x=> x===t || x===t+'s' || x===t+'es' || (t.length>=4 && lev(x,t)<=1) || (stem && x.startsWith(stem))));
+  });
+}
+
+/* ---------- Parrot Echo (speaking, never marked) ---------- */
+const PARROT = {
+  words:[...WORLDS.animals.words,...WORLDS.food.words].map(([w,e])=>({w,e})),
+  words2:[...WORLDS.home.words,...WORLDS.body.words,...WORLDS.clothes.words].map(([w,e])=>({w,e})),
+  phrases:[['a big dog','🐶'],['a small cat','🐱'],['a red apple','🍎'],['my hand','✋'],['a yellow banana','🍌'],['two eggs','🥚'],['a cup of tea','🍵'],['a blue car','🚗'],['my nose','👃'],['a happy baby','👶'],['a tall tree','🌳'],['a hot sun','☀️'],['a white goat','🐐'],['three birds','🐦']].map(([w,e])=>({w,e})),
+  sents:[['I like mango.','🥭'],['This is my nose.','👃'],['I see a camel.','🐪'],['I drink milk.','🥛'],['The sun is hot.','☀️'],['I have a ball.','⚽'],['Hello, teacher!','👩‍🏫'],['Thank you!','🙏'],['Good morning!','🌅'],['I am happy.','😊'],['Look at the moon.','🌙'],['My name is NAME.','👋']].map(([w,e])=>({w,e})),
+  long:[['The goat is eating grass.','🐐'],['I go to school every day.','🏫'],['Can I have some water, please?','💧'],['My mother is cooking rice.','🍚'],['The baby is sleeping.','👶'],['I wash my hands before I eat.','🧼'],['The bus is big and yellow.','🚌'],['Where is my shoe?','👟'],['Two birds are in the tree.','🐦'],['It is raining today.','🌧️'],['How are you? I am fine, thank you.','😊']].map(([w,e])=>({w,e}))
+};
+function eParrot(lv){
+  const set=T(lv,['words','words','words2','words2','phrases','phrases','sents','sents','long','long']);
+  const base=pick(PARROT[set]), text=base.w.replace('NAME', me?me.name:'Tiri'), ms=set==='long'?5000:set==='sents'?4000:set==='phrases'?3200:2600;
+  let myQ;
+  myQ = {text:'Say it to the parrot', parts:['Say it after me.', text, text], answer:text, noReview:true,
+    html:`<div class="parrot"><span class="pbird" id="pBird">🦜</span><span class="ppic">${base.e}</span></div><div class="pword">${esc(text)}</div>
+      <button class="micbtn" id="pRec"><span class="mi">🎤</span><span class="ml">${micOK()?'Tap, then say it':'Say it out loud'}</span></button>
+      <div class="btns pafter" id="pAfter" hidden><button class="btn" id="pAgain">↻ Again</button><button class="btn primary" id="pNext">Next ▶</button></div>`,
+    mount(st){
+      const rec=$('pRec'), after=$('pAfter'), bird=$('pBird'); let busy=false;
+      const alive=()=>current==='sPlay' && q===myQ;
+      const done=()=>{ rec.hidden=true; after.hidden=false; };
+      const fallback=async()=>{ rec.hidden=true; bird.classList.add('talk'); await say(['Say it with the parrot!', text]); bird.classList.remove('talk'); if(alive()) after.hidden=false; };
+      const go=async()=>{
+        if(busy) return; busy=true; audio();
+        if(!micOK()){ busy=false; return fallback(); }
+        hush(); rec.classList.add('on'); rec.querySelector('.ml').textContent='Listening… say it now';
+        try{
+          const blob=await recordClip(ms); if(!alive()) return;
+          rec.classList.remove('on'); rec.querySelector('.ml').textContent='The parrot says…'; bird.classList.add('talk'); squawk(); await wait(250);
+          await playParrot(blob); bird.classList.remove('talk'); if(!alive()) return;
+          done(); say(pick(['Ha ha! Good talking!','Squawk! Well said!','The parrot loves it!']));
+        }catch(e){ rec.classList.remove('on'); toast('The microphone is off. Say it out loud instead.'); fallback(); }
+        busy=false;
+      };
+      rec.addEventListener('click',go);
+      $('pAgain').addEventListener('click',()=>{ after.hidden=true; rec.hidden=false; rec.querySelector('.ml').textContent='Tap, then say it'; say(text).then(()=>{ if(alive()) go(); }); });
+      $('pNext').addEventListener('click',()=>customDone(true, ()=>say(pick(['Well done!','Super speaking!','Great!']))));
+    }};
+  return myQ;
+}
+
+/* ---------- Name It! (speaking, checked by voice or a grown-up) ---------- */
+function eName(lv){
+  const pool=wordsOf(T(lv,VOCAB_LEVELS)), it=pick(pool);
+  let myQ;
+  const ask = it.act ? 'What is this person doing?' : 'What is this?';
+  myQ = {text:ask, speak:ask+' Say the word.', answer:it.w, word:it.w,
+    html:`<div class="bigemoji nbig">${it.e}</div><div class="pword" id="nWord" hidden>${esc(it.w)}</div>
+      <button class="micbtn" id="nRec"${SR?'':' hidden'}><span class="mi">🎤</span><span class="ml">Tap, then say it</span></button>
+      <p class="heard" id="nHeard">${SR?'':'Say the word out loud. A grown-up taps 👍 when it is right.'}</p>
+      <div class="btns"><button class="btn small" id="nHear">🔊 Hear it</button><button class="btn small${SR?'':' primary'}" id="nYes">👍 Grown-up: it was right</button></div>`,
+    mount(st){
+      const rec=$('nRec'), heard=$('nHeard'); let hint=false, misses=0, busy=false;
+      const alive=()=>current==='sPlay' && q===myQ;
+      const win=()=>{ $('nWord').hidden=false; rec.hidden=true; customDone(misses===0 && !hint, ()=>say(it.act?`Yes! ${it.w}!`:`Yes! ${it.w}!`)); };
+      const grownUp=msg=>{ rec.hidden=true; heard.textContent=msg; $('nYes').classList.add('primary'); };
+      rec.addEventListener('click', async()=>{
+        if(busy||locked) return; busy=true; audio(); hush();
+        rec.classList.add('on'); rec.querySelector('.ml').textContent='Listening…'; heard.textContent='';
+        const r=await listenOnce(); busy=false; if(!alive()) return;
+        rec.classList.remove('on'); rec.querySelector('.ml').textContent='Tap, then say it';
+        if(!Array.isArray(r)){
+          if(r.err==='not-allowed'||r.err==='service-not-allowed'){ grownUp('The microphone is off. Say it out loud, and a grown-up taps 👍.'); return; }
+          if(r.err==='network'){ grownUp('Voice check needs the internet. Say it out loud, and a grown-up taps 👍.'); return; }
+          heard.textContent="I didn't hear anything. Tap and try again, a bit louder."; say("I didn't hear you. Try again, a bit louder."); return;
+        }
+        if(saidRight(r,it)){ heard.textContent=`I heard “${r[0]}” ✓`; win(); return; }
+        misses++; tries++; heard.textContent=`I heard “${r[0]}”. Try again!`; boop();
+        if(misses>=2){ hint=true; $('nWord').hidden=false; say(`It is: ${it.w}. ${it.w}. Now you say it.`); }
+        else say('Not quite. Try again.');
+      });
+      $('nHear').addEventListener('click',()=>{ audio(); hint=true; $('nWord').hidden=false; say([it.w, it.w]); });
+      $('nYes').addEventListener('click',()=>{ if(!locked) win(); });
+    }};
+  return myQ;
+}
+
+/* ---------- Rhyme Rocket (sound play) ---------- */
+const RHYMES = [[['cat','🐱'],['hat','🎩']],[['dog','🐶'],['frog','🐸']],[['bee','🐝'],['tree','🌳'],['key','🔑'],['three','3️⃣']],[['star','⭐'],['car','🚗']],[['goat','🐐'],['boat','⛵'],['coat','🧥']],[['mouse','🐭'],['house','🏠']],[['fish','🐟'],['dish','🍽️']],[['moon','🌙'],['spoon','🥄'],['balloon','🎈']],[['bear','🐻'],['pear','🍐'],['chair','🪑']],[['snake','🐍'],['cake','🍰']],[['ring','💍'],['king','🤴']],[['bell','🔔'],['shell','🐚']],[['clock','🕰️'],['sock','🧦'],['lock','🔒']],[['fox','🦊'],['box','📦']],[['hen','🐔'],['ten','🔟'],['pen','🖊️']],[['rain','🌧️'],['train','🚂'],['plane','✈️']],[['nose','👃'],['rose','🌹'],['toes','🦶']],[['bed','🛏️'],['bread','🍞']],[['tie','👔'],['pie','🥧']],[['whale','🐋'],['snail','🐌']],[['shoe','👟'],['two','2️⃣']],[['four','4️⃣'],['door','🚪']]].map(g=>g.map(([w,e])=>({w,e})));
+function eRhyme(lv){
+  if(lv>=9){
+    const g3=pick(RHYMES.filter(g=>g.length>=3)), three=shuffle(g3).slice(0,3), odd=pick(pick(RHYMES.filter(g=>g!==g3)));
+    const opts=shuffle([...three,odd]), names=three.map(o=>o.w).join(', ');
+    return {text:'Which one does not rhyme?', parts:[opts.map(o=>o.w).join(', ')+'.', 'Three of them rhyme. Which one does not rhyme?'], html:picBtns(opts,'named'), answer:odd.w,
+      why:(st,c,btn)=>({say:`${c} rhymes with the others. Listen again: ${opts.map(o=>o.w).join(', ')}.`}),
+      async after(st){ await say(`Yes! ${names}. They rhyme. ${odd.w} does not.`); }};
+  }
+  const g=pick(RHYMES), [t,m]=shuffle(g), k=T(lv,[2,2,2,3,3,3,3,3]);
+  let others=shuffle(RHYMES.filter(x=>x!==g).flat());
+  if(lv>=7) others=[...others.filter(o=>o.w[0]===t.w[0]), ...others];
+  const dist=[]; for(const o of others){ if(dist.length>=k-1) break; if(!dist.some(d=>d.w===o.w)) dist.push(o); }
+  const opts=shuffle([m,...dist]);
+  return {text:`What rhymes with ${t.w}?`, parts:[`${t.w}.`, `What rhymes with ${t.w}?`, opts.map(o=>o.w).join('? ')+'?'], answer:m.w,
+    html:targetCard(t.e,t.w)+picBtns(opts,'named'),
+    why:(st,c,btn)=>({say:`${t.w}, ${c}. They do not sound the same at the end. Try again.`}),
+    async after(st){ await say(`Yes! ${t.w}, ${m.w}. They rhyme!`); }};
+}
+
+/* ---------- Clap the Beat (sound play: syllables) ---------- */
+const SYL = ['cat🐱','dog🐶','sun☀️','fish🐟','ball⚽','goat🐐','cow🐄','egg🥚','tree🌳','milk🥛','hand✋','shoe👟','book📖','car🚗','bus🚌','door🚪','key🔑','bed🛏️','frog🐸','star⭐','moon🌙','bread🍞',
+  'man·go🥭','ap·ple🍎','ba·by👶','ti·ger🐯','rab·bit🐰','mon·key🐒','pen·cil✏️','wa·ter💧','rock·et🚀','car·rot🥕','lem·on🍋','cam·el🐪','chick·en🐔','ro·bot🤖','can·dle🕯️','ze·bra🦓','pan·da🐼','par·rot🦜','tur·tle🐢','spi·der🕷️','gui·tar🎸','sand·wich🥪',
+  'ba·na·na🍌','el·e·phant🐘','to·ma·to🍅','but·ter·fly🦋','um·brel·la☂️','di·no·saur🦕','kan·ga·roo🦘','com·pu·ter💻','po·ta·to🥔','pine·ap·ple🍍','bi·cy·cle🚲','croc·o·dile🐊','go·ril·la🦍','oc·to·pus🐙','tel·e·phone☎️','straw·ber·ry🍓',
+  'wa·ter·mel·on🍉','hel·i·cop·ter🚁','cat·er·pil·lar🐛','av·o·ca·do🥑','tel·e·vi·sion📺'].map(s=>{ const m=s.match(/^([a-z·]+)(.+)$/); const split=m[1]; return {w:split.replace(/·/g,''), e:m[2], split, n:split.split('·').length}; });
+const clapSnd = (i) => { tone(330,i,.07,'square',.22); tone(180,i,.09,'triangle',.18); };
+function eClap(lv){
+  const maxN=T(lv,[2,2,3,3,4,4,4,4,4,4]);
+  const n = lv>=9 ? pick([2,3,3,4,4]) : lv>=5 ? pick([1,2,3,3,4,4]) : R(1,maxN);
+  const it=pick(SYL.filter(s=>s.n===n));
+  const btns=Array.from({length:maxN},(_,i)=>i+1).map(i=>`<button class="opt claps" data-choice="${i}" aria-label="${i} clap${i>1?'s':''}"><span class="cl">${'👏'.repeat(i)}</span><b>${i}</b></button>`).join('');
+  return {text:'How many claps?', parts:[`${it.w}.`, 'How many claps?', `${it.w}.`], answer:String(n),
+    html:targetCard(it.e,it.w,'clapT')+`<div class="choices">${btns}</div>`,
+    why:(st,c)=>({html:`<div class="sylls">${it.split.split('·').map(p=>`<span>${esc(p)}</span>`).join('')}</div>`, say:`You said ${c}. Look at the parts and say it slowly: ${it.w}. Try again.`}),
+    async after(st){
+      const tw=st.querySelector('#clapT .tw'); if(tw) tw.innerHTML=it.split.split('·').map(p=>`<span class="sy">${esc(p)}</span>`).join('');
+      const sy=[...st.querySelectorAll('#clapT .sy')];
+      await say(it.w);
+      for(let i=0;i<n;i++){ clapSnd(0); if(sy[i]) sy[i].classList.add('lit'); await wait(480); }
+      await say(`${n} clap${n>1?'s':''}!`);
+    }};
+}
+
+/* ---------- First Sound Fishing (sound play: first sounds) ---------- */
+const FIRST = {
+  b:['ball⚽','bed🛏️','bus🚌','banana🍌','bee🐝','boat⛵','book📖','bird🐦','bell🔔','bear🐻'],
+  k:['cat🐱','cup☕','car🚗','cow🐄','cake🍰','camel🐪','carrot🥕','key🔑','king🤴'],
+  d:['dog🐶','door🚪','duck🦆','drum🥁','dress👗','dinosaur🦕'],
+  f:['fish🐟','fox🦊','flower🌸','foot🦶','frog🐸','fire🔥'],
+  g:['goat🐐','girl👧','guitar🎸','gift🎁','gorilla🦍','grapes🍇'],
+  h:['hat🎩','hen🐔','house🏠','hand✋','horse🐴','heart❤️'],
+  l:['lion🦁','lemon🍋','leaf🍃','lock🔒','leg🦵'],
+  m:['moon🌙','mango🥭','milk🥛','mouse🐭','monkey🐒','mountain⛰️'],
+  p:['pen🖊️','pear🍐','panda🐼','pencil✏️','potato🥔','parrot🦜','pineapple🍍'],
+  r:['rain🌧️','rabbit🐰','ring💍','rocket🚀','robot🤖','rose🌹'],
+  s:['sun☀️','sock🧦','snake🐍','star⭐','spoon🥄','sea🌊','sandwich🥪'],
+  t:['tree🌳','tiger🐯','train🚂','tomato🍅','tooth🦷','turtle🐢','tea🍵'],
+  w:['water💧','watermelon🍉','whale🐋','wolf🐺']
+};
+Object.keys(FIRST).forEach(k=>{ FIRST[k]=FIRST[k].map(s=>{ const m=s.match(/^([a-z]+)(.+)$/); return {w:m[1], e:m[2], L:k}; }); });
+const STRETCH = {m:'mmm', s:'sss', f:'fff', l:'lll', r:'rrr'};
+const SIMILAR = {b:'p', p:'b', d:'t', t:'d', k:'g', g:'k'};
+function eFish(lv){
+  const L=pick(Object.keys(FIRST)), [t,m]=shuffle(FIRST[L]), k=T(lv,[2,2,2,3,3,3,4,4,3,4]);
+  let letters=shuffle(Object.keys(FIRST).filter(x=>x!==L));
+  if(lv>=9 && SIMILAR[L]) letters=[SIMILAR[L], ...letters.filter(x=>x!==SIMILAR[L])];
+  const opts=shuffle([m, ...letters.slice(0,k-1).map(x=>pick(FIRST[x]))]);
+  return {text:`What starts like ${t.w}?`, parts:[`${t.w}.`, `Which one starts like ${t.w}?`, opts.map(o=>o.w).join('? ')+'?'], answer:m.w,
+    html:targetCard(t.e,t.w)+`<div class="pond">${picBtns(opts,'named fishy')}</div>`,
+    why:(st,c,btn)=>({say:`${t.w}, ${c}. They start with different sounds. Try again.`}),
+    async after(st){ await say(`Yes! ${t.w}, ${m.w}. ${STRETCH[L]?`They both start with ${STRETCH[L]}.`:'They start with the same sound.'}`); }};
+}
+
+/* the English games, in ladder order */
+const ENGLISH = {
+  steps:[{n:1, name:'Listening ears', games:['etap','esafari','esimon','eparrot','ename']}, {n:2, name:'Sound play', games:['erhyme','eclap','efish']}],
+  get games(){ return this.steps.flatMap(s=>s.games); }
+};
+
 const GAMES = {
   count:{name:'Counting', icon:'🍎', acc:'#E0567A', learn:'Count objects up to 10', make:gCount},
   findnum:{name:'Find the Number', icon:'🔢', acc:'#3657E0', learn:'Know the numbers 1 to 10', make:gFind},
@@ -1129,6 +1494,15 @@ const GAMES = {
   orderops:{name:'Order of Operations', icon:'🧮', acc:'#C2410C', learn:'Brackets first, then × ÷', make:gOrderOps, sprint:true},
   words:{name:'Word Problems', icon:'📝', acc:'#4D7C0F', learn:'Real-life problem solving', make:gWords},
 
+  etap:{name:'Tap What I Say', icon:'👂', acc:'#3657E0', learn:'Hear a word, find the picture', skill:'Listening', make:eTap},
+  esafari:{name:'Sound Safari', icon:'🦁', acc:'#C2410C', learn:'Who makes that sound?', skill:'Listening', make:eSafari},
+  esimon:{name:'Simon Says Tap', icon:'👆', acc:'#0F9BB5', learn:'Follow spoken instructions', skill:'Listening', make:eSimon},
+  eparrot:{name:'Parrot Echo', icon:'🦜', acc:'#22955A', learn:'Say it back to the parrot', skill:'Speaking', make:eParrot},
+  ename:{name:'Name It!', icon:'🗣️', acc:'#8B5CF6', learn:'Say what you see', skill:'Speaking', make:eName},
+  erhyme:{name:'Rhyme Rocket', icon:'🚀', acc:'#E0567A', learn:'Find words that rhyme', skill:'Sound play', make:eRhyme},
+  eclap:{name:'Clap the Beat', icon:'👏', acc:'#D19A06', learn:'Count the beats in a word', skill:'Sound play', make:eClap},
+  efish:{name:'First Sound Fishing', icon:'🎣', acc:'#1D4ED8', learn:'Which words start the same?', skill:'Sound play', make:eFish},
+
   placement:{name:'Quick check', icon:'🧭', acc:'#0F9BB5', learn:'Find the right games', isPlacement:true},
   review:{name:'Review', icon:'🔁', acc:'#D19A06', learn:'Questions to try again', isReview:true},
   sprint:{name:'60-Second Challenge', icon:'⏱️', acc:'#D63E55', learn:'Quick-fire mixed questions', isSprint:true}
@@ -1140,7 +1514,7 @@ const GROUPS = {
 };
 const groupOf = age => age<=5?'little':age<=8?'middle':'older';
 const bandOf = p => (p && GROUPS[p.band] ? p.band : groupOf(p.age));   // set by the quick check or the parent; age otherwise
-const G = () => GROUPS[bandOf(me)];
+const G = () => { const g=GROUPS[bandOf(me)]; return subject==='english' ? Object.assign({}, g, {label:'English · Steps 1–2', games:ENGLISH.games, perLevel:g===GROUPS.little?5:6, voice:true}) : g; };
 
 /* ================= storage ================= */
 const KEY='cwm.v2';
@@ -1253,7 +1627,7 @@ function resultsMessage(){
   const d=new Date(), today=`${d.getFullYear()}-${pad2(d.getMonth()+1)}-${pad2(d.getDate())}`;
   const lines=[`Tiri results — ${today} — device ${store.device}`,''];
   store.profiles.forEach(p=>{ const t=totals(p), acc=t.answers?Math.round(100*t.right/t.answers):0;
-    const lv=GROUPS[bandOf(p)].games.filter(id=>!GAMES[id].isSprint&&p.games[id]&&levelsDone(p.games[id])).map(id=>`${GAMES[id].name} ${levelsDone(p.games[id])}/10`).join(', ');
+    const lv=GROUPS[bandOf(p)].games.concat(ENGLISH.games).filter(id=>!GAMES[id].isSprint&&p.games[id]&&levelsDone(p.games[id])).map(id=>`${GAMES[id].name} ${levelsDone(p.games[id])}/10`).join(', ');
     lines.push(`${p.name} (age ${p.age}): ${t.rounds} rounds played, ${t.answers} answers, ${t.right} right first time (${acc}%), ${t.wrong} wrong tries.${lv?` Levels completed: ${lv}.`:''}`); });
   lines.push('','--- Spreadsheet data (paste into Excel; each round has a unique id) ---',toCSV());
   return lines.join('\n');
@@ -1261,7 +1635,7 @@ function resultsMessage(){
 
 /* ================= navigation ================= */
 let lastAnswer=null, me=null, game=null, level=1, qi=0, q=null, locked=false, tries=0, typed='', sprint=null;
-const SCREENS=['sHome','sEdit','sGames','sLevels','sPlay','sDone','sParent'];
+const SCREENS=['sHome','sEdit','sGames','sLevels','sPlay','sDone','sParent','sGarden'];
 let current='sHome';
 const ICON_SOUND_ON='<svg viewBox="0 0 24 24"><path d="M4 9v6h4l5 4V5L8 9H4z"/><path d="M16.5 8.5a5 5 0 010 7"/><path d="M19 6a8.5 8.5 0 010 12"/></svg>';
 const ICON_SOUND_OFF='<svg viewBox="0 0 24 24"><path d="M4 9v6h4l5 4V5L8 9H4z"/><path d="M17 9l5 6M22 9l-5 6"/></svg>';
@@ -1271,7 +1645,7 @@ function show(id){
   if(id!=='sPlay'){ const m=$('mascot'); if(m){ clearTimeout(mascotT); m.classList.remove('show'); } }
   $('backBtn').hidden = id==='sHome';
   const mid=$('topMid');
-  if(me && ['sGames','sLevels','sPlay','sDone'].includes(id)) mid.innerHTML=`<div class="childchip">${avatar(me)}<b>${esc(me.name)}</b><span class="starcount">★ ${starTotal(me)}</span></div>`;
+  if(me && ['sGames','sLevels','sPlay','sDone','sGarden'].includes(id)) mid.innerHTML=`<div class="childchip">${avatar(me)}<b>${esc(me.name)}</b><span class="starcount">★ ${starTotal(me)}</span></div>`;
   else if(id==='sParent') mid.innerHTML=`<div class="brand">Parent area</div>`;
   else mid.innerHTML=`<div class="brand"><span class="mark">123</span>Tiri</div>`;
   if(id==='sPlay') document.querySelector('.app').style.setProperty('--acc', GAMES[game].acc);
@@ -1279,6 +1653,7 @@ function show(id){
 function goBack(){
   if(current==='sEdit') return editReturn==='sParent'?openParent():goHome();
   if(current==='sParent'||current==='sGames') return goHome();
+  if(current==='sGarden') return openGames();
   if(current==='sLevels') return openGames();
   if(current==='sPlay'||current==='sDone'){ logRound(false); stopSprint(); if(placing){ placing=null; me.placementSkipped=true; save(); return openGames(); } const wasPractice=!!practice; practice=null; return (wasPractice||GAMES[game].isPlacement||GAMES[game].isSprint||GAMES[game].isReview)?openGames():openLevels(game); }
 }
@@ -1331,21 +1706,39 @@ function saveChild(){
 /* ---------- games ---------- */
 function openGames(){
   logRound(false); stopSprint(); show('sGames');
-  const grp=G();
+  const grp=G(), eng=subject==='english';
   $('gamesTitle').textContent=`Hi ${me.name}!`;
   practice=null;
-  $('gamesSub').innerHTML=`<span class="tag">${grp.label}</span>&nbsp; Start today's practice, or pick a game.`;
+  $('subjTabs').innerHTML=`<button class="tap${eng?'':' on'}" data-subject="maths" aria-pressed="${!eng}">🔢 Maths</button><button class="tap${eng?' on':''}" data-subject="english" aria-pressed="${eng}">🔤 English</button>`;
+  $('gamesSub').innerHTML=`<span class="tag">${grp.label}</span>&nbsp; ${eng?'Listen, speak and play with sounds.':'Start today\'s practice, or pick a game.'}`;
   const due=dueReviews().length, days=practiceDays(me), doneToday=(me.practiceDays||[]).includes(todayStr());
-  const card=`<button class="card practice tap" id="practiceBtn"><span class="pi">${doneToday?'✅':'🌟'}</span><span class="pt"><b>Today's practice</b><small>${doneToday?'Done today. You can play it again.':'About 10 minutes · games picked for you'}</small>${days?`<small class="streak">⭐ ${days} day${days>1?'s':''} in a row</small>`:''}</span><span class="btn primary small go">${doneToday?'Again':'Start'}</span></button>`;
-  const check = !me.placement ? `<button class="card checkcard tap" id="checkBtn"><span class="pi">🧭</span><span class="pt"><b>Quick check</b><small>8 warm-up questions to find the best games for ${esc(me.name)}</small></span><span class="btn primary small go">Start</span></button>` : '';
+  const card=`<button class="card practice tap" id="practiceBtn"><span class="pi">${doneToday?'✅':'🌟'}</span><span class="pt"><b>Today's ${eng?'English ':''}practice</b><small>${doneToday?'Done today. You can play it again.':'About 10 minutes · games picked for you'}</small>${days?`<small class="streak">⭐ ${days} day${days>1?'s':''} in a row</small>`:''}</span><span class="btn primary small go">${doneToday?'Again':'Start'}</span></button>`;
+  const check = !eng && !me.placement ? `<button class="card checkcard tap" id="checkBtn"><span class="pi">🧭</span><span class="pt"><b>Quick check</b><small>8 warm-up questions to find the best games for ${esc(me.name)}</small></span><span class="btn primary small go">Start</span></button>` : '';
+  const nw=Object.keys(me.words||{}).length;
+  const garden = eng ? `<button class="card practice garden tap" id="gardenBtn"><span class="pi">🌼</span><span class="pt"><b>Word Garden</b><small>${nw?`${nw} word${nw>1?'s':''} grown so far. Tap to visit.`:'Every new word you learn grows a flower.'}</small></span><span class="btn small go">Visit</span></button>` : '';
   const rev = due ? `<button class="card game tap" id="reviewBtn" style="--acc:#D19A06"><span class="gicon">🔁</span><b>Review</b><small>${due} question${due>1?'s':''} to try again</small></button>` : '';
-  $('games').innerHTML=(me.placement?card:check+card)+rev+grp.games.map(id=>{
+  const gameCard = id => {
     const g=GAMES[id];
     if(g.isSprint) return `<button class="card game tap" data-game="${id}" style="--acc:${g.acc}"><span class="gicon">${g.icon}</span><b>${g.name}</b><small>${g.learn}</small><div class="gprog">Best score: ${me.best.sprint||0}</div></button>`;
     const s=gp(me,id), done=levelsDone(s);
-    return `<button class="card game tap" data-game="${id}" style="--acc:${g.acc}"><span class="gicon">${g.icon}</span><b>${g.name}</b><small>${g.learn}</small><div class="gprog"><span class="bar"><i style="width:${done*10}%"></i></span>${done}/10</div></button>`;
-  }).join('');
-  if(grp.voice) say(`Hi ${me.name}! Tap today's practice, or pick a game.`);
+    return `<button class="card game tap" data-game="${id}" style="--acc:${g.acc}"><span class="gicon">${g.icon}</span><b>${g.name}</b><small>${g.skill?`<span class="skill">${g.skill}</span> `:''}${g.learn}</small><div class="gprog"><span class="bar"><i style="width:${done*10}%"></i></span>${done}/10</div></button>`;
+  };
+  const list = eng ? ENGLISH.steps.map(st=>`<h2 class="stephead">Step ${st.n} · ${st.name}</h2>`+st.games.map(gameCard).join('')).join('') : grp.games.map(gameCard).join('');
+  $('games').innerHTML=(eng||me.placement?card:check+card)+garden+rev+list;
+  if(grp.voice) say(eng?`Hi ${me.name}! Let's learn English. Pick a game.`:`Hi ${me.name}! Tap today's practice, or pick a game.`);
+}
+
+/* ---------- Word Garden: every word learned grows a flower ---------- */
+function openGarden(){
+  show('sGarden');
+  const got=me.words||{}, n=Object.keys(got).length;
+  const total=ALL_WORDS.length;
+  $('gardenBody').innerHTML=`<div class="head"><h1>${esc(me.name)}'s Word Garden</h1><p>${n} of ${total} words grown. Tap a flower to hear its word. New flowers grow when you get a word right first time in Tap What I Say or Name It!</p></div>`
+    + Object.keys(WORLDS).map(k=>{ const ws=WORLDS[k].words, have=ws.filter(([w])=>got[w]).length;
+      return `<div class="card bed"><h3>${WORLDS[k].name} <span>${have}/${ws.length}</span></h3><div class="plots">${ws.map(([w,e])=>got[w]
+        ? `<button class="plot grown tap" data-gword="${esc(w)}" aria-label="${esc(w)}"><span class="pe">${e}</span><span class="pw">${esc(w)}</span></button>`
+        : `<span class="plot seed" aria-label="not grown yet"><span class="pe">🌱</span></span>`).join('')}</div></div>`; }).join('');
+  say(n?`Welcome to your garden, ${me.name}! You have ${n} words.`:`This is your word garden, ${me.name}. Learn words to grow flowers!`);
 }
 
 /* ---------- levels ---------- */
@@ -1433,12 +1826,13 @@ function nextQ(){
   if(sp.s!=null) q=makeQ(sp.g, sp.lv, sp.s);
   else { let g=0; do{ q=makeQ(sp.g, sp.lv); }while(!q.pad && q.answer===lastAnswer && g++<8); }
   q.isReview=!!sp.review; lastAnswer=q.answer; renderQ();
-  if(G().voice) setTimeout(()=>say(q.isReview?['Here is one to try again.', ...questionParts(q)]:questionParts(q)),250);
+  if(G().voice){ const myQ=q; setTimeout(async()=>{ if(q.pre){ await q.pre(); if(q!==myQ) return; } say(q.isReview?['Here is one to try again.', ...questionParts(q)]:questionParts(q)); },250); }
 }
 function renderQ(){
   $('pText').textContent=q.text;
   $('stage').innerHTML = (q.isReview?'<div class="revtag">🔁 One to try again</div>':'') + q.html + (q.pad ? padHTML(q.decimal) : '');
   typed=''; tries=0; locked=false;
+  if(q.mount) q.mount($('stage'));
 }
 function showWhy(html){
   const st=$('stage'); let w=st.querySelector('.why');
@@ -1477,6 +1871,20 @@ function submitTyped(){
 function onChoice(btn){
   if(locked) return; audio();
   if(placing){ placeAnswer(btn.dataset.choice===q.answer, btn); return; }
+  if(q.seq){
+    q.pos=q.pos||0;
+    if(btn.classList.contains('right')) return;
+    if(btn.dataset.choice===q.seq[q.pos]){
+      btn.classList.add('right'); btn.insertAdjacentHTML('beforeend',`<span class="stepno">${q.pos+1}</span>`); q.pos++;
+      if(q.pos<q.seq.length){ tick(); return; }
+      locked=true; ding(); burst(btn); celebrateCorrect(); completeQ(tries===0,false,()=>say(pick(['Well done! You did it all!','Great listening!','Yes! All done!']))); return;
+    }
+    tries++; boop(); btn.classList.remove('shake'); void btn.offsetWidth; btn.classList.add('shake');
+    q.pos=0; $('stage').querySelectorAll('.opt.right').forEach(b=>{ b.classList.remove('right'); const n=b.querySelector('.stepno'); if(n) n.remove(); });
+    if(tries>=2){ const first=choiceBtn($('stage'),q.seq[0]); if(first) first.classList.add('pulse'); }
+    say(tries>=2?['Start again. Listen.', q.seqSay, 'Start with the one that is shining.']:['Oops! Start again. Listen.', q.seqSay]);
+    return;
+  }
   if(btn.dataset.choice===q.answer){ locked=true; btn.classList.add('right'); ding(); burst(btn); celebrateCorrect();
     completeQ(tries===0,false, q.after ? ()=>q.after($('stage')) : ()=>say(`${pick(['Well done!','Great!','Yes!'])} ${q.praise||''}`)); }
   else {
@@ -1487,10 +1895,11 @@ function onChoice(btn){
     if(G().voice){ const first=(w&&w.say)||pick(['Try again.','Not that one. Try again.','Almost! Try again.']); say(tries>=2?[first,'Tap the one that is shining.']:first); }
   }
 }
+function customDone(firstTry, celebrate){ if(locked||!q) return; locked=true; if(firstTry){ ding(); celebrateCorrect(); } else tick(); completeQ(firstTry, false, celebrate||null); }
 async function completeQ(firstTry, shown, celebrate){
   if(celebrate) await celebrate();
   const s=gp(me,q.gid); s.tries++; if(firstTry) s.right++; s.last=Date.now();
-  if(firstTry){ if(q.isReview) clearReview(q); } else addReview(q);
+  if(firstTry){ if(q.isReview) clearReview(q); if(q.word) learnWord(q.word); } else if(!q.noReview) addReview(q);
   if(round) round.items.push({game:q.gid, answer:q.answer, ok:!!firstTry, wrong:tries, shown:!!shown, review:!!q.isReview});
   save(); qi++; setBar(); await wait(350); nextQ();
 }
@@ -1650,7 +2059,7 @@ function renderParent(){
     : `<span class="status"><i></i>Saved on this device only</span>`;
   const kids = store.profiles.map(p=>{
     const t=totals(p), acc=t.answers?Math.round(100*t.right/t.answers):null;
-    const ids=GROUPS[bandOf(p)].games.filter(id=>!GAMES[id].isSprint);
+    const ids=GROUPS[bandOf(p)].games.filter(id=>!GAMES[id].isSprint).concat(ENGLISH.games.filter(id=>p.games[id]&&p.games[id].tries));
     let weak=null; ids.forEach(id=>{ const s=p.games[id]; if(s&&s.tries>=6){ const a=s.right/s.tries; if(a<.6&&(!weak||a<weak.a)) weak={id,a}; } });
     const rv=(p.review||[]).length, pd=practiceDays(p);
     const flag = (!t.rounds ? '' : weak ? `<span class="flag">Needs practice: ${GAMES[weak.id].name}</span>` : `<span class="flag ok">On track</span>`)
@@ -1692,13 +2101,16 @@ function renderParent(){
 document.addEventListener('click', async e=>{
   const t=e.target;
   if(t.closest('#addKid')||t.closest('#pAdd')){ openEditor(null, current==='sParent'?'sParent':'sHome'); return; }
-  const kid=t.closest('[data-kid]'); if(kid){ audio(); me=store.profiles.find(p=>p.id===kid.dataset.kid);
+  const kid=t.closest('[data-kid]'); if(kid){ audio(); me=store.profiles.find(p=>p.id===kid.dataset.kid); subject=me.subject==='english'?'english':'maths';
     const fresh=!me.placement && !me.placementSkipped && !Object.values(me.games||{}).some(g=>g.tries>0);
     fresh ? startPlacement(me) : openGames(); return; }
   if(t.closest('#placedGo')){ openGames(); return; }
   if(t.closest('#checkBtn')){ audio(); startPlacement(me); return; }
   const pl=t.closest('[data-place]'); if(pl){ const k=store.profiles.find(p=>p.id===pl.dataset.place); if(k){ startPlacement(k); } return; }
   const ag=t.closest('[data-age]'); if(ag){ edAge=+ag.dataset.age; renderAges(); return; }
+  const sj=t.closest('[data-subject]'); if(sj){ audio(); subject=sj.dataset.subject; me.subject=subject; save(); openGames(); return; }
+  if(t.closest('#gardenBtn')){ audio(); openGarden(); return; }
+  const gw=t.closest('[data-gword]'); if(gw){ audio(); say(gw.dataset.gword); gw.classList.remove('pop'); void gw.offsetWidth; gw.classList.add('pop'); return; }
   const gm=t.closest('[data-game]'); if(gm){ audio(); game=gm.dataset.game; GAMES[game].isSprint?startLevel(1):openLevels(game); return; }
   const lv=t.closest('[data-level]'); if(lv){ audio(); startLevel(+lv.dataset.level); return; }
   const key=t.closest('[data-key]'); if(key){ onKey(key.dataset.key); return; }
@@ -1737,7 +2149,7 @@ $('fRemove').addEventListener('click',()=>{
   store.profiles=store.profiles.filter(p=>p!==editing); save(); liveSync(); openParent();
 });
 $('backBtn').addEventListener('click',goBack);
-$('sayBtn').addEventListener('click',()=>{ audio(); if(q) say(questionParts(q)); });
+$('sayBtn').addEventListener('click',async()=>{ audio(); if(!q) return; if(q.seq&&!locked){ q.pos=0; $('stage').querySelectorAll('.opt.right').forEach(b=>{ b.classList.remove('right'); const n=b.querySelector('.stepno'); if(n) n.remove(); }); } if(q.pre){ hush(); await q.pre(); } say(questionParts(q)); });
 function renderMute(){ $('muteBtn').innerHTML=muted?ICON_SOUND_OFF:ICON_SOUND_ON; }
 $('muteBtn').addEventListener('click',()=>{ muted=!muted; try{ localStorage.setItem('cwm.muted',muted?'1':'0'); }catch(e){} if(muted){ try{speechSynthesis.cancel();}catch(e){} } renderMute(); });
 document.addEventListener('keydown',e=>{
