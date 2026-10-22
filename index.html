@@ -13,6 +13,37 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Tiri">
 <style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);box-sizing:border-box;height:100%}body{margin:0}img{max-width:100%}[hidden]{display:none!important}
+
+.readcard{max-width:560px;margin:0 12px;padding:14px 20px;border-radius:18px;background:var(--surface);border:2px solid var(--line);font-size:clamp(24px,6.4vw,34px);font-weight:700;text-align:center;line-height:1.3}
+.readcard.story{font-size:clamp(18px,4.8vw,23px);font-weight:600;text-align:left}
+.readq{font-size:clamp(17px,4.6vw,21px);font-weight:700;color:var(--primary);text-align:center;padding:0 12px}
+.opt.sent{width:min(560px,calc(100vw - 32px));min-height:58px;padding:10px 16px;font:inherit;font-size:clamp(17px,4.6vw,21px);font-weight:600;text-align:left;justify-items:start;color:var(--ink)}
+.opt.tile{min-width:60px;height:56px;padding:0 14px;font:inherit;font-size:clamp(19px,5.2vw,24px);font-weight:700;color:var(--ink)}
+.opt.yn{min-width:clamp(120px,36vw,170px);height:clamp(70px,17vw,88px);font:inherit;font-size:clamp(22px,6vw,28px);font-weight:700;color:var(--ink)}
+.opt.letter{width:clamp(70px,19vw,92px);aspect-ratio:1/1;font:inherit;font-size:clamp(34px,9vw,46px);font-weight:700;color:var(--ink)}
+.opt.letter.multi{font-size:clamp(26px,7vw,36px)}
+.opt.capt{flex:1 1 140px;min-height:92px;max-width:300px;font-size:clamp(24px,6.5vw,34px)}
+.opt.shapes2 svg{width:44px;height:44px}
+.bigletter{font-size:clamp(70px,20vw,110px);font-weight:700;line-height:1;color:var(--primary);background:var(--surface);border:2px solid var(--line);border-radius:22px;padding:6px 24px}
+.spellword{font-size:clamp(34px,9vw,48px);font-weight:700;letter-spacing:.06em}
+.spellword .gap{display:inline-block;min-width:1em;border-bottom:4px solid var(--primary);color:var(--primary);text-align:center;margin:0 2px}
+.spellword .gap.done{color:var(--success);border-color:var(--success)}
+.slots,.tiles{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;max-width:560px;padding:0 10px}
+.slotL{width:48px;height:56px;border:0;border-bottom:4px solid var(--primary);background:var(--surface);border-radius:10px 10px 4px 4px;font:inherit;font-size:30px;font-weight:700;color:var(--ink);position:relative}
+.slots.long{gap:4px;padding:0}.slots.long .slotL{width:31px;height:46px;font-size:23px}
+.slotL[data-hint]:empty::after{content:attr(data-hint);color:#C5CBE0}
+.slotL.ok{border-color:var(--success);background:var(--success-soft)}.slotL.bad{border-color:var(--danger);background:var(--danger-soft);animation:shake .45s}
+.tileL{width:50px;height:54px;border-radius:12px;border:2px solid var(--line);background:#FFF6DB;box-shadow:0 3px 0 #E8D59B;font:inherit;font-size:28px;font-weight:700;color:var(--ink)}
+.bee{font-size:56px;line-height:1}
+.beeword{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;padding:0 10px}
+.beeword span{width:34px;height:46px;border-bottom:3px solid var(--line);font-size:28px;font-weight:700;display:grid;place-items:center}
+.beeword span.f{border-color:var(--primary)}.beeword span.ok{border-color:var(--success);color:var(--success)}
+.beeword.shake{animation:shake .45s}
+.kb{display:flex;flex-direction:column;gap:6px;width:100%;max-width:560px;box-sizing:border-box;padding:0 4px}
+.kbr{display:flex;gap:3px;justify-content:center}
+.kbr button{flex:1;max-width:48px;height:48px;border-radius:9px;border:1px solid var(--line);background:var(--surface);box-shadow:0 2px 0 var(--line);font:inherit;font-size:20px;font-weight:600;color:var(--ink);padding:0;min-width:0}
+.kbr .kdel{max-width:64px;flex:1.5}.kbr .kgo{max-width:220px;background:var(--primary);color:#fff;border-color:var(--primary)}
+.trace canvas{touch-action:none;background:#fff;border:2px solid var(--line);border-radius:18px;display:block}
 /* ---------- English ---------- */
 .subjtabs{display:flex;gap:8px;margin:-4px 0 14px;background:var(--surface);border:1px solid var(--line);border-radius:99px;padding:4px;width:max-content;max-width:100%}
 .subjtabs button{border:0;background:transparent;font:inherit;font-weight:700;font-size:16px;padding:9px 18px;border-radius:99px;color:var(--muted);cursor:pointer}
@@ -1172,7 +1203,7 @@ const thatIs = w => { const o=ALL_WORDS.find(x=>x.w===w); return o&&o.act ? `Tha
 const picBtns = (list,cls) => choices(list.map(it=>`<button class="opt pic${cls?' '+cls:''}" data-choice="${esc(it.w)}" aria-label="${esc(it.w)}">${it.e}${cls&&cls.includes('named')?`<span class="tagname">${esc(it.w)}</span>`:''}</button>`));
 const targetCard = (e,w,id) => `<div class="target"${id?` id="${id}"`:''}><span class="te">${e}</span><span class="tw">${esc(w)}</span></div>`;
 const choiceBtn = (st,v) => st.querySelector(`[data-choice="${v}"]`);
-function learnWord(w){ if(!me) return; me.words=me.words||{}; if(!me.words[w]) me.words[w]=Date.now(); }
+function learnWord(w){ if(!me||!ALL_WORDS.some(x=>x.w===w)) return; me.words=me.words||{}; if(!me.words[w]) me.words[w]=Date.now(); }
 function hush(){ sayToken++; try{ speechSynthesis.cancel(); }catch(e){} }
 
 /* ---------- Tap What I Say (listening) ---------- */
@@ -1454,8 +1485,331 @@ function eFish(lv){
 }
 
 /* the English games, in ladder order */
+/* ================= ENGLISH · Step 3 Words and letters · Step 4 Reading · Step 5 Writing ================= */
+const readCard = t => `<div class="readcard">${esc(t)}</div>`;
+const textBtns = (list,cls) => choices(list.map(o=>`<button class="opt ${cls||'sent'}" data-choice="${esc(o.v)}">${esc(o.t)}</button>`));
+const aAn = w => /^(a|e|i|o|u(?!ni))/.test(w) ? 'an' : 'a';
+const NUMW = ['zero','one','two','three','four','five'];
+const plur = w => /(s|sh|ch|x)$/.test(w) ? w+'es' : /tomato$/.test(w) ? w+'es' : /[^aeiou]y$/.test(w) ? w.slice(0,-1)+'ies' : w+'s';
+
+/* ---------- Opposites (vocabulary) ---------- */
+const OPP = [['big','🐘','small','🐭'],['hot','🔥','cold','🧊'],['happy','😊','sad','😢'],['up','⬆️','down','⬇️'],['day','☀️','night','🌙'],['fast','🐆','slow','🐢'],['open','📖','closed','📕'],['old','👴','young','👶'],['loud','📢','quiet','🤫'],['awake','😃','asleep','😴'],['stop','🛑','go','🟢'],['wet','💦','dry','🌵']];
+const OPP_ITEMS = OPP.flatMap(([a,ae,b,be])=>[{w:a,e:ae,o:b},{w:b,e:be,o:a}]);
+function eOpp(lv){
+  if(lv<=4){ const k=T(lv,[2,3,3,4]); const opts=[]; for(const it of shuffle(OPP_ITEMS)){ if(opts.length>=k) break; if(!opts.some(o=>o.w===it.o)) opts.push(it); }
+    const it=opts[0];
+    return {text:'Tap the picture you hear', speak:`Find ${it.w}.`, key:it.w, answer:it.w, html:picBtns(shuffle(opts)),
+      why:(st,c,btn)=>{ tagBtn(btn,c); return {say:`That one is ${c}. Find ${it.w}. ${it.w}.`}; },
+      async after(st){ tagBtn(choiceBtn(st,it.w),it.w); await say(`Yes! ${it.w}!`); }}; }
+  const it=pick(OPP_ITEMS), right=OPP_ITEMS.find(x=>x.w===it.o), k=T(lv,[4,4,4,4,4,4,4,4,3,3]);
+  const dist=shuffle(OPP_ITEMS.filter(x=>x.w!==it.w && x.w!==right.w)).slice(0,k-1);
+  return {text:`What is the opposite of ${it.w}?`, parts:[`${it.w}.`, `What is the opposite of ${it.w}?`], answer:right.w,
+    html:targetCard(it.e,it.w)+picBtns(shuffle([right,...dist]),'named'),
+    why:(st,c)=>({say:`${c} is not the opposite of ${it.w}. Think again.`}),
+    async after(st){ await say(`Yes! ${it.w} and ${right.w} are opposites.`); }};
+}
+
+/* ---------- Word Sort (vocabulary groups) ---------- */
+const SORT = {
+  animals:{one:'an animal', many:'animals', words:WORLDS.animals.words},
+  food:{one:'something to eat or drink', many:'food and drinks', words:WORLDS.food.words},
+  clothes:{one:'something to wear', many:'things we wear', words:WORLDS.clothes.words},
+  body:{one:'a part of the body', many:'parts of the body', words:WORLDS.body.words},
+  people:{one:'a person', many:'people', words:WORLDS.people.words},
+  ride:{one:'something you can ride in', many:'things we ride in', words:[['car','🚗'],['bus','🚌'],['boat','⛵'],['plane','✈️'],['bike','🚲'],['train','🚂'],['bajaj','🛺']]},
+  house:{one:'something in the house', many:'things in the house', words:WORLDS.home.words}
+};
+const sortItem = k => { const [w,e]=pick(SORT[k].words); return {w,e,k}; };
+function eSort(lv){
+  const cats=shuffle(Object.keys(SORT));
+  if(lv<=5){ const k=T(lv,[2,3,3,4,4]), opts=cats.slice(0,k).map(sortItem), it=opts[0], c=SORT[it.k];
+    return {text:`Find ${c.one}`, speak:`Find ${c.one}.`, key:c.one, answer:it.w, html:picBtns(shuffle(opts)),
+      why:(st,v,btn)=>{ const o=opts.find(x=>x.w===v); tagBtn(btn,v); return {say:`The ${v} is ${SORT[o.k].one}. Find ${c.one}.`}; },
+      async after(st){ tagBtn(choiceBtn(st,it.w),it.w); await say(`Yes! The ${it.w} is ${c.one}.`); }}; }
+  const main=cats[0], other=cats[1], three=shuffle(SORT[main].words).slice(0,3).map(([w,e])=>({w,e,k:main})), odd=sortItem(other);
+  const names=three.map(x=>x.w);
+  return {text:'Which one does not belong?', speak:'Which one does not belong?', answer:odd.w, html:picBtns(shuffle([...three,odd]), lv>=8?'named':''),
+    why:(st,v,btn)=>{ tagBtn(btn,v); return {say:`The ${v} goes with the others. Look again.`}; },
+    async after(st){ await say(`Yes! ${names.slice(0,2).join(', ')} and ${names[2]} are ${SORT[main].many}. The ${odd.w} is not.`); }};
+}
+
+/* ---------- Letter Hunt (letters) ---------- */
+const BYLETTER = {};
+Object.values(FIRST).flat().forEach(it=>{ const L=it.w[0]; (BYLETTER[L]=BYLETTER[L]||[]).push(it); });
+const LETTERS = Object.keys(BYLETTER).filter(L=>BYLETTER[L].length>=2);
+const letterBtns = (ls,up) => choices(ls.map(L=>`<button class="opt letter" data-choice="${L}" aria-label="${L}">${up?L.toUpperCase():L}</button>`));
+function eLetter(lv){
+  const L=pick(LETTERS), it=pick(BYLETTER[L]), up=lv===5||lv===10;
+  if(lv<=5){ const k=T(lv,[2,3,3,4,4]), others=shuffle(LETTERS.filter(x=>x!==L)).slice(0,k-1).map(x=>pick(BYLETTER[x])), opts=shuffle([it,...others]);
+    return {text:`Find the picture that starts with ${up?L.toUpperCase():L}`, parts:[`Which picture starts with the letter ${L}?`, `${L}.`], answer:it.w,
+      html:`<div class="bigletter">${up?L.toUpperCase()+' '+L:L}</div>`+picBtns(opts),
+      why:(st,c,btn)=>{ tagBtn(btn,c); return {say:`${c} starts with ${c[0]}. Find the one that starts with ${L}.`}; },
+      async after(st){ tagBtn(choiceBtn(st,it.w),it.w); await say(`Yes! ${it.w} starts with ${L}.`); }}; }
+  const k=T(lv,[0,0,0,0,0,3,3,4,4,4]), ls=shuffle([L,...shuffle(LETTERS.filter(x=>x!==L)).slice(0,k-1)]);
+  return {text:'What letter does it start with?', parts:[`${it.w}.`, `What letter does ${it.w} start with?`], answer:L,
+    html:targetCard(it.e,lv>=9?'':it.w)+letterBtns(ls,up),
+    why:(st,c)=>({say:`${it.w} does not start with ${c}. Listen: ${it.w}.`}),
+    async after(st){ await say(`Yes! ${it.w} starts with ${L}.`); }};
+}
+
+/* ---------- Trace the Trail (writing letters) ---------- */
+const TRACE = [['s','a','t'],['p','i','n'],['m','d','g'],['o','c','k'],['e','u','r'],['h','b','f','l'],['j','v','w','x','y','z','q'],['A','B','C','D','E','F','H','M'],['N','P','R','S','T','W','Y','Z'],['cat','sun','dog','hen','bus','cup']];
+const TRACE_WORD = {a:'apple',b:'ball',c:'cat',d:'dog',e:'egg',f:'fish',g:'goat',h:'hat',i:'insect',j:'juice',k:'key',l:'lion',m:'moon',n:'nose',o:'octopus',p:'pen',q:'queen',r:'rain',s:'sun',t:'tree',u:'umbrella',v:'van',w:'water',x:'box',y:'yellow',z:'zebra'};
+function eTrace(lv){
+  const ch=pick(T(lv,TRACE)), word=ch.length>1, low=ch.toLowerCase();
+  const line = word ? `Trace the word ${ch}.` : `Trace the letter ${low}. ${low}, for ${TRACE_WORD[low]}.`;
+  let myQ;
+  myQ = {text: word?`Trace the word “${ch}”`:`Trace the letter ${ch}`, speak:line, answer:ch, noReview:true,
+    html:`<div class="trace"><canvas id="tc" aria-label="Tracing area"></canvas></div><p class="heard" id="tMsg">Use your finger. Stay on the grey ${word?'word':'letter'}.</p><div class="btns"><button class="btn small" id="tClear">↺ Start again</button></div>`,
+    mount(){
+      const cv=$('tc'), dpr=Math.min(2,window.devicePixelRatio||1), W=Math.min(340, innerWidth-40), H=word?Math.round(W*0.62):Math.min(300,W);
+      cv.style.width=W+'px'; cv.style.height=H+'px'; cv.width=W*dpr; cv.height=H*dpr;
+      const ctx=cv.getContext('2d'); ctx.scale(dpr,dpr);
+      const fs = word ? W/(ch.length*0.62) : H*0.78, brush=Math.max(14, fs*0.15);
+      const font=`700 ${fs}px "Andika","Comic Sans MS","Trebuchet MS",system-ui,sans-serif`;
+      const off=document.createElement('canvas'); off.width=W; off.height=H; const o=off.getContext('2d');
+      o.font=font; o.textAlign='center'; o.textBaseline='middle'; o.fillText(ch, W/2, H/2+fs*0.04);
+      const mask=o.getImageData(0,0,W,H).data;
+      const off2=document.createElement('canvas'); off2.width=W; off2.height=H; const o2=off2.getContext('2d');
+      o2.font=font; o2.textAlign='center'; o2.textBaseline='middle'; o2.lineWidth=brush*1.8; o2.lineJoin='round'; o2.strokeText(ch, W/2, H/2+fs*0.04); o2.fillText(ch, W/2, H/2+fs*0.04);
+      const near=o2.getImageData(0,0,W,H).data;
+      const STEP=4, target=[]; for(let y=0;y<H;y+=STEP) for(let x=0;x<W;x+=STEP) if(mask[(y*W+x)*4+3]>100) target.push([x,y]);
+      let covered=new Set(), inside=0, outside=0, drawing=false, last=null, restarts=0;
+      const guide=()=>{ ctx.clearRect(0,0,W,H); ctx.font=font; ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.fillStyle='#E3E8F6'; ctx.fillText(ch, W/2, H/2+fs*0.04);
+        ctx.setLineDash([6,6]); ctx.lineWidth=2; ctx.strokeStyle='#AEB8D6'; ctx.strokeText(ch, W/2, H/2+fs*0.04); ctx.setLineDash([]); };
+      guide();
+      const alive=()=>current==='sPlay' && q===myQ;
+      const pos=e=>{ const r=cv.getBoundingClientRect(); return [(e.clientX-r.left)*W/r.width, (e.clientY-r.top)*H/r.height]; };
+      const mark=(x,y)=>{ const xi=Math.round(x), yi=Math.round(y); if(xi>=0&&yi>=0&&xi<W&&yi<H&&near[(yi*W+xi)*4+3]>60) inside++; else outside++;
+        const r2=brush*brush*0.6; target.forEach((p,i)=>{ const dx=p[0]-x, dy=p[1]-y; if(dx*dx+dy*dy<=r2) covered.add(i); }); };
+      const seg=(a,b)=>{ ctx.strokeStyle=getComputedStyle(document.querySelector('.app')).getPropertyValue('--acc')||'#3657E0'; ctx.lineWidth=brush; ctx.lineCap='round'; ctx.beginPath(); ctx.moveTo(a[0],a[1]); ctx.lineTo(b[0],b[1]); ctx.stroke();
+        const n=Math.max(1,Math.ceil(Math.hypot(b[0]-a[0],b[1]-a[1])/4)); for(let i=1;i<=n;i++) mark(a[0]+(b[0]-a[0])*i/n, a[1]+(b[1]-a[1])*i/n); };
+      const reset=()=>{ covered=new Set(); inside=0; outside=0; guide(); };
+      cv.addEventListener('pointerdown',e=>{ if(locked) return; e.preventDefault(); audio(); cv.setPointerCapture(e.pointerId); drawing=true; last=pos(e); seg(last,last); });
+      cv.addEventListener('pointermove',e=>{ if(!drawing) return; e.preventDefault(); const p=pos(e); seg(last,p); last=p; });
+      const up=()=>{ if(!drawing) return; drawing=false; if(!alive()||locked) return;
+        const cov=covered.size/Math.max(1,target.length), out=outside/Math.max(1,inside+outside);
+        if(out>0.35 && inside+outside>40){ restarts++; tries++; boop(); $('tMsg').textContent='Oops! Stay on the grey line. Try again.'; say('Stay on the grey line. Try again.'); setTimeout(reset,500); return; }
+        if(cov>=0.72){ $('tMsg').textContent='Beautiful!'; customDone(restarts===0, ()=>say(word?`Well done! ${ch}.`:`Well done! That is ${low}. ${low}, for ${TRACE_WORD[low]}.`)); return; }
+        $('tMsg').textContent = cov>0.35 ? 'Keep going! Cover all the grey.' : 'Use your finger. Stay on the grey.';
+      };
+      cv.addEventListener('pointerup',up); cv.addEventListener('pointercancel',up); cv.addEventListener('pointerleave',up);
+      $('tClear').addEventListener('click',()=>{ restarts++; reset(); $('tMsg').textContent='Use your finger. Stay on the grey.'; });
+    }};
+  return myQ;
+}
+
+/* ---------- Caption Catch (reading: words to pictures) ---------- */
+const CAP_NOUNS = ['cat','dog','cow','goat','hen','bird','horse','lion','duck','rabbit','monkey','frog','mango','apple','orange','egg','cake','carrot','tomato','lemon','cup','spoon','key','clock','phone','book','ball','bag','shoe','cap','sock','coat','ring','star','tree','flower','car','bus','boat','plane','bike','train'].map(w=>ALL_WORDS.find(x=>x.w===w));
+const SHORT_NOUNS = CAP_NOUNS.filter(x=>x.w.length<=4);
+const countBtn = (o) => `<button class="opt wide capt" data-choice="${o.v}" aria-label="picture">${Array.from({length:o.n},()=>`<span>${o.e}</span>`).join('')}</button>`;
+function eCaption(lv){
+  if(lv===10) lv=pick([6,7,8,9]);
+  const base = {text:'Read, then tap the picture', parts:['Read the words. Then tap the right picture.']};
+  const help = cap => (st,c,btn)=>({say:['Let\'s read it together.', cap]});
+  if(lv<=2){ const pool=lv===1?SHORT_NOUNS:CAP_NOUNS, opts=shuffle(pool).slice(0,lv===1?2:3), it=opts[0], cap=`${aAn(it.w)} ${it.w}`;
+    return {...base, answer:it.w, html:readCard(cap)+picBtns(shuffle(opts)), why:help(cap), async after(){ await say(`Yes! ${cap}.`); }}; }
+  if(lv===3){ const [a,b]=shuffle(CAP_NOUNS), n=R(2,5), m=pick([2,3,4,5].filter(x=>x!==n)), cap=`${NUMW[n]} ${plur(a.w)}`;
+    const opts=[{v:'r',e:a.e,n},{v:'x',e:a.e,n:m},{v:'y',e:b.e,n}];
+    return {...base, answer:'r', html:readCard(cap)+`<div class="choices">${shuffle(opts).map(countBtn).join('')}</div>`, why:help(cap), async after(){ await say(`Yes! ${cap}.`); }}; }
+  if(lv===4){ const [a,b]=shuffle(CAP_NOUNS), sz=pick(['big','small']), oth=sz==='big'?'small':'big', cap=`${aAn(sz)} ${sz} ${a.w}`;
+    const opts=[{w:'r',e:a.e,s:sz},{w:'x',e:a.e,s:oth},{w:'y',e:b.e,s:sz}];
+    return {...base, answer:'r', html:readCard(cap)+choices(shuffle(opts).map(o=>`<button class="opt pic" data-choice="${o.w}" aria-label="picture"><span class="sz ${o.s}">${o.e}</span></button>`)), why:help(cap), async after(){ await say(`Yes! ${cap}.`); }}; }
+  if(lv<=6){ const kind=lv===5?'table':'box', poss=SCENES[kind], pos=pick(poss), th=pick([{w:'cat',e:'🐱'},{w:'dog',e:'🐶'},{w:'ball',e:'⚽'},{w:'duck',e:'🦆'},{w:'apple',e:'🍎'}]), cap=`The ${th.w} is ${pos} the ${kind}.`;
+    return {...base, answer:pos, html:readCard(cap)+choices(shuffle(poss).map(p=>sceneBtn(kind,p,th.e))), why:help(cap), async after(){ await say(`Yes! ${cap}`); }}; }
+  if(lv===7){ const acts=shuffle(WORLDS.actions.words).slice(0,4), [w]=acts[0], name=pick(NAMES), cap=`${name} is ${w}.`;
+    return {...base, answer:w, html:readCard(cap)+picBtns(shuffle(acts.map(([w,e])=>({w,e})))), why:help(cap), async after(){ await say(`Yes! ${cap}`); }}; }
+  if(lv===8){ const [c1,c2]=shuffle(C6), [t1,t2]=shuffle(SB), cap=`${aAn(c1)} ${c1} ${t1} and ${aAn(c2)} ${c2} ${t2}`;
+    const pair=(a,b)=>`${shapeSVG(a[1],COL[a[0]])}${shapeSVG(b[1],COL[b[0]])}`;
+    const opts=[{v:'r',h:pair([c1,t1],[c2,t2])},{v:'x',h:pair([c2,t1],[c1,t2])},{v:'y',h:pair([c1,t2],[c2,t1])},{v:'z',h:pair([c1,t1],[pick(C6.filter(c=>c!==c1&&c!==c2)),t2])}];
+    return {...base, answer:'r', html:readCard(cap)+`<div class="choices">${shuffle(opts).map(o=>`<button class="opt wide capt shapes2" data-choice="${o.v}" aria-label="picture">${o.h}</button>`).join('')}</div>`, why:help(cap), async after(){ await say(`Yes! ${cap}.`); }}; }
+  const c=pick(C6), t=pick(SB), n=R(2,4), c2=pick(C6.filter(x=>x!==c)), t2=pick(SB.filter(x=>x!==t)), m=pick([2,3,4].filter(x=>x!==n)), cap=`${NUMW[n]} ${c} ${plur(t)}`;
+  const grp=(c,t,n)=>Array.from({length:n},()=>shapeSVG(t,COL[c])).join('');
+  const opts=[{v:'r',h:grp(c,t,n)},{v:'x',h:grp(c,t,m)},{v:'y',h:grp(c2,t,n)},{v:'z',h:grp(c,t2,n)}];
+  return {...base, answer:'r', html:readCard(cap)+`<div class="choices">${shuffle(opts).map(o=>`<button class="opt wide capt shapes2" data-choice="${o.v}" aria-label="picture">${o.h}</button>`).join('')}</div>`, why:help(cap), async after(){ await say(`Yes! ${cap}.`); }};
+}
+
+/* ---------- Yes or No Island (reading: sentences) ---------- */
+const YESNO = [
+  [['Can a fish swim?',1],['Can a cat fly?',0],['Can a bird fly?',1],['Can a cow sing?',0],['Is the sun hot?',1],['Is ice hot?',0],['Can a dog run?',1],['Can a cup run?',0],['Can a baby read?',0],['Can a goat eat?',1],['Is the sea wet?',1],['Can a car fly?',0],['Can a plane fly?',1],['Is a camel small?',0],['Can a hen lay eggs?',1],['Is milk red?',0],['Is grass green?',1],['Is a lion big?',1]],
+  [['Do we eat soup with a spoon?',1],['Do fish live in trees?',0],['Do we sleep in a bed?',1],['Can you see the sun at night?',0],['Is an elephant bigger than a cat?',1],['Do cows give us milk?',1],['Do we wear shoes on our hands?',0],['Does a week have ten days?',0],['Is Friday a day of the week?',1],['Do birds have four legs?',0],['Can you write with a pencil?',1],['Do we read with our ears?',0],['Is it dark in the middle of the day?',0],['Is a banana yellow when it is ready to eat?',1],['Do you need water to wash your hands?',1],['Is a mouse bigger than a horse?',0]],
+  [['Can all birds swim?',0],['If it is raining, do you need an umbrella?',1],['Does a camel live under the sea?',0],['Is January the first month of the year?',1],['Can a baby drive a bus?',0],['Is ice made from water?',1],['Does the sun rise in the west?',0],['Do plants need sunlight to grow?',1],['Is a kilometre longer than a metre?',1],['Is it cold at the top of a very high mountain?',1],['Do you wear a thick coat when it is very hot?',0],['Are there twelve months in a year?',1],['Does a spider have eight legs?',1],['Is the moon a star?',0],['Can people breathe under water without help?',0],['Is Somalia in Africa?',1],['Is the Indian Ocean next to Somalia?',1],['Is a whale a kind of fish?',0]]
+];
+function eYesNo(lv){
+  const [s,a]=pick(YESNO[lv<=3?0:lv<=6?1:2]), ans=a?'yes':'no';
+  return {text:'Read and answer', parts:['Read the question. Tap yes or no.'], answer:ans,
+    html:readCard(s)+choices([`<button class="opt yn yes" data-choice="yes">✅ Yes</button>`,`<button class="opt yn no" data-choice="no">❌ No</button>`]),
+    why:()=>({say:['Read it again with me.', s]}),
+    async after(){ await say(`${a?'Yes':'No'}! Good reading.`); }};
+}
+
+/* ---------- Story Steps (reading: order) ---------- */
+const STORIES3 = [["Hodan picked a mango.","She washed the mango.","She ate it."],["The hen sat on her egg.","The egg cracked.","A little chick came out."],["Yusuf put on his shoes.","He walked to school.","He sat at his desk."],["The sky got dark.","Rain began to fall.","Ayaan opened her umbrella."],["Mum put rice in the pot.","The rice cooked.","We ate dinner together."],["A seed went into the ground.","Rain fell on it.","A small plant grew."],["Bilal filled the cup with water.","He drank the water.","The cup was empty."],["The baby was tired.","Mum sang a song.","The baby fell asleep."],["The goat was hungry.","It found some grass.","It ate the grass."],["Iman got a gift.","She opened the box.","She found a red ball inside."]];
+const STORIES4 = [["Sagal woke up early.","She washed her face.","She ate her breakfast.","She went to school."],["Dad bought some flour.","He mixed it with water.","He cooked the dough in a pan.","The family ate fresh bread."],["The boat left the beach.","The fishermen threw their net.","The net filled with fish.","They sailed home happy."],["Hamza saw a cat in a tree.","The cat could not get down.","Hamza called his dad.","Dad lifted the cat down safely."],["The teacher gave us a test.","We read each question carefully.","We wrote our answers.","The teacher marked our work."],["The camel walked all day.","The sun was very hot.","It found a well with water.","The camel drank and rested."],["Khadar planted a tree.","He watered it every day.","The tree grew tall.","Now it gives shade and mangoes."],["We packed our bags.","We got on the bus.","The bus drove to the city.","We visited our grandmother."]];
+function eStory(lv){
+  const st=pick(lv<=5?STORIES3:STORIES4), items=st.map((t,i)=>({v:'s'+i,t}));
+  return {text:'Tap the sentences in story order', parts:['Read the sentences. Tap them in the right order. What happened first?'],
+    seq:items.map(x=>x.v), answer:items.map(x=>x.v).join(' > '), html:textBtns(shuffle(items),'sent'),
+    seqRetry:'Not that one yet. Read them again, and start with what happened first.',
+    seqDone:async()=>{ await say(['Well done! Here is the story.', st.join(' ')]); }};
+}
+
+/* ---------- Read and Answer (reading: comprehension) ---------- */
+const PASSAGES = [
+  [["Amina has a red bag. Her bag has two books in it.","What colour is Amina's bag?","red",["blue","green"]],["Yusuf has a dog called Spot. Spot likes to run in the park.","What is the dog called?","Spot",["Yusuf","Park"]],["The shop opens at eight o'clock. It closes at six o'clock.","When does the shop open?","eight o'clock",["six o'clock","nine o'clock"]],["Hodan drinks milk every morning. Her brother drinks tea.","What does Hodan drink?","milk",["tea","water"]],["There are four goats and two camels on the farm.","How many camels are on the farm?","two",["four","six"]],["Bilal lives in Hargeisa. His cousin lives in Mogadishu.","Where does Bilal live?","Hargeisa",["Mogadishu","Garowe"]],["The cat sleeps under the table. The dog sleeps by the door.","Where does the cat sleep?","under the table",["by the door","on the bed"]]],
+  [["Sagal put on her coat and took her umbrella. Dark clouds filled the sky.","What was the weather like?","rainy",["sunny","very hot"]],["Ayaan's plate was empty. She smiled and said, “That was delicious!”","How did Ayaan feel about her food?","She liked it.",["She did not like it.","She was angry."]],["The boy yawned and rubbed his eyes. It was very late.","How did the boy feel?","tired",["hungry","excited"]],["There were six mangoes in the bowl. Hamza ate two of them.","How many mangoes are left?","four",["six","two"]],["Iman is older than Khadar. Khadar is older than Nimo.","Who is the youngest?","Nimo",["Iman","Khadar"]],["The market is busy on Fridays. On Mondays it is quiet.","When is the market quiet?","on Mondays",["on Fridays","every day"]],["Abdi has five pens. He gives one pen to each of his two sisters.","How many pens does Abdi have now?","three",["five","two"]]],
+  [["Abdi ran to the bus stop, but the bus was already driving away. He sighed and sat down to wait.","Why did Abdi sigh?","He missed the bus.",["He was happy.","He was hungry."]],["The well had been dry for weeks. When the rain finally came, the farmers danced in the fields.","Why did the farmers dance?","The rain would help their farms.",["They were cold.","It was a holiday."]],["Faduma practised her reading every evening. At the end of the year, she won the school reading prize.","Why did Faduma win the prize?","She practised a lot.",["She was lucky.","She was the oldest."]],["The little goat wandered away from the herd. When night came, it could not find its way home.","What does “wandered” mean?","walked away slowly",["ran very fast","fell asleep"]],["Omar's kite rose higher and higher until it was just a tiny dot in the sky.","Why did the kite look like a tiny dot?","It was very high.",["It was broken.","It was a small kite."]],["Although it was very hot, Ladan wore her thick jumper because it was a gift from her grandmother.","Why did Ladan wear the jumper?","It was a gift she loved.",["She was cold.","Her teacher told her to."]],["The library was so quiet that you could hear a pin drop.","What does this sentence tell us?","The library was very quiet.",["Someone dropped a pin.","The library was closed."]],["Mahad forgot his lunch at home, so his friend Ali shared half of his sandwich.","What kind of friend is Ali?","kind",["lazy","rude"]]]
+];
+function eRead(lv){
+  const [p,qq,a,w]=pick(PASSAGES[lv<=3?0:lv<=6?1:2]), opts=shuffle([a,...w]).map(t=>({v:t,t}));
+  return {text:'Read the story, then answer', parts:['Read the story. Then answer the question.'], answer:a,
+    html:`<div class="readcard story">${esc(p)}</div><div class="readq">${esc(qq)}</div>`+textBtns(opts,'sent'),
+    why:()=>({say:['Read the story again carefully.', qq]}),
+    async after(){ await say(`Yes! ${a}`); }};
+}
+
+/* ---------- Missing Letter (writing: spelling) ---------- */
+const MISS = {
+  cvc:'c|a|t🐱 d|o|g🐶 s|u|n☀️ b|u|s🚌 c|u|p☕ h|a|t🎩 p|e|n🖊️ b|e|d🛏️ h|e|n🐔 f|o|x🦊 b|o|x📦 m|a|p🗺️ v|a|n🚐 b|a|g🎒 l|e|g🦵 w|e|b🕸️ b|u|g🐛 n|u|t🥜 b|a|t🦇 a|n|t🐜',
+  dig:'sh|i|p🚢 sh|e|ll🐚 f|i|sh🐟 sh|ee|p🐑 ch|i|ck🐥 ch|ee|se🧀 ch|ai|r🪑 th|u|mb👍 d|u|ck🦆 s|o|ck🧦 c|l|o|ck🕰️ k|i|ng🤴 r|i|ng💍 qu|ee|n👸',
+  vow:'r|ai|n🌧️ t|r|ai|n🚂 s|n|ai|l🐌 t|r|ee🌳 b|ee🐝 b|oa|t⛵ g|oa|t🐐 c|oa|t🧥 m|oo|n🌙 s|p|oo|n🥄 s|t|ar⭐ c|ar🚗 sh|ar|k🦈 c|or|n🌽 h|or|se🐴 l|igh|t💡 n|igh|t🌃',
+  hard:'e|l|e|ph|a|n|t🐘 b|u|tt|er|f|l|y🦋 u|m|b|r|e|ll|a☂️ r|a|bb|i|t🐰 m|o|n|k|ey🐒 p|e|n|c|i|l✏️ r|o|ck|e|t🚀 t|o|m|a|t|o🍅 b|a|n|a|n|a🍌 f|l|ow|er🌸 r|ai|n|b|ow🌈 g|i|r|a|ffe🦒 t|ea|ch|er👩‍🏫 s|ch|oo|l🏫'
+};
+Object.keys(MISS).forEach(k=>{ MISS[k]=MISS[k].split(' ').map(s=>{ const m=s.match(/^([a-z|]+)(.+)$/); const g=m[1].split('|'); return {g, w:g.join(''), e:m[2]}; }); });
+const VOWELS=['a','e','i','o','u'], CONS='b c d f g h l m n p r s t w'.split(' '), DIGRAPHS=['sh','ch','th','ck','ng','qu','ll'], TEAMS=['ai','ee','oa','oo','ar','or','igh','ow','er'];
+const gType = g => VOWELS.includes(g)?VOWELS : DIGRAPHS.includes(g)?DIGRAPHS : TEAMS.includes(g)?TEAMS : g.length===1?CONS : null;
+function eMissing(lv){
+  const set=T(lv,['cvc','cvc','cvc','dig','dig','dig','vow','vow','hard','hard']), it=pick(MISS[set]);
+  let idx;
+  if(set==='cvc') idx=T(lv,[0,2,1]);
+  else { const cands=it.g.map((g,i)=>i).filter(i=>{ const g=it.g[i]; return set==='dig'?DIGRAPHS.includes(g)||(lv===6&&gType(g)) : set==='vow'?TEAMS.includes(g)||(lv===8&&VOWELS.includes(g)) : !!gType(it.g[i]); }); idx=pick(cands.length?cands:[0]); }
+  const ans=it.g[idx], pool=(gType(ans)||CONS).filter(x=>x!==ans && it.g.join('').replace(ans,x)!==it.w);
+  const k=T(lv,[3,3,3,3,3,4,3,4,4,4]), opts=shuffle([ans,...shuffle(pool).slice(0,k-1)]);
+  const shown=it.g.map((g,i)=>i===idx?'<span class="gap">?</span>':esc(g)).join('');
+  return {text:'Which letters are missing?', parts:[`${it.w}.`, `Which ${ans.length>1?'letters are':'letter is'} missing in ${it.w}?`, `${it.w}.`], answer:ans, word:it.w,
+    html:`<div class="bigemoji">${it.e}</div><div class="spellword" id="mw">${shown}</div>`+choices(opts.map(o=>`<button class="opt letter${o.length>1?' multi':''}" data-choice="${o}">${o}</button>`)),
+    why:(st,c)=>({say:`That makes ${it.g.map((g,i)=>i===idx?c:g).join('')}. We want ${it.w}. Try again.`}),
+    async after(st){ const m=st.querySelector('#mw .gap'); if(m){ m.textContent=ans; m.classList.add('done'); } await say(`Yes! ${it.w}.`); }};
+}
+
+/* ---------- Spell the Picture (writing: letter tiles) ---------- */
+const SPELLW = [MISS.cvc, MISS.cvc, MISS.cvc, MISS.cvc, MISS.cvc, MISS.dig, MISS.dig.concat(MISS.vow), MISS.vow, MISS.hard, MISS.hard];
+function eSpell(lv){
+  const it=pick(T(lv,SPELLW)), extra=T(lv,[0,1,2,2,3,2,2,3,2,3]);
+  const letters=it.w.split(''), extras=shuffle('abcdefghilmnoprstuw'.split('').filter(x=>!letters.includes(x))).slice(0,extra);
+  const tiles=shuffle([...letters,...extras]).map((L,i)=>({L,i}));
+  let myQ;
+  myQ = {text:'Spell the word', parts:[`Spell the word: ${it.w}.`, `${it.w}.`], answer:it.w, word:it.w,
+    html:`<div class="bigemoji">${it.e}</div><div class="slots${letters.length>6?' long':''}" id="sSlots">${letters.map((_,i)=>`<button class="slotL" data-si="${i}"></button>`).join('')}</div>
+      <div class="tiles" id="sTiles">${tiles.map(t=>`<button class="tileL" data-ti="${t.i}">${t.L}</button>`).join('')}</div>`,
+    mount(){
+      const slots=[...document.querySelectorAll('#sSlots .slotL')], fill=new Array(letters.length).fill(null); let misses=0;
+      const tileEl=i=>document.querySelector(`#sTiles [data-ti="${i}"]`);
+      const check=()=>{ if(fill.some(f=>f===null)) return; const word=fill.map(i=>tiles[i].L).join('');
+        if(word===it.w){ slots.forEach(s=>s.classList.add('ok')); customDone(misses===0, ()=>say(`Yes! ${it.w}. ${it.w.split('').join(', ')}.`)); return; }
+        misses++; tries++; boop(); say(misses>=2?`Not quite. The first letter is ${it.w[0]}. Try again.`:'Not quite. Try again.');
+        fill.forEach((f,i)=>{ if(tiles[f].L!==it.w[i]){ slots[i].classList.add('bad'); setTimeout(()=>{ slots[i].classList.remove('bad'); slots[i].textContent=''; tileEl(f).hidden=false; fill[i]=null; },500); } });
+        if(misses>=2){ slots[0].dataset.hint=it.w[0]; }
+      };
+      document.getElementById('sTiles').addEventListener('click',e=>{ const b=e.target.closest('[data-ti]'); if(!b||locked) return; audio(); const i=fill.indexOf(null); if(i<0) return;
+        fill[i]=+b.dataset.ti; slots[i].textContent=b.textContent; b.hidden=true; tick(); check(); });
+      document.getElementById('sSlots').addEventListener('click',e=>{ const s=e.target.closest('[data-si]'); if(!s||locked) return; const i=+s.dataset.si; if(fill[i]===null) return;
+        tileEl(fill[i]).hidden=false; fill[i]=null; s.textContent=''; });
+    }};
+  return myQ;
+}
+
+/* ---------- Spelling Bee (writing: hear it, type it) ---------- */
+const BEE = [
+  'cat:The cat is asleep.|dog:My dog can run fast.|sun:The sun is hot.|bus:We go to school by bus.|hat:Put on your hat.|pen:I write with a pen.|bed:I sleep in my bed.|cup:A cup of tea.|red:A red apple.|big:A big camel.',
+  'frog:A frog can jump.|stop:Stop at the road.|jump:I can jump high.|hand:Wash your hand.|milk:I drink milk.|desk:Sit at your desk.|swim:Fish can swim.|nest:A bird in its nest.|tent:We slept in a tent.|lamp:Turn on the lamp.',
+  'ship:The ship is on the sea.|fish:The fish can swim.|shop:We went to the shop.|chin:Touch your chin.|this:This is my bag.|that:That is your book.|with:Come with me.|duck:The duck says quack.|sock:Where is my sock?|ring:She has a gold ring.|king:The king has a crown.|long:A long road.',
+  'rain:The rain is falling.|train:The train is fast.|tree:A tall tree.|feet:Wash your feet.|boat:A boat on the sea.|coat:Put on your coat.|moon:The moon is bright.|food:I like this food.|star:A star in the sky.|park:We play in the park.|night:Good night.|light:Turn on the light.',
+  'cake:A birthday cake.|make:Let us make tea.|bike:I ride my bike.|time:What time is it?|home:I am going home.|bone:The dog has a bone.|play:Come and play.|day:Have a nice day.|rope:Jump over the rope.|name:What is your name?',
+  'the:The cat is black.|said:She said hello.|was:It was hot.|you:Thank you.|they:They are my friends.|are:We are happy.|come:Come here, please.|some:I want some water.|one:I have one brother.|have:I have a pen.|were:We were late.|there:Put it there.|what:What is that?|where:Where is my shoe?|friend:You are my friend.|people:Many people came.',
+  'jumping:I am jumping.|played:We played football.|running:He is running.|stopped:The bus stopped.|swimming:I like swimming.|helped:She helped me.|sitting:The cat is sitting.|wanted:I wanted a drink.|shopping:Mum went shopping.|smiled:The baby smiled.',
+  'boxes:Two boxes of books.|babies:The babies are asleep.|wishes:Make three wishes.|quickly:Run quickly.|slowly:Walk slowly.|helpful:Thank you for being helpful.|careful:Be careful on the road.|teacher:My teacher is kind.|painter:The painter paints walls.|happiness:She was full of happiness.',
+  'because:I smiled because I was happy.|different:Every flower is different.|beautiful:What a beautiful day.|important:Water is important.|remember:I remember your name.|together:We play together.|favourite:Mango is my favourite fruit.|question:Ask a question.|answer:Write your answer.|believe:I believe in you.|library:Books in the library.|island:A small island in the sea.',
+  'their:They washed their hands.|there:Your bag is over there.|two:I have two hands.|too:I want to come too.|hear:I can hear the birds.|here:Come over here.|sea:Fish live in the sea.|see:I can see the moon.|write:I write my name.|right:Turn right at the shop.|new:I have new shoes.|knew:She knew the answer.|sun:The sun is very hot.|son:He is my son.|where:Where do you live?|wear:I wear a coat.'
+].map(l=>l.split('|').map(x=>{ const i=x.indexOf(':'); return {w:x.slice(0,i), s:x.slice(i+1)}; }));
+const KB_ROWS = ['qwertyuiop','asdfghjkl','zxcvbnm'];
+function eBee(lv){
+  const it=pick(BEE[lv-1]);
+  let myQ;
+  myQ = {text:'Listen and spell', parts:[`Spell: ${it.w}.`, it.s, `${it.w}.`], answer:it.w,
+    html:`<div class="bee">🐝</div><div class="beeword" id="bWord">${it.w.split('').map(()=>'<span></span>').join('')}</div><p class="heard" id="bMsg">Tap 🔊 to hear the word again.</p>
+      <div class="kb">${KB_ROWS.map((r,i)=>`<div class="kbr">${r.split('').map(L=>`<button data-kl="${L}">${L}</button>`).join('')}${i===2?'<button class="kdel" data-kl="del" aria-label="Delete">⌫</button>':''}</div>`).join('')}<div class="kbr"><button class="kgo" data-kl="go">✓ Check</button></div></div>`,
+    mount(){
+      let typed='', misses=0; const cells=()=>[...document.querySelectorAll('#bWord span')];
+      const draw=()=>{ const cs=cells(); const n=Math.max(it.w.length, typed.length);
+        if(cs.length!==n){ $('bWord').innerHTML=Array.from({length:n},()=>'<span></span>').join(''); }
+        cells().forEach((c,i)=>{ c.textContent=typed[i]||''; c.className=typed[i]?'f':''; }); };
+      const go=()=>{ if(!typed) return;
+        if(typed===it.w){ cells().forEach(c=>c.className='ok'); customDone(misses===0, ()=>say(`Yes! ${it.w}. ${it.w.split('').join(', ')}.`)); return; }
+        misses++; tries++; boop(); const bw=$('bWord'); bw.classList.remove('shake'); void bw.offsetWidth; bw.classList.add('shake');
+        if(misses>=2){ $('bMsg').innerHTML=`It is spelled <b>${esc(it.w)}</b>. Type it once more.`; say(`It is spelled: ${it.w.split('').join(', ')}. Type it once more.`); }
+        else { $('bMsg').textContent='Not quite. Listen again and try.'; say(['Not quite. Listen again.', `${it.w}.`, it.s]); }
+        typed=''; setTimeout(draw,300);
+      };
+      document.querySelector('.kb').addEventListener('click',e=>{ const b=e.target.closest('[data-kl]'); if(!b||locked) return; audio(); const k=b.dataset.kl;
+        if(k==='del'){ typed=typed.slice(0,-1); draw(); return; } if(k==='go'){ go(); return; }
+        if(typed.length>=it.w.length+3) return; typed+=k; tick(); draw(); });
+    }};
+  return myQ;
+}
+
+/* ---------- Sentence Builder (writing: word order, capitals, full stops) ---------- */
+const SENTS = [
+  ['I see a cat.','The dog runs.','I like milk.','We can jump.','Mum is here.','The sun is hot.','I have a ball.','A bird can fly.'],
+  ['The cat is on the bed.','I go to school every day.','My mother cooks rice.','We play in the park.','The goat eats green grass.','Dad drives a big bus.','I wash my hands.','My friend has a kite.'],
+  ['The baby is sleeping in her bed .','We eat rice for dinner .','My sister reads a book .','The camel walks in the sand .','I drink water every morning .','Grandma tells me a story .'],
+  ['Where is my blue shoe ?','Can you help me please ?','What is your name ?','Do you like mangoes ?','How many goats are there ?','Who is at the door ?'],
+  ['I am happy because it is my birthday .','She took an umbrella because it was raining .','Ayaan has two cats and one dog .','We went to the market and bought fresh fruit .','The camel was thirsty so it drank water .','My brother kicked the ball very high .']
+];
+function eSentence(lv){
+  const s=pick(SENTS[T(lv,[0,0,1,1,2,2,3,3,4,4])]);
+  const words = s.includes(' .')||s.includes(' ?') ? s.split(' ') : s.split(' ');
+  const items=words.map((t,i)=>({v:'w'+i,t})), clean=s.replace(/ ([.?])/g,'$1');
+  return {text:'Put the words in order', parts:['Make a sentence. Tap the words in the right order.'],
+    seq:items.map(x=>x.v), answer:items.map(x=>x.v).join(' > '), html:textBtns(shuffle(items),'tile'),
+    seqRetry:'Not that word yet. Start again. Which word comes first?',
+    seqDone:async()=>{ showWhy(`<div class="w-eq">${esc(clean)}</div>`); await say(['Well done!', clean]); }};
+}
+
+/* ---------- Fix-It Doctor (writing: capitals, punctuation, grammar) ---------- */
+const FIX_BASIC = ['The cat is on the mat.','We go to school.','My dad has a big car.','The sun is hot today.','We eat rice for dinner.','The goat is in the garden.','My mum likes tea.','The bus is very full.','Birds can fly high.','The baby is happy.'];
+const FIX_NAMES = [['Yusuf and I play football.',['yusuf','i']],['We visited Hargeisa in June.',['hargeisa','june']],['Hodan and I like mangoes.',['hodan','i']],['My friend Bilal lives in Garowe.',['bilal','garowe']],['On Friday I went to the market.',['friday','i']],['Amina was born in March.',['amina','march']]];
+const FIX_Q = ['Where is my shoe?','Can you help me?','What is your name?','Do you like milk?','How old are you?','Who is your teacher?'];
+const FIX_GRAM = [
+  ['I ate an apple.',['I ate a apple.']],['She has an umbrella.',['She has a umbrella.']],['It is an orange cat.',['It is a orange cat.']],['I saw an elephant.',['I saw a elephant.']],['He has a red bag.',['He has an red bag.']],
+  ['The children were playing.',['The children was playing.']],['My friends are here.',['My friends is here.']],['The cat is sleeping.',['The cat are sleeping.']],['We were very happy.',['We was very happy.']],['They are my cousins.',['They is my cousins.']],
+  ['Yesterday I went to the market.',['Yesterday I goed to the market.','Yesterday I go to the market.']],['She ate her dinner.',['She eated her dinner.']],['We saw a big camel.',['We seed a big camel.']],['He ran to school.',['He runned to school.']],['I wrote a letter.',['I writed a letter.']],['They came home late.',['They comed home late.']]
+];
+function eFix(lv){
+  let right, wrongs, rule;
+  if(lv<=3){ right=pick(FIX_BASIC); const low=right[0].toLowerCase()+right.slice(1); wrongs=[low, right.slice(0,-1)]; if(lv===3) wrongs=[low.slice(0,-1), low, right.slice(0,-1)].slice(0,2);
+    rule='A sentence starts with a capital letter and ends with a full stop.'; }
+  else if(lv<=5){ const [s,ws]=pick(FIX_NAMES); right=s; wrongs=ws.map(w=>s.replace(new RegExp('\\b'+w.charAt(0).toUpperCase()+w.slice(1)+'\\b'), w)); rule='Names of people, places, days and months, and the word I, always have a capital letter.'; }
+  else if(lv<=7){ right=pick(FIX_Q); wrongs=[right.slice(0,-1)+'.', right[0].toLowerCase()+right.slice(1)]; rule='A question ends with a question mark.'; }
+  else { const pool=FIX_GRAM.slice(lv===8?0:lv===9?5:10, lv===8?5:lv===9?10:16), [s,ws]=pick(pool); right=s; wrongs=ws; rule=lv===8?'We use an before a vowel sound, like an apple.':lv===9?'Use were and are with more than one, and was and is with one.':'Some doing words change in the past: go becomes went, eat becomes ate.'; }
+  const opts=shuffle([right,...[...new Set(wrongs)].filter(w=>w!==right)]).map(t=>({v:t,t}));
+  return {text:'Tap the sentence that is written correctly', parts:['Which sentence is written correctly?'], answer:right,
+    html:textBtns(opts,'sent'),
+    why:()=>({html:`<div>${esc(rule)}</div>`, say:rule}),
+    async after(){ await say(['Yes! Well spotted.', rule]); }};
+}
+
 const ENGLISH = {
-  steps:[{n:1, name:'Listening ears', games:['etap','esafari','esimon','eparrot','ename']}, {n:2, name:'Sound play', games:['erhyme','eclap','efish']}],
+  steps:[{n:1, name:'Listening ears', games:['etap','esafari','esimon','eparrot','ename']},
+         {n:2, name:'Sound play', games:['erhyme','eclap','efish']},
+         {n:3, name:'Words and letters', games:['eopp','esort','eletter','etrace']},
+         {n:4, name:'Reading', games:['ecaption','eyesno','estory','eread']},
+         {n:5, name:'Writing', games:['emissing','espell','ebee','esentence','efix']}],
+  order:{little:[1,2,3,4,5], middle:[4,5,3,1,2], older:[4,5,3,1,2]},
+  practice:{little:[1,2,3], middle:[3,4,5], older:[4,5]},
+  stepsFor(band){ return this.order[band].map(n=>this.steps.find(s=>s.n===n)); },
+  gamesFor(band){ return this.stepsFor(band).flatMap(s=>s.games); },
+  practiceFor(band){ return this.practice[band].flatMap(n=>this.steps.find(s=>s.n===n).games); },
   get games(){ return this.steps.flatMap(s=>s.games); }
 };
 
@@ -1502,6 +1856,19 @@ const GAMES = {
   erhyme:{name:'Rhyme Rocket', icon:'🚀', acc:'#E0567A', learn:'Find words that rhyme', skill:'Sound play', make:eRhyme},
   eclap:{name:'Clap the Beat', icon:'👏', acc:'#D19A06', learn:'Count the beats in a word', skill:'Sound play', make:eClap},
   efish:{name:'First Sound Fishing', icon:'🎣', acc:'#1D4ED8', learn:'Which words start the same?', skill:'Sound play', make:eFish},
+  eopp:{name:'Opposites', icon:'🔥', acc:'#E0567A', learn:'Hot and cold, big and small', skill:'Vocabulary', make:eOpp},
+  esort:{name:'Word Sort', icon:'🧺', acc:'#22955A', learn:'Animals, food, clothes and more', skill:'Vocabulary', make:eSort},
+  eletter:{name:'Letter Hunt', icon:'🔤', acc:'#3657E0', learn:'Letters and the words they start', skill:'Letters', make:eLetter},
+  etrace:{name:'Trace the Trail', icon:'✏️', acc:'#C2410C', learn:'Write letters with your finger', skill:'Writing', make:eTrace},
+  ecaption:{name:'Caption Catch', icon:'🖼️', acc:'#0F9BB5', learn:'Read words, find the picture', skill:'Reading', make:eCaption},
+  eyesno:{name:'Yes or No Island', icon:'🏝️', acc:'#D19A06', learn:'Read a question and answer it', skill:'Reading', make:eYesNo},
+  estory:{name:'Story Steps', icon:'📚', acc:'#8B5CF6', learn:'Put a story in order', skill:'Reading', make:eStory},
+  eread:{name:'Read and Answer', icon:'🔎', acc:'#BE185D', learn:'Short stories and questions', skill:'Reading', make:eRead},
+  emissing:{name:'Missing Letter', icon:'🧩', acc:'#1D4ED8', learn:'Fill in the missing letters', skill:'Writing', make:eMissing},
+  espell:{name:'Spell the Picture', icon:'🔡', acc:'#22955A', learn:'Build words with letter tiles', skill:'Writing', make:eSpell},
+  ebee:{name:'Spelling Bee', icon:'🐝', acc:'#D19A06', learn:'Hear a word, type it', skill:'Writing', make:eBee},
+  esentence:{name:'Sentence Builder', icon:'🧱', acc:'#C2410C', learn:'Words in order, capitals and full stops', skill:'Writing', make:eSentence},
+  efix:{name:'Fix-It Doctor', icon:'🩺', acc:'#E0567A', learn:'Find the sentence written correctly', skill:'Writing', make:eFix},
 
   placement:{name:'Quick check', icon:'🧭', acc:'#0F9BB5', learn:'Find the right games', isPlacement:true},
   review:{name:'Review', icon:'🔁', acc:'#D19A06', learn:'Questions to try again', isReview:true},
@@ -1514,7 +1881,7 @@ const GROUPS = {
 };
 const groupOf = age => age<=5?'little':age<=8?'middle':'older';
 const bandOf = p => (p && GROUPS[p.band] ? p.band : groupOf(p.age));   // set by the quick check or the parent; age otherwise
-const G = () => { const g=GROUPS[bandOf(me)]; return subject==='english' ? Object.assign({}, g, {label:'English · Steps 1–2', games:ENGLISH.games, perLevel:g===GROUPS.little?5:6, voice:true}) : g; };
+const G = () => { const g=GROUPS[bandOf(me)]; const band=bandOf(me); return subject==='english' ? Object.assign({}, g, {label:'English', games:ENGLISH.gamesFor(band), practiceGames:ENGLISH.practiceFor(band), perLevel:g===GROUPS.little?5:6, voice:true}) : g; };
 
 /* ================= storage ================= */
 const KEY='cwm.v2';
@@ -1710,7 +2077,7 @@ function openGames(){
   $('gamesTitle').textContent=`Hi ${me.name}!`;
   practice=null;
   $('subjTabs').innerHTML=`<button class="tap${eng?'':' on'}" data-subject="maths" aria-pressed="${!eng}">🔢 Maths</button><button class="tap${eng?' on':''}" data-subject="english" aria-pressed="${eng}">🔤 English</button>`;
-  $('gamesSub').innerHTML=`<span class="tag">${grp.label}</span>&nbsp; ${eng?'Listen, speak and play with sounds.':'Start today\'s practice, or pick a game.'}`;
+  $('gamesSub').innerHTML=`<span class="tag">${grp.label}</span>&nbsp; ${eng?'Listen, speak, read and write.':'Start today\'s practice, or pick a game.'}`;
   const due=dueReviews().length, days=practiceDays(me), doneToday=(me.practiceDays||[]).includes(todayStr());
   const card=`<button class="card practice tap" id="practiceBtn"><span class="pi">${doneToday?'✅':'🌟'}</span><span class="pt"><b>Today's ${eng?'English ':''}practice</b><small>${doneToday?'Done today. You can play it again.':'About 10 minutes · games picked for you'}</small>${days?`<small class="streak">⭐ ${days} day${days>1?'s':''} in a row</small>`:''}</span><span class="btn primary small go">${doneToday?'Again':'Start'}</span></button>`;
   const check = !eng && !me.placement ? `<button class="card checkcard tap" id="checkBtn"><span class="pi">🧭</span><span class="pt"><b>Quick check</b><small>8 warm-up questions to find the best games for ${esc(me.name)}</small></span><span class="btn primary small go">Start</span></button>` : '';
@@ -1723,7 +2090,7 @@ function openGames(){
     const s=gp(me,id), done=levelsDone(s);
     return `<button class="card game tap" data-game="${id}" style="--acc:${g.acc}"><span class="gicon">${g.icon}</span><b>${g.name}</b><small>${g.skill?`<span class="skill">${g.skill}</span> `:''}${g.learn}</small><div class="gprog"><span class="bar"><i style="width:${done*10}%"></i></span>${done}/10</div></button>`;
   };
-  const list = eng ? ENGLISH.steps.map(st=>`<h2 class="stephead">Step ${st.n} · ${st.name}</h2>`+st.games.map(gameCard).join('')).join('') : grp.games.map(gameCard).join('');
+  const list = eng ? ENGLISH.stepsFor(bandOf(me)).map(st=>`<h2 class="stephead">Step ${st.n} · ${st.name}</h2>`+st.games.map(gameCard).join('')).join('') : grp.games.map(gameCard).join('');
   $('games').innerHTML=(eng||me.placement?card:check+card)+garden+rev+list;
   if(grp.voice) say(eng?`Hi ${me.name}! Let's learn English. Pick a game.`:`Hi ${me.name}! Tap today's practice, or pick a game.`);
 }
@@ -1791,7 +2158,7 @@ function practiceDays(p){
   return n;
 }
 function buildPractice(){
-  const ids=G().games.filter(id=>!GAMES[id].isSprint);
+  const ids=(G().practiceGames||G().games).filter(id=>!GAMES[id].isSprint);
   const st=ids.map(id=>{ const g=gp(me,id); return {id, acc:g.tries>=3?g.right/g.tries:null, done:levelsDone(g), last:g.last||0}; });
   const used=new Set(), steps=[];
   if(dueReviews().length) steps.push({g:'review', lv:0});
@@ -1877,12 +2244,12 @@ function onChoice(btn){
     if(btn.dataset.choice===q.seq[q.pos]){
       btn.classList.add('right'); btn.insertAdjacentHTML('beforeend',`<span class="stepno">${q.pos+1}</span>`); q.pos++;
       if(q.pos<q.seq.length){ tick(); return; }
-      locked=true; ding(); burst(btn); celebrateCorrect(); completeQ(tries===0,false,()=>say(pick(['Well done! You did it all!','Great listening!','Yes! All done!']))); return;
+      locked=true; ding(); burst(btn); celebrateCorrect(); completeQ(tries===0,false,q.seqDone||(()=>say(pick(['Well done! You did it all!','Great listening!','Yes! All done!'])))); return;
     }
     tries++; boop(); btn.classList.remove('shake'); void btn.offsetWidth; btn.classList.add('shake');
     q.pos=0; $('stage').querySelectorAll('.opt.right').forEach(b=>{ b.classList.remove('right'); const n=b.querySelector('.stepno'); if(n) n.remove(); });
     if(tries>=2){ const first=choiceBtn($('stage'),q.seq[0]); if(first) first.classList.add('pulse'); }
-    say(tries>=2?['Start again. Listen.', q.seqSay, 'Start with the one that is shining.']:['Oops! Start again. Listen.', q.seqSay]);
+    say(q.seqRetry ? (tries>=2?[q.seqRetry,'Start with the one that is shining.']:q.seqRetry) : tries>=2?['Start again. Listen.', q.seqSay, 'Start with the one that is shining.']:['Oops! Start again. Listen.', q.seqSay]);
     return;
   }
   if(btn.dataset.choice===q.answer){ locked=true; btn.classList.add('right'); ding(); burst(btn); celebrateCorrect();
