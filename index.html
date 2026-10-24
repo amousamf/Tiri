@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Tiri</title>
-<meta name="description" content="Maths games for children aged 3 to 12. Works offline.">
+<meta name="description" content="Maths and English games for children aged 3 to 12, at home and at school. Works offline.">
 <meta name="theme-color" content="#3657E0">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
@@ -393,6 +393,52 @@ h1,h2,h3{margin:0;text-wrap:balance}
 .toast{position:fixed;left:50%;top:calc(12px + env(safe-area-inset-top, 0px));transform:translate(-50%,-150%);background:var(--ink);color:#fff;font-weight:600;padding:10px 18px;border-radius:99px;z-index:60;transition:transform .3s;white-space:nowrap;font-size:15px}
 .toast.show{transform:translate(-50%,0)}
 .fx{position:fixed;pointer-events:none;font-size:26px;z-index:50;left:0;top:0}
+/* doors, school mode, admin */
+.doors{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin-top:4px}
+.door{display:flex;flex-direction:column;align-items:center;gap:8px;padding:26px 16px;text-align:center}
+.door .de{font-size:56px;line-height:1}
+.door b{font-size:21px}
+.door span{color:var(--muted);font-size:15px}
+.linkbtn{color:var(--primary);font-weight:600;font-size:15px;padding:8px 4px;text-decoration:underline;text-underline-offset:3px}
+.foot{display:flex;justify-content:center;align-items:center;gap:16px;flex-wrap:wrap;margin-top:22px}
+.phone{display:flex;align-items:stretch}
+.phone .cc{display:grid;place-items:center;padding:0 12px;background:var(--line);border-radius:12px 0 0 12px;font-weight:600;font-variant-numeric:tabular-nums}
+.phone .input{border-radius:0 12px 12px 0}
+.input.pin{letter-spacing:.5em;font-size:24px;max-width:190px;font-variant-numeric:tabular-nums}
+.note{font-size:14px;color:var(--muted);margin:0;line-height:1.45}
+.okmsg{color:var(--success);font-weight:600;margin:0}
+.tasks{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px}
+.task{display:flex;align-items:center;gap:14px;padding:20px;text-align:left}
+.task .te{font-size:40px;line-height:1}
+.task b{font-size:19px;display:block}
+.task small{color:var(--muted);font-size:14px}
+.task[disabled]{opacity:.55;cursor:not-allowed;box-shadow:none}
+.soon{display:inline-block;margin-top:6px;font-size:12px;font-weight:700;padding:3px 9px;border-radius:99px;background:#ECEFF5;color:var(--muted)}
+.classes{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:12px}
+.cls{padding:24px 10px;font-size:20px;font-weight:700;text-align:center}
+.search{position:sticky;top:0;z-index:2;background:var(--bg);padding:2px 0 12px}
+.rows{display:flex;flex-direction:column;gap:10px}
+.crow{display:flex;align-items:center;gap:12px;padding:12px 14px;text-align:left;width:100%;box-sizing:border-box}
+.crow .cn{flex:1;min-width:0}
+.crow .cn b{display:block;font-size:17px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.crow .cn small{color:var(--muted);font-size:13px}
+.crow.add{border:2px dashed var(--line);background:transparent;box-shadow:none;color:var(--primary);font-weight:700;justify-content:center}
+.grp{font-size:12px;font-weight:700;padding:3px 9px;border-radius:99px;white-space:nowrap}
+.grp.very_smart{background:#E6F6EC;color:#16693F}.grp.medium{background:var(--primary-soft);color:var(--primary)}.grp.lowest{background:#FFEDB8;color:#7A5200}
+.seg{display:flex;gap:8px;flex-wrap:wrap}
+.seg button{flex:1 1 0;min-width:max-content;height:46px;padding:0 12px;border-radius:12px;border:1.5px solid var(--line);background:var(--surface);font-size:16px;font-weight:600}
+.seg button[aria-pressed="true"]{background:var(--primary);border-color:var(--primary);color:#fff}
+.banner{background:#FFF6DB;border:1.5px solid #F2D27A;border-radius:14px;padding:10px 14px;font-weight:600;font-size:15px;margin:0 0 12px}
+.spin{color:var(--muted);text-align:center;padding:24px}
+.adm h3{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{font-size:13px;font-weight:600;padding:4px 10px;border-radius:99px;background:var(--bg);border:1px solid var(--line)}
+.inline{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.inline .input{flex:1;min-width:140px;font-size:16px;padding:10px 12px}
+.tlist{display:flex;flex-direction:column}
+.trow{display:flex;flex-direction:column;gap:8px;padding:12px 0;border-top:1px solid var(--line)}
+.trow small{display:block;color:var(--muted);font-size:13px;margin-top:3px}
+.trow a{color:var(--primary)}
 @media (max-width:420px){ .kpis{grid-template-columns:repeat(2,minmax(0,1fr))} }
 @media (prefers-reduced-motion: reduce){ *,*::before,*::after{animation:none!important;transition:none!important} }
 </style>
@@ -449,6 +495,10 @@ h1,h2,h3{margin:0;text-wrap:balance}
   <section class="screen" id="sGarden" hidden><div class="scroll" id="gardenBody"></div></section>
 
   <section class="screen" id="sParent" hidden><div class="scroll" id="parentBody"></div></section>
+
+  <section class="screen" id="sSchool" hidden><div class="scroll" id="schoolBody"></div></section>
+
+  <section class="screen" id="sAdmin" hidden><div class="scroll" id="adminBody"></div></section>
 </div>
 <div class="toast" id="toast"></div>
 
@@ -1881,7 +1931,32 @@ const GROUPS = {
 };
 const groupOf = age => age<=5?'little':age<=8?'middle':'older';
 const bandOf = p => (p && GROUPS[p.band] ? p.band : groupOf(p.age));   // set by the quick check or the parent; age otherwise
-const G = () => { const g=GROUPS[bandOf(me)]; const band=bandOf(me); return subject==='english' ? Object.assign({}, g, {label:'English', games:ENGLISH.gamesFor(band), practiceGames:ENGLISH.practiceFor(band), perLevel:g===GROUPS.little?5:6, voice:true}) : g; };
+const G = () => { const g=GROUPS[bandOf(me)]; const band=bandOf(me);
+  if(SCH.cls){ const c=classCfg(SCH.cls.name), ids=subject==='english'?c.english:c.maths;     // school: the class decides the games
+    return Object.assign({}, g, {label:SCH.cls.name, games:ids, practiceGames:ids, perLevel:subject==='english'?(g===GROUPS.little?5:6):g.perLevel, voice:true}); }
+  return subject==='english' ? Object.assign({}, g, {label:'English', games:ENGLISH.gamesFor(band), practiceGames:ENGLISH.practiceFor(band), perLevel:g===GROUPS.little?5:6, voice:true}) : g; };
+
+/* ---------- school classes: which games each class sees, and the highest level that suits it ---------- */
+const CLASS_GAMES = {
+  'KG1': {band:'little', maths:['count','findnum','colours','shapes','sizes','odd'],
+          english:['etap','esafari','esimon','eparrot','ename']},
+  'KG2': {band:'little', maths:['count','findnum','colours','shapes','sizes','odd','order','more','pattern','addpics'],
+          english:['etap','esafari','esimon','eparrot','ename','erhyme','eclap','efish','eopp','esort','eletter','etrace']},
+  'KG3': {band:'little', maths:['count','findnum','colours','shapes','sizes','odd','order','more','pattern','addpics','takeaway','skip','clock'],
+          english:['etap','esafari','esimon','eparrot','ename','erhyme','eclap','efish','eopp','esort','eletter','etrace','ecaption','eyesno','emissing','espell'],
+          caps:{skip:3, clock:4}},
+  'Standard 1': {band:'middle', maths:['addpics','takeaway','skip','clock','addsub','missing','compare','doubles','story'],
+          english:['eletter','etrace','efish','erhyme','eopp','esort','ecaption','eyesno','estory','emissing','espell','ebee'],
+          caps:{addsub:6, skip:6, clock:6, missing:6, compare:6, doubles:5, story:6}},
+  'Standard 2': {band:'middle', maths:['addsub','missing','place','compare','skip','story','clock','money','doubles','groups'],
+          english:['eopp','esort','ecaption','eyesno','estory','eread','emissing','espell','ebee','esentence','efix']}
+};
+function classCfg(name){
+  const n=String(name||'').toLowerCase().replace(/\s+/g,'');
+  const key = /^kg1|^kindergarten1/.test(n)?'KG1' : /^kg2/.test(n)?'KG2' : /^kg3/.test(n)?'KG3' : /^(standard|std|grade|class)1$/.test(n)?'Standard 1' : 'Standard 2';
+  return CLASS_GAMES[name] || CLASS_GAMES[key];
+}
+const capOf = id => (SCH.cls && (classCfg(SCH.cls.name).caps||{})[id]) || 10;
 
 /* ================= storage ================= */
 const KEY='cwm.v2';
@@ -1896,6 +1971,8 @@ function load(){
   if(!store.device) store.device='tab-'+Math.random().toString(36).slice(2,7);
   try{ const to=new URLSearchParams(location.search).get('to'); if(validEmail(to)) store.sendTo=to; }catch(e){}
   if(store.version!==3){ store.version=3; }
+  if(store.school && !Array.isArray(store.school.outbox)) store.school.outbox=[];
+  if(!store.mode && store.profiles.length){ store.mode='family'; store.familyLegacy=true; }   // phones already used by a family keep playing without a code
   save();
 }
 function save(){ try{ localStorage.setItem(KEY,JSON.stringify(store)); }catch(e){} }
@@ -1904,6 +1981,409 @@ const starTotal = p => Object.values(p.games||{}).reduce((a,g)=>a+Object.values(
 const levelsDone = g => Object.keys(g.stars||{}).length;
 const initials = n => n.trim().split(/\s+/).map(w=>w[0]).slice(0,2).join('').toUpperCase();
 const avatar = (p,lg) => `<span class="av${lg?' lg':''}" style="background:${p.color}">${esc(initials(p.name))}</span>`;
+
+/* ================= school mode, family codes and admin (data kept in Supabase) ================= */
+/* The app only holds the publishable key. Every call goes through a database function that checks the login token. */
+const SUPA = { url:'https://elrbvijhzunuuqbblnkl.supabase.co', key:'sb_publishable_ErlGWsYk8RHchg66yXEkTA_YV8idwVv' };
+const ADMIN_WHATSAPP = '';   // the admin's WhatsApp number, digits only with country code (e.g. '252612345678'); empty hides the link
+const SCH = { view:'code', klass:null, cls:null, child:null, preview:false, kids:null, classes:null, search:'', session:null, msg:'', err:'', addAge:null, addGroup:null, arm:'' };
+const ADM = { tok:null, data:null, err:'', msg:'', arm:'' };
+const GROUP_LABEL = {very_smart:'Very smart', medium:'Medium', lowest:'Lowest'};
+const START_EN = ['etap','esafari','erhyme','efish','eopp','esort','eletter','ecaption','eyesno','eread','emissing','eclap','efix'];   // tap-to-answer games only
+
+async function rpc(fn, args){
+  let r;
+  try{ r = await fetch(`${SUPA.url}/rest/v1/rpc/${fn}`, {method:'POST', headers:{'apikey':SUPA.key, 'Content-Type':'application/json', 'Accept':'application/json'}, body:JSON.stringify(args||{})}); }
+  catch(e){ const err=new Error('offline'); err.code='offline'; err.offline=true; throw err; }
+  const txt = await r.text(); let data=null; try{ data = txt ? JSON.parse(txt) : null; }catch(e){}
+  if(!r.ok){ const err=new Error((data&&data.message)||('http_'+r.status)); err.code=(data&&data.message)||''; err.http=r.status; throw err; }
+  return data;
+}
+const uuid = () => (window.crypto && crypto.randomUUID) ? crypto.randomUUID()
+  : 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g,c=>{ const r=Math.random()*16|0; return (c==='x'?r:(r&3|8)).toString(16); });
+const tokenOf = () => store.school && store.school.token;
+const phoneDigits = v => { let d=String(v||'').replace(/\D/g,''); if(d.startsWith('252')) d=d.slice(3); return d.replace(/^0+/,''); };
+const hashColor = s => { let h=0; for(const ch of String(s)) h=(h*31+ch.charCodeAt(0))|0; return AVCOL[Math.abs(h)%AVCOL.length]; };
+const SERR = {
+  school_not_found:'That school code is not right. Check it with the school or the admin.',
+  bad_phone:'Type the phone number after +252, for example 61 234 5678.',
+  teacher_not_found:'This number is not registered at this school yet. Tap “New teacher” to register.',
+  wrong_pin:'That PIN is not right. After 5 wrong tries the login locks for 15 minutes.',
+  locked:'Too many wrong tries. Wait 15 minutes, or ask the admin to reset your PIN.',
+  pin_must_be_4_digits:'The PIN must be 4 numbers.',
+  phone_already_registered:'This number is already registered. Log in instead.',
+  name_required:'Type the name.',
+  no_reset_pending:'Your PIN was not reset. Log in with your PIN, or ask the admin.',
+  family_not_found:'That family code is not right. Check it with the person who gave it to you.',
+  offline:'No internet connection. Connect and try again.',
+  invalid_token:'Please log in again.',
+  read_only:'The principal login can look but cannot change anything.',
+  not_allowed:'This login cannot do that.',
+  code_taken:'That code is already used. Pick another one.',
+  admin_only:'Please log in as admin again.', no_admin:'The admin login has not been set up yet.',
+  bad_class:'Pick a class first.', bad_role:'Unknown role.'
+};
+const serr = e => SERR[typeof e==='string'?e:((e&&(e.code||e.message))||'')] || 'Something went wrong. Please try again.';
+const contactHTML = () => ADMIN_WHATSAPP ? `<a class="linkbtn" href="https://wa.me/${ADMIN_WHATSAPP}" target="_blank" rel="noopener">Contact admin on WhatsApp</a>` : '';
+function setErr(id, msg){ const el=$(id); if(!el) return; el.textContent=msg||''; el.hidden=!msg; }
+async function busy(btn, fn){ if(btn&&btn.disabled) return; const t=btn?btn.textContent:''; if(btn){ btn.disabled=true; btn.textContent='Please wait…'; } try{ await fn(); } finally{ if(btn&&btn.isConnected){ btn.disabled=false; btn.textContent=t; } } }
+
+/* ---------- results waiting to be sent (works through poor internet) ---------- */
+let obBusy=false;
+function obPush(fn, args){ store.school.outbox=store.school.outbox||[]; store.school.outbox.push({fn,args}); save(); obFlush(); }
+async function obFlush(){
+  if(obBusy || !store.school || !(store.school.outbox||[]).length || !tokenOf()) return;
+  obBusy=true;
+  try{
+    while(store.school.outbox.length && tokenOf()){
+      const it=store.school.outbox[0]; let keep=false;
+      try{ await rpc(it.fn, Object.assign({p_token:tokenOf()}, it.args)); }
+      catch(e){ keep = !!e.offline || !e.http || e.http>=500 || e.http===429 || e.code==='invalid_token'; if(e.code==='invalid_token'){ store.school.token=null; save(); } }
+      if(keep) break;
+      store.school.outbox.shift(); save();   // sent (or can never succeed): move on
+    }
+  } finally { obBusy=false; if(current==='sSchool' && SCH.view==='task') renderSchool(); }
+}
+window.addEventListener('online', ()=>obFlush());
+document.addEventListener('visibilitychange', ()=>{ if(document.visibilityState==='visible') obFlush(); });
+setInterval(()=>obFlush(), 30000);
+
+/* ---------- a child's session: opened when the teacher taps the child, closed when they go back ---------- */
+function progressOf(p){ return {games:p.games||{}, best:p.best||{}, review:p.review||[], words:p.words||{}, practiceDays:p.practiceDays||[], bonus:p.bonus||0, subject:p.subject||subject, last:p.last||0}; }
+function saveChildProgress(){
+  if(SCH.preview || !SCH.child || !me) return;
+  const pr=progressOf(me); store.school.cache=store.school.cache||{}; store.school.cache[SCH.child.id]=pr;
+  const from=obBusy?1:0;   // only the newest copy needs sending
+  store.school.outbox=(store.school.outbox||[]).filter((it,i)=> i<from || !(it.fn==='save_progress' && it.args.p_child_id===SCH.child.id));
+  obPush('save_progress', {p_child_id:SCH.child.id, p_progress:pr});
+}
+function startChildSession(){
+  if(SCH.preview || !SCH.child) return;
+  SCH.session={id:uuid(), started:Date.now()};
+  obPush('open_session', {p_session_id:SCH.session.id, p_child_id:SCH.child.id, p_task_type:'in_class', p_started_at:new Date().toISOString()});
+}
+function endChildSession(){
+  if(SCH.child && !SCH.preview) saveChildProgress();
+  if(SCH.session){ obPush('end_session', {p_session_id:SCH.session.id, p_minutes:Math.round((Date.now()-SCH.session.started)/6000)/10}); }
+  SCH.session=null; SCH.cls=null; SCH.child=null;
+}
+function leaveChild(){ const wasPreview=SCH.preview; endChildSession(); SCH.preview=false; me=null; openSchool(wasPreview?'classes':'children'); }
+function schoolRound(rec){
+  if(SCH.preview || !SCH.child) return;
+  saveChildProgress();
+  if(rec.game_id==='placement' || !SCH.session) return;
+  const first=(rec.items[0]||{}).game || rec.game_id, gg=GAMES[first]||{};
+  obPush('record_round', {p_round_id:uuid(), p_session_id:SCH.session.id, p_subject:gg.skill?'english':'maths', p_game:rec.game_id,
+    p_skill:rec.game_id==='review'?'Review':(gg.skill||gg.name||rec.game), p_level:rec.level||0, p_questions:rec.questions,
+    p_right_first_time:rec.right_first_try, p_stars:Math.max(0,Math.min(3,rec.stars||0)),
+    p_missed:rec.items.filter(i=>!i.ok).map(i=>({game:i.game, answer:String(i.answer)})).slice(0,20),
+    p_played_at:new Date(Date.now()-rec.seconds*1000).toISOString()});
+}
+function profileFromChild(c, pr){
+  pr=pr||{};
+  return {id:c.id, name:c.name, age:c.age||5, color:hashColor(c.id), games:pr.games||{}, best:pr.best||{}, review:pr.review||[], words:pr.words||{},
+    practiceDays:pr.practiceDays||[], bonus:pr.bonus||0, subject:pr.subject, last:pr.last||0, band:classCfg(c.class_name).band};
+}
+async function openChild(id, btn){
+  const listed=(SCH.kids||[]).find(x=>x.id===id), cached=(store.school.cache||{})[id];
+  let c=null;
+  await busy(btn, async()=>{
+    try{ c=await rpc('child_open', {p_token:tokenOf(), p_child_id:id}); }
+    catch(e){
+      if(e.code==='invalid_token') return needLogin();
+      if(e.offline && listed){ c=Object.assign({}, listed, {class_name:SCH.klass.name, progress:cached||{}, start_done_at:listed.start_score!=null?'done':null}); toast('No internet. Results will be sent later.'); }
+      else { setErr('sErr', serr(e)); }
+    }
+  });
+  if(!c) return;
+  let pr=c.progress||{}; if(cached && (cached.last||0)>(pr.last||0)) pr=cached;   // this phone may hold newer, unsent progress
+  SCH.child={id:c.id, name:c.name, start_done:!!c.start_done_at};
+  SCH.cls={id:c.class_id, name:c.class_name||(SCH.klass&&SCH.klass.name)||'Standard 2'};
+  SCH.preview=false;
+  me=profileFromChild(Object.assign({}, c, {class_name:SCH.cls.name}), pr);
+  subject=me.subject==='english'?'english':'maths';
+  startChildSession();
+  SCH.child.start_done ? openGames() : startStarting();
+}
+function openPreview(k){
+  SCH.preview=true; SCH.child=null; SCH.session=null; SCH.cls={id:k.id, name:k.name};
+  const c=classCfg(k.name), games={};
+  c.maths.concat(c.english).forEach(id=>{ games[id]={unlocked:capOf(id), stars:{}, plays:0, right:0, tries:0, last:0}; });   // every level open, to check the questions
+  me={id:'preview', name:(store.school&&store.school.teacher)||'Teacher', age:5, color:AVCOL[0], games, best:{}, review:[], words:{}, practiceDays:[], bonus:0, band:c.band, last:0};
+  subject='maths'; openGames();
+}
+
+/* ---------- starting exercise: 8 questions from the class's games, once per child ---------- */
+function startStarting(){
+  const c=classCfg(SCH.cls.name), lvls=[1,3,5,7];
+  const mp=c.maths.filter(id=>!GAMES[id].isSprint), ep=c.english.filter(id=>START_EN.includes(id));
+  const at=(pool,i)=>pool[Math.floor(i*pool.length/4)], list=[];
+  for(let i=0;i<4;i++){ const m=at(mp,i); list.push([m, Math.min(capOf(m), lvls[i])]); if(ep.length){ const e=at(ep,i); list.push([e, Math.min(capOf(e), lvls[i])]); } }
+  practice=null; stopSprint(); logRound(false);
+  placing={start:true, list, n:0, max:list.length, hist:[]};
+  game='placement'; level=0; plan=[];
+  round={game:'placement', level:0, started:Date.now(), items:[], logged:false};
+  show('sPlay'); $('qbar').style.width='0%';
+  $('pTitle').textContent='Starting exercise';
+  $('pText').textContent='Starting exercise';
+  $('stage').innerHTML=`<div class="cele">${mascotSVG('happy')}</div><p style="font-size:20px;font-weight:600;text-align:center;margin:0">A few questions to find<br>where ${esc(me.name)} should start.</p>`;
+  say(`Hi ${me.name}! Let's start with a few questions.`).then(()=>{ if(placing) placeQ(); });
+}
+function finishStarting(){
+  const right=placing.hist.filter(h=>h.ok).length, total=placing.hist.length; placing=null;
+  const r=total?right/total:0, start=r<0.4?1 : r<0.65?2 : r<0.9?3 : 4, c=classCfg(SCH.cls.name);
+  c.maths.concat(c.english).forEach(id=>{ const g=gp(me,id); g.unlocked=Math.max(g.unlocked||1, Math.min(start, capOf(id))); });
+  if(round){ round.stars=0; round.passed=true; } logRound(true);   // saves the child's progress
+  if(!SCH.preview && SCH.child){ SCH.child.start_done=true; obPush('save_start_score', {p_child_id:SCH.child.id, p_score:right, p_total:total}); }
+  show('sDone'); bigCelebration();
+  $('result').innerHTML=`<div class="cele">${mascotSVG('cheer')}</div><h2>All done, ${esc(me.name)}!</h2><p>Your games are ready.</p>
+    <div class="placednote">For the teacher: ${right} of ${total} right. ${esc(me.name)} starts at <b>level ${start}</b> in each game.</div>
+    <div class="btns"><button class="btn primary" id="placedGo">Let's play ▶</button></div>`;
+  say(`Great job, ${me.name}! Your games are ready. Let's play!`);
+}
+
+/* ---------- home page doors and the family code ---------- */
+function doorsHTML(){
+  return `<div class="head"><h1>Welcome to Tiri</h1><p>Maths and English games for children. Where is this phone being used?</p></div>
+    <div class="doors">
+      <button class="card door tap" data-s="door-school"><span class="de">🏫</span><b>School</b><span>Teachers and principals</span></button>
+      <button class="card door tap" data-s="door-family"><span class="de">🏠</span><b>Family</b><span>Children playing at home</span></button>
+    </div>${installCard()}
+    <div class="foot"><button class="linkbtn" data-s="go-admin">Admin</button></div>`;
+}
+function familyCodeHTML(){
+  return `<div class="head"><h1>Family code</h1><p>The Tiri admin gives each family a code. You only type it once on this phone.</p></div>
+    <div class="card form">
+      <label class="label" for="famCode">Family code</label>
+      <input class="input" id="famCode" maxlength="20" autocomplete="off" autocapitalize="characters" style="text-transform:uppercase" placeholder="For example, AHMED">
+      <p class="err" id="famErr" hidden></p>
+      <div class="btns"><button class="btn primary" data-s="famcode">Continue</button></div>
+      ${store.profiles.length?`<p class="note">The children already on this phone keep their progress.</p>`:''}
+    </div>
+    <div class="foot">${contactHTML()}</div>`;
+}
+async function submitFamilyCode(btn){
+  const code=($('famCode').value||'').trim().toUpperCase();
+  if(!code) return setErr('famErr','Type the family code.');
+  await busy(btn, async()=>{
+    try{ const r=await rpc('family_login', {p_family_code:code});
+      if(!r||!r.ok) return setErr('famErr', serr(r&&r.error));
+      store.familyCode=code; store.familyToken=r.token; if(!store.family && r.name) store.family=r.name; save();
+      renderHome(); show('sHome'); liveSync();
+    }catch(e){ setErr('famErr', serr(e)); }
+  });
+}
+
+/* ---------- school screens ---------- */
+function openSchoolHome(){
+  store.mode='school'; store.school=store.school||{outbox:[]}; save();
+  if(!store.school.code) return openSchool('code');
+  if(!tokenOf()) return openSchool('login');
+  openSchool('task'); obFlush();
+}
+function openSchool(v, err){
+  SCH.view=v; SCH.err=err||''; SCH.arm='';
+  if(v==='children'){ SCH.search=''; SCH.kids=null; loadKids(); }
+  if(v==='classes' && !SCH.classes) loadClasses();
+  if(v==='addchild'){ SCH.addAge=null; SCH.addGroup=null; }
+  renderSchool(); show('sSchool');
+  setTimeout(()=>{ const a=document.activeElement, f=$('schoolBody').querySelector('input');
+    if(f && v!=='children' && SCH.view===v && !(a && a.tagName==='INPUT')) f.focus(); },60);
+}
+function needLogin(){ if(store.school) store.school.token=null; save(); SCH.classes=null; openSchool('login', SERR.invalid_token); }
+function schoolBack(){
+  const v=SCH.view;
+  if(v==='code'){ store.mode=null; save(); renderHome(); show('sHome'); return; }
+  if(v==='login') return openSchool('code');
+  if(v==='register'||v==='setpin') return openSchool('login');
+  if(v==='children') return openSchool('classes');
+  if(v==='addchild') return openSchool('children');
+  openSchool('task');
+}
+async function loadClasses(){
+  try{ SCH.classes=await rpc('list_classes', {p_token:tokenOf()}); }
+  catch(e){ if(e.code==='invalid_token') return needLogin(); SCH.classes=null; SCH.err=serr(e); }
+  if(current==='sSchool' && SCH.view==='classes') renderSchool();
+}
+async function loadKids(){
+  const k=SCH.klass;
+  try{ const rows=await rpc('list_children', {p_token:tokenOf(), p_class_id:k.id, p_search:null}); if(SCH.klass===k) SCH.kids=rows||[]; }
+  catch(e){ if(e.code==='invalid_token') return needLogin(); SCH.kids=[]; SCH.err=serr(e); }
+  if(current==='sSchool' && SCH.view==='children') renderSchool();
+}
+const pinInput = (id, label, ac) => `<label class="label" for="${id}">${label}</label><input class="input pin" id="${id}" type="password" inputmode="numeric" pattern="[0-9]*" maxlength="4" autocomplete="${ac||'off'}" placeholder="••••">`;
+const phoneInput = val => `<label class="label" for="sPhone">Phone number</label><div class="phone"><span class="cc">+252</span><input class="input" id="sPhone" type="tel" inputmode="numeric" autocomplete="tel-national" maxlength="14" placeholder="61 234 5678" value="${esc(val||'')}"></div>`;
+const errP = () => `<p class="err" id="sErr" ${SCH.err?'':'hidden'}>${esc(SCH.err)}</p>`;
+function kidRowsHTML(){
+  if(SCH.kids===null) return `<div class="spin">Loading children…</div>`;
+  const s=SCH.search.trim().toLowerCase(), ks=SCH.kids.filter(k=>!s || k.name.toLowerCase().includes(s)).sort((a,b)=>a.name.localeCompare(b.name));
+  const add = `<button class="card crow add tap" data-s="go-addchild">+ Add child</button>`;
+  if(!SCH.kids.length) return add + `<p class="note" style="text-align:center;margin-top:8px">No children in this class yet. Add the first one.</p>`;
+  return add + (ks.length ? ks.map(k=>{
+    const lp=k.last_played?Date.parse(k.last_played):0, start=k.start_score!=null?`starting exercise ${k.start_score}/${k.start_total}`:'starting exercise not done';
+    return `<button class="card crow tap" data-child="${esc(k.id)}">${avatar({name:k.name,color:hashColor(k.id)})}<span class="cn"><b>${esc(k.name)}</b><small>${k.age?`Age ${k.age} · `:''}${ago(lp)} · ${start}</small></span>${k.expected_group?`<span class="grp ${esc(k.expected_group)}">${esc(GROUP_LABEL[k.expected_group]||k.expected_group)}</span>`:''}</button>`; }).join('')
+    : `<p class="note" style="text-align:center;margin-top:8px">No child called “${esc(SCH.search.trim())}”.</p>`);
+}
+function renderSchool(){
+  const sc=store.school||{}, v=SCH.view, b=$('schoolBody');
+  if(v==='code') b.innerHTML=`<div class="head"><h1>School</h1><p>Type the school code. The school or the Tiri admin gives it to you.</p></div>
+    <div class="card form"><label class="label" for="sCode">School code</label>
+      <input class="input" id="sCode" maxlength="20" autocomplete="off" autocapitalize="characters" style="text-transform:uppercase" placeholder="For example, ARAN" value="${esc(sc.code||'')}">
+      ${errP()}<div class="btns"><button class="btn primary" data-s="code">Continue</button></div></div>
+    <div class="foot">${contactHTML()}</div>`;
+  else if(v==='login') b.innerHTML=`<div class="head"><h1>Teacher login</h1><p>${esc(sc.name||'')}</p></div>
+    <div class="card form">${phoneInput(sc.phone)}${pinInput('sPin','PIN','current-password')}
+      ${errP()}<div class="btns"><button class="btn primary" data-s="login">Log in</button></div>
+      <p class="note">First time here? <button class="linkbtn" data-s="go-register">New teacher</button></p></div>
+    <div class="foot"><button class="linkbtn" data-s="change-school">Change school</button>${contactHTML()}</div>`;
+  else if(v==='register') b.innerHTML=`<div class="head"><h1>New teacher</h1><p>${esc(sc.name||'')}</p></div>
+    <div class="card form"><label class="label" for="sName">Your name</label><input class="input" id="sName" maxlength="40" autocomplete="name" placeholder="For example, Asha Ali">
+      ${phoneInput(sc.phone)}<p class="note">We'll add this number to the Tiri teachers' WhatsApp group to share guidance.</p>
+      ${pinInput('sPin','Choose a 4-number PIN','new-password')}${pinInput('sPin2','Type the PIN again','new-password')}
+      ${errP()}<div class="btns"><button class="btn primary" data-s="register">Register</button></div></div>
+    <div class="foot">${contactHTML()}</div>`;
+  else if(v==='setpin') b.innerHTML=`<div class="head"><h1>Choose a new PIN</h1><p>Your PIN was reset by the admin.</p></div>
+    <div class="card form">${phoneInput(sc.phone)}${pinInput('sPin','New 4-number PIN','new-password')}${pinInput('sPin2','Type the PIN again','new-password')}
+      ${errP()}<div class="btns"><button class="btn primary" data-s="setpin">Save PIN</button></div></div>`;
+  else if(v==='changepin') b.innerHTML=`<div class="head"><h1>Change PIN</h1></div>
+    <div class="card form">${pinInput('sPin0','Current PIN','current-password')}${pinInput('sPin','New 4-number PIN','new-password')}${pinInput('sPin2','Type the new PIN again','new-password')}
+      ${errP()}<div class="btns"><button class="btn primary" data-s="changepin">Save PIN</button></div></div>`;
+  else if(v==='task'){ const pr=sc.role==='principal', wait=(sc.outbox||[]).length;
+    b.innerHTML=`<div class="head"><h1>Hi ${esc(sc.teacher||'')}!</h1><p>${pr?'Principal · look at each class and try the questions.':'What would you like to do?'}</p></div>
+    ${SCH.msg?`<p class="okmsg" style="margin:0 0 12px">${esc(SCH.msg)}</p>`:''}
+    <div class="tasks">
+      <button class="card task tap" data-s="inclass"><span class="te">🏫</span><span><b>In-class exercise</b><small>${pr?'See the games for each class':'A child plays now, on this phone'}</small></span></button>
+      <button class="card task" disabled aria-disabled="true"><span class="te">🏠</span><span><b>Send homework</b><small>Children practise at home</small><br><span class="soon">Coming soon</span></span></button>
+    </div>
+    ${pr?`<p class="note" style="margin-top:14px">The principal dashboard with every child's scores is coming soon.</p>`:''}
+    ${wait?`<p class="note" style="margin-top:14px">${wait} result${wait>1?'s':''} waiting to be sent. They go when the internet is back.</p>`:''}
+    <div class="foot"><button class="linkbtn" data-s="go-changepin">Change PIN</button><button class="linkbtn" data-s="logout">${SCH.arm==='logout'?'Results are waiting. Tap again to log out':'Log out'}</button>${contactHTML()}</div>`;
+    SCH.msg=''; }
+  else if(v==='classes') b.innerHTML=`<div class="head"><h1>Pick a class</h1><p>${sc.role==='principal'?'Open a class to try its games. Nothing is saved.':'Then pick the child who is playing.'}</p></div>${errP()}
+    ${SCH.classes===null?`<div class="spin">Loading classes…</div>`:`<div class="classes">${SCH.classes.map((k,i)=>`<button class="card cls tap" data-cls="${i}">${esc(k.name)}</button>`).join('')}</div>`}`;
+  else if(v==='children') b.innerHTML=`<div class="head"><h1>${esc(SCH.klass?SCH.klass.name:'')}</h1><p>Who is playing?</p></div>
+    <div class="search"><input class="input" id="sSearch" type="search" autocomplete="off" placeholder="Search a name" value="${esc(SCH.search)}" aria-label="Search children"></div>
+    ${errP()}<div class="rows" id="kidRows">${kidRowsHTML()}</div>`;
+  else if(v==='addchild') b.innerHTML=`<div class="head"><h1>Add a child</h1><p>${esc(SCH.klass?SCH.klass.name:'')} · a short starting exercise comes next.</p></div>
+    <div class="card form"><label class="label" for="sName">Child's name</label><input class="input" id="sName" maxlength="40" autocomplete="off" placeholder="For example, Hodan">
+      <div class="label" id="sAgeL">Age</div><div class="ages" role="group" aria-labelledby="sAgeL">${[3,4,5,6,7,8,9,10,11,12].map(a=>`<button class="age" data-sage="${a}" aria-pressed="${a===SCH.addAge}">${a}</button>`).join('')}</div>
+      <div class="label" id="sGrpL">Expected performance</div><div class="seg" role="group" aria-labelledby="sGrpL">${Object.keys(GROUP_LABEL).map(k=>`<button data-sgroup="${k}" aria-pressed="${k===SCH.addGroup}">${GROUP_LABEL[k]}</button>`).join('')}</div>
+      ${errP()}<div class="btns"><button class="btn primary" data-s="addchild">Save and start</button></div></div>`;
+}
+async function schoolAction(a, btn){
+  const sc=store.school||(store.school={outbox:[]});
+  const pinOk = id => /^\d{4}$/.test(($(id)||{}).value||'');
+  if(a==='code'){ const code=($('sCode').value||'').trim().toUpperCase(); if(!code) return setErr('sErr','Type the school code.');
+    return busy(btn, async()=>{ try{ const r=await rpc('school_check', {p_school_code:code}); if(!r.ok) return setErr('sErr', serr(r.error));
+      Object.assign(sc, {code, name:r.school, token:null}); save(); SCH.classes=null; openSchool('login'); }catch(e){ setErr('sErr', serr(e)); } }); }
+  if(a==='login'){ const ph=phoneDigits($('sPhone').value); if(!/^\d{7,9}$/.test(ph)) return setErr('sErr', SERR.bad_phone); if(!pinOk('sPin')) return setErr('sErr', SERR.pin_must_be_4_digits);
+    return busy(btn, async()=>{ try{ const r=await rpc('teacher_login', {p_school_code:sc.code, p_phone:'+252'+ph, p_pin:$('sPin').value}); sc.phone=ph; save();
+      if(!r.ok){ if(r.error==='pin_reset') return openSchool('setpin'); return setErr('sErr', serr(r.error)); } loggedIn(r); }catch(e){ setErr('sErr', serr(e)); } }); }
+  if(a==='register'){ const name=($('sName').value||'').trim().replace(/\s+/g,' '), ph=phoneDigits($('sPhone').value);
+    if(!name) return setErr('sErr','Type your name.'); if(!/^\d{7,9}$/.test(ph)) return setErr('sErr', SERR.bad_phone);
+    if(!pinOk('sPin')) return setErr('sErr', SERR.pin_must_be_4_digits); if($('sPin').value!==$('sPin2').value) return setErr('sErr','The two PINs are not the same.');
+    return busy(btn, async()=>{ try{ const r=await rpc('teacher_register', {p_school_code:sc.code, p_name:name, p_phone:'+252'+ph, p_pin:$('sPin').value}); sc.phone=ph; save();
+      if(!r.ok) return setErr('sErr', serr(r.error)); loggedIn(r); }catch(e){ setErr('sErr', serr(e)); } }); }
+  if(a==='setpin'){ const ph=phoneDigits($('sPhone').value); if(!/^\d{7,9}$/.test(ph)) return setErr('sErr', SERR.bad_phone);
+    if(!pinOk('sPin')) return setErr('sErr', SERR.pin_must_be_4_digits); if($('sPin').value!==$('sPin2').value) return setErr('sErr','The two PINs are not the same.');
+    return busy(btn, async()=>{ try{ const r=await rpc('teacher_set_new_pin', {p_school_code:sc.code, p_phone:'+252'+ph, p_new_pin:$('sPin').value}); sc.phone=ph; save();
+      if(!r.ok) return setErr('sErr', serr(r.error)); SCH.msg='New PIN saved.'; loggedIn(r); }catch(e){ setErr('sErr', serr(e)); } }); }
+  if(a==='changepin'){ if(!pinOk('sPin0')||!pinOk('sPin')) return setErr('sErr', SERR.pin_must_be_4_digits); if($('sPin').value!==$('sPin2').value) return setErr('sErr','The two new PINs are not the same.');
+    return busy(btn, async()=>{ try{ const r=await rpc('teacher_change_pin', {p_token:tokenOf(), p_old_pin:$('sPin0').value, p_new_pin:$('sPin').value});
+      if(!r.ok) return setErr('sErr', serr(r.error)); SCH.msg='PIN changed.'; openSchool('task'); }catch(e){ if(e.code==='invalid_token') return needLogin(); setErr('sErr', serr(e)); } }); }
+  if(a==='logout'||a==='change-school'){
+    if(a==='logout' && (sc.outbox||[]).length && SCH.arm!=='logout'){ SCH.arm='logout'; await obFlush(); if((sc.outbox||[]).length){ renderSchool(); return; } }
+    const tok=sc.token; if(tok) rpc('logout', {p_token:tok}).catch(()=>{});
+    sc.token=null; SCH.classes=null; if(a==='change-school'){ sc.code=''; sc.name=''; } save();
+    return openSchool(a==='logout'?'login':'code'); }
+  if(a==='inclass') return openSchool('classes');
+  if(a==='go-register') return openSchool('register');
+  if(a==='go-changepin') return openSchool('changepin');
+  if(a==='go-addchild') return openSchool('addchild');
+  if(a==='addchild'){ const name=($('sName').value||'').trim().replace(/\s+/g,' ');
+    if(!name) return setErr('sErr','Type the child’s name.'); if(!SCH.addAge) return setErr('sErr','Pick the child’s age.'); if(!SCH.addGroup) return setErr('sErr','Pick the expected performance.');
+    return busy(btn, async()=>{ try{ const r=await rpc('add_child', {p_token:tokenOf(), p_class_id:SCH.klass.id, p_name:name, p_age:SCH.addAge, p_expected_group:SCH.addGroup});
+      if(!r.ok) return setErr('sErr', serr(r.error)); await openChild(r.child_id); }catch(e){ if(e.code==='invalid_token') return needLogin(); setErr('sErr', serr(e)); } }); }
+}
+function loggedIn(r){ const sc=store.school; Object.assign(sc, {token:r.token, teacher:r.name, role:r.role, name:r.school||sc.name}); save(); SCH.classes=null; openSchool('task'); obFlush(); }
+
+/* ---------- admin: school and family codes, PIN resets ---------- */
+function openAdmin(){ ADM.err=''; ADM.arm=''; renderAdmin(); show('sAdmin'); if(ADM.tok) adminLoad(); else setTimeout(()=>{ const i=$('aPin'); if(i) i.focus(); },60); }
+function adminBack(){ if(store.mode==='school') return openSchoolHome(); renderHome(); show('sHome'); }
+async function adminLoad(){
+  try{ ADM.data=await rpc('admin_overview', {p_token:ADM.tok}); ADM.err=''; }
+  catch(e){ if(e.code==='invalid_token'||e.code==='admin_only'){ ADM.tok=null; ADM.err='Please log in again.'; } else ADM.err=serr(e); }
+  if(current==='sAdmin') renderAdmin();
+}
+function renderAdmin(){
+  const b=$('adminBody'), err=`<p class="err" id="aErr" ${ADM.err?'':'hidden'}>${esc(ADM.err)}</p>`;
+  if(!ADM.tok){ b.innerHTML=`<div class="head"><h1>Admin</h1><p>For the Tiri organiser: school codes, family codes and teacher PINs.</p></div>
+      <div class="card form"><label class="label" for="aPin">Admin PIN</label><input class="input pin" id="aPin" type="password" inputmode="numeric" pattern="[0-9]*" maxlength="12" autocomplete="current-password" placeholder="••••••" style="max-width:260px">
+      ${err}<div class="btns"><button class="btn primary" data-a="login">Log in</button></div></div>`; return; }
+  const d=ADM.data;
+  if(!d){ b.innerHTML=`<div class="head"><h1>Admin</h1></div>${err}<div class="spin">Loading…</div>`; return; }
+  const schools=d.schools.map(s=>`<div class="card panel adm">
+      <h3><span>${esc(s.name)}</span><span class="chip">Code ${esc(s.code)}</span></h3>
+      <p>${s.children} child${s.children===1?'':'ren'} · ${(s.teachers||[]).length} teacher${(s.teachers||[]).length===1?'':'s'}</p>
+      <div class="chips">${(s.classes||[]).map(c=>`<span class="chip">${esc(c)}</span>`).join('')}</div>
+      <div class="inline"><input class="input" id="cls-${esc(s.id)}" maxlength="30" placeholder="New class, e.g. Standard 3"><button class="btn small" data-a="addclass" data-sid="${esc(s.id)}">Add class</button></div>
+      ${(s.teachers||[]).length?`<div class="tlist">
+      ${s.teachers.map(t=>`<div class="trow"><div><b>${esc(t.name)}</b> <span class="chip">${t.role==='principal'?'Principal':'Teacher'}</span>${t.pin_set?'':' <span class="chip">PIN reset</span>'}
+        <small><a href="https://wa.me/${esc(String(t.phone).replace(/\D/g,''))}" target="_blank" rel="noopener">${esc(t.phone)}</a> · ${t.last_login?'last login '+esc(new Date(t.last_login).toLocaleDateString()):'not logged in yet'}</small></div>
+        <div class="btns"><button class="btn small" data-a="reset" data-tid="${esc(t.id)}">${ADM.arm==='reset'+t.id?'Tap again to reset':'Reset PIN'}</button><button class="btn small" data-a="role" data-tid="${esc(t.id)}" data-role="${t.role==='principal'?'teacher':'principal'}">${t.role==='principal'?'Make teacher':'Make principal'}</button></div></div>`).join('')}
+      </div><div class="btns"><button class="btn small" data-a="copyphones" data-sid="${esc(s.id)}">Copy teacher numbers</button></div>`:'<p>No teachers yet. They register with the school code.</p>'}
+    </div>`).join('');
+  b.innerHTML=`<div class="head"><h1>Admin</h1><p>Reset a teacher's PIN, make the principal, and create codes.</p></div>${err}
+    ${ADM.msg?`<p class="okmsg" style="margin:0 0 12px">${esc(ADM.msg)}</p>`:''}
+    ${schools||'<div class="card panel"><p>No schools yet.</p></div>'}
+    <div class="card panel adm"><h3>New school</h3><p>Creates the school with KG1, KG2, KG3, Standard 1 and Standard 2.</p>
+      <div class="inline"><input class="input" id="nsName" maxlength="60" placeholder="School name"><input class="input" id="nsCode" maxlength="20" placeholder="School code" style="text-transform:uppercase"><button class="btn small primary" data-a="newschool">Create</button></div></div>
+    <div class="card panel adm"><h3>Families</h3>
+      ${d.families.length?`<div class="tablewrap"><table class="gtable"><thead><tr><th>Family</th><th>Code</th></tr></thead><tbody>${d.families.map(f=>`<tr><td>${esc(f.name||'')}</td><td>${esc(f.code)}</td></tr>`).join('')}</tbody></table></div>`:'<p>No family codes yet.</p>'}
+      <div class="inline"><input class="input" id="nfName" maxlength="40" placeholder="Family name"><input class="input" id="nfCode" maxlength="20" placeholder="Family code" style="text-transform:uppercase"><button class="btn small primary" data-a="newfamily">Create</button></div></div>
+    <div class="foot"><button class="linkbtn" data-a="logout">Log out of admin</button></div>`;
+  ADM.msg='';
+}
+async function adminAction(a, el){
+  const call = async (fn, args, okMsg) => { try{ const r=await rpc(fn, Object.assign({p_token:ADM.tok}, args)); if(r && r.ok===false){ ADM.err=serr(r.error); renderAdmin(); return false; } ADM.msg=okMsg||''; ADM.err=''; await adminLoad(); return true; }
+    catch(e){ if(e.code==='invalid_token'||e.code==='admin_only'){ ADM.tok=null; ADM.err='Please log in again.'; } else ADM.err=serr(e); renderAdmin(); return false; } };
+  if(a==='login'){ const pin=($('aPin').value||'').trim(); if(!pin) return setErr('aErr','Type the admin PIN.');
+    return busy(el, async()=>{ try{ const r=await rpc('admin_login', {p_pin:pin}); if(!r.ok) return setErr('aErr', r.error==='wrong_pin'?'That PIN is not right. After 5 wrong tries admin login locks for 15 minutes.':serr(r.error));
+      ADM.tok=r.token; ADM.data=null; ADM.err=''; renderAdmin(); adminLoad(); }catch(e){ setErr('aErr', serr(e)); } }); }
+  if(a==='logout'){ if(ADM.tok) rpc('logout', {p_token:ADM.tok}).catch(()=>{}); ADM.tok=null; ADM.data=null; return renderAdmin(); }
+  if(a==='reset'){ const k='reset'+el.dataset.tid; if(ADM.arm!==k){ ADM.arm=k; return renderAdmin(); } ADM.arm=''; return busy(el, ()=>call('admin_reset_pin', {p_teacher_id:el.dataset.tid}, 'PIN reset. The teacher chooses a new PIN at their next login.')); }
+  if(a==='role') return busy(el, ()=>call('admin_set_role', {p_teacher_id:el.dataset.tid, p_role:el.dataset.role}, el.dataset.role==='principal'?'Now a principal. The new role applies at their next login.':'Now a teacher. The new role applies at their next login.'));
+  if(a==='addclass'){ const i=$('cls-'+el.dataset.sid), name=(i&&i.value||'').trim(); if(!name) return; return busy(el, ()=>call('admin_add_class', {p_school_id:el.dataset.sid, p_name:name}, `Class ${name} added.`)); }
+  if(a==='newschool'){ const name=$('nsName').value.trim(), code=$('nsCode').value.trim().toUpperCase(); if(!name||!code){ ADM.err='Type the school name and a code.'; return renderAdmin(); }
+    return busy(el, ()=>call('admin_create_school', {p_name:name, p_code:code}, `School created. Its code is ${code}.`)); }
+  if(a==='newfamily'){ const name=$('nfName').value.trim(), code=$('nfCode').value.trim().toUpperCase(); if(!code){ ADM.err='Type a family code.'; return renderAdmin(); }
+    return busy(el, ()=>call('admin_create_family', {p_name:name, p_code:code}, `Family code ${code} created.`)); }
+  if(a==='copyphones'){ const s=(ADM.data.schools||[]).find(x=>x.id===el.dataset.sid); const list=(s&&s.teachers||[]).map(t=>`${t.name}: ${t.phone}`).join('\n');
+    try{ await navigator.clipboard.writeText(list); toast('Teacher numbers copied'); }catch(e){ ADM.msg=list; renderAdmin(); } }
+}
+
+/* ---------- taps and typing on the doors, school and admin screens ---------- */
+document.addEventListener('click', e=>{
+  const t=e.target, s=t.closest('[data-s]');
+  if(s){ const a=s.dataset.s; audio();
+    if(a==='door-school') return openSchoolHome();
+    if(a==='door-family'){ store.mode='family'; save(); renderHome(); show('sHome'); return; }
+    if(a==='go-admin') return openAdmin();
+    if(a==='famcode') return submitFamilyCode(s);
+    return schoolAction(a, s); }
+  const c=t.closest('[data-cls]'); if(c && SCH.classes){ audio(); const k=SCH.classes[+c.dataset.cls]; SCH.klass=k; return store.school.role==='principal' ? openPreview(k) : openSchool('children'); }
+  const ch=t.closest('[data-child]'); if(ch){ audio(); return openChild(ch.dataset.child, ch); }
+  const ag=t.closest('[data-sage]'); if(ag){ setErr('sErr',''); SCH.addAge=+ag.dataset.sage; ag.parentNode.querySelectorAll('[data-sage]').forEach(x=>x.setAttribute('aria-pressed', String(x===ag))); return; }
+  const gr=t.closest('[data-sgroup]'); if(gr){ setErr('sErr',''); SCH.addGroup=gr.dataset.sgroup; gr.parentNode.querySelectorAll('[data-sgroup]').forEach(x=>x.setAttribute('aria-pressed', String(x===gr))); return; }
+  const ad=t.closest('[data-a]'); if(ad){ audio(); return adminAction(ad.dataset.a, ad); }
+  if(t.closest('#switchDoors')){ store.mode=null; delete store.familyLegacy; save(); renderHome(); show('sHome'); }
+});
+document.addEventListener('input', e=>{ if(e.target.id==='sSearch'){ SCH.search=e.target.value; const r=$('kidRows'); if(r) r.innerHTML=kidRowsHTML(); } });
+document.addEventListener('keydown', e=>{
+  if(e.key!=='Enter' || !e.target.matches || !e.target.matches('#schoolBody input, #adminBody input, #famCode')) return;
+  const form=e.target.closest('.form, .inline'), go=form && form.querySelector('[data-s].btn.primary, [data-a].btn, [data-s="famcode"]');
+  if(go){ e.preventDefault(); go.click(); }
+});
 
 /* ================= results log ================= */
 let round=null, dbRef=null, dbState='checking', dlRef=null;
@@ -1948,6 +2428,7 @@ function logRound(completed){
     stars:round.stars||0, passed:!!round.passed, seconds:Math.round((Date.now()-round.started)/1000), completed:!!completed,
     sprint_score: round.game==='sprint'?right:null, device:store.device, items, synced:false
   };
+  if(SCH.cls){ schoolRound(rec); round=null; return; }      // school children are saved to the school database, not this device's log
   store.sessions.push(rec); if(store.sessions.length>1500) store.sessions=store.sessions.slice(-1500);
   me.dirty=true; save(); round=null; syncPending(); liveSync();
 }
@@ -2002,7 +2483,7 @@ function resultsMessage(){
 
 /* ================= navigation ================= */
 let lastAnswer=null, me=null, game=null, level=1, qi=0, q=null, locked=false, tries=0, typed='', sprint=null;
-const SCREENS=['sHome','sEdit','sGames','sLevels','sPlay','sDone','sParent','sGarden'];
+const SCREENS=['sHome','sEdit','sGames','sLevels','sPlay','sDone','sParent','sGarden','sSchool','sAdmin'];
 let current='sHome';
 const ICON_SOUND_ON='<svg viewBox="0 0 24 24"><path d="M4 9v6h4l5 4V5L8 9H4z"/><path d="M16.5 8.5a5 5 0 010 7"/><path d="M19 6a8.5 8.5 0 010 12"/></svg>';
 const ICON_SOUND_OFF='<svg viewBox="0 0 24 24"><path d="M4 9v6h4l5 4V5L8 9H4z"/><path d="M17 9l5 6M22 9l-5 6"/></svg>';
@@ -2014,10 +2495,18 @@ function show(id){
   const mid=$('topMid');
   if(me && ['sGames','sLevels','sPlay','sDone','sGarden'].includes(id)) mid.innerHTML=`<div class="childchip">${avatar(me)}<b>${esc(me.name)}</b><span class="starcount">★ ${starTotal(me)}</span></div>`;
   else if(id==='sParent') mid.innerHTML=`<div class="brand">Parent area</div>`;
+  else if(id==='sAdmin') mid.innerHTML=`<div class="brand"><span class="mark">123</span>Tiri admin</div>`;
+  else if(id==='sSchool' && store.school && store.school.name) mid.innerHTML=`<div class="brand"><span class="mark">123</span><span style="min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(store.school.name)}</span></div>`;
   else mid.innerHTML=`<div class="brand"><span class="mark">123</span>Tiri</div>`;
+  if(id==='sSchool') $('backBtn').hidden = SCH.view==='task';
+  if(id==='sHome') $('backBtn').hidden = !(store.mode==='family' && !store.familyCode && !store.familyLegacy);   // the family code screen can go back to the two doors
   if(id==='sPlay') document.querySelector('.app').style.setProperty('--acc', GAMES[game].acc);
 }
 function goBack(){
+  if(current==='sHome'){ store.mode=null; save(); renderHome(); show('sHome'); return; }
+  if(current==='sSchool') return schoolBack();
+  if(current==='sAdmin') return adminBack();
+  if(current==='sGames' && SCH.cls){ logRound(false); stopSprint(); return leaveChild(); }
   if(current==='sEdit') return editReturn==='sParent'?openParent():goHome();
   if(current==='sParent'||current==='sGames') return goHome();
   if(current==='sGarden') return openGames();
@@ -2026,7 +2515,7 @@ function goBack(){
 }
 
 /* ---------- home ---------- */
-function goHome(){ logRound(false); stopSprint(); me=null; renderHome(); show('sHome'); }
+function goHome(){ logRound(false); stopSprint(); if(SCH.cls) endChildSession(); me=null; if(store.mode==='school') return openSchoolHome(); renderHome(); show('sHome'); }
 function installCard(){
   if(!STANDALONE || INSTALLED) return '';
   if(deferredInstall) return `<div class="card panel" style="margin-top:18px;flex-direction:row;align-items:center;flex-wrap:wrap"><div style="flex:1;min-width:200px"><h3>Put the game on this phone</h3><p>Adds an icon to the home screen. Works without internet after that.</p></div><button class="btn primary" id="installBtn">Install</button></div>`;
@@ -2034,6 +2523,8 @@ function installCard(){
   return '';
 }
 function renderHome(){
+  if(!store.mode){ $('homeBody').innerHTML = doorsHTML(); return; }
+  if(store.mode==='family' && !store.familyCode && !store.familyLegacy){ $('homeBody').innerHTML = familyCodeHTML(); setTimeout(()=>{ const i=$('famCode'); if(i) i.focus(); },50); return; }
   const ps=store.profiles;
   $('homeBody').innerHTML = (ps.length ? `<div class="head"><h1>Who is playing?</h1><p>Tap your name to start.</p></div>
     <div class="kids">${ps.map(p=>`<button class="card kid tap" data-kid="${p.id}">${avatar(p,true)}<b>${esc(p.name)}</b><span>Age ${p.age} · ★ ${starTotal(p)}</span></button>`).join('')}
@@ -2080,18 +2571,20 @@ function openGames(){
   $('gamesSub').innerHTML=`<span class="tag">${grp.label}</span>&nbsp; ${eng?'Listen, speak, read and write.':'Start today\'s practice, or pick a game.'}`;
   const due=dueReviews().length, days=practiceDays(me), doneToday=(me.practiceDays||[]).includes(todayStr());
   const card=`<button class="card practice tap" id="practiceBtn"><span class="pi">${doneToday?'✅':'🌟'}</span><span class="pt"><b>Today's ${eng?'English ':''}practice</b><small>${doneToday?'Done today. You can play it again.':'About 10 minutes · games picked for you'}</small>${days?`<small class="streak">⭐ ${days} day${days>1?'s':''} in a row</small>`:''}</span><span class="btn primary small go">${doneToday?'Again':'Start'}</span></button>`;
-  const check = !eng && !me.placement ? `<button class="card checkcard tap" id="checkBtn"><span class="pi">🧭</span><span class="pt"><b>Quick check</b><small>8 warm-up questions to find the best games for ${esc(me.name)}</small></span><span class="btn primary small go">Start</span></button>` : '';
+  const check = !eng && !me.placement && !SCH.cls ? `<button class="card checkcard tap" id="checkBtn"><span class="pi">🧭</span><span class="pt"><b>Quick check</b><small>8 warm-up questions to find the best games for ${esc(me.name)}</small></span><span class="btn primary small go">Start</span></button>` : '';
   const nw=Object.keys(me.words||{}).length;
   const garden = eng ? `<button class="card practice garden tap" id="gardenBtn"><span class="pi">🌼</span><span class="pt"><b>Word Garden</b><small>${nw?`${nw} word${nw>1?'s':''} grown so far. Tap to visit.`:'Every new word you learn grows a flower.'}</small></span><span class="btn small go">Visit</span></button>` : '';
   const rev = due ? `<button class="card game tap" id="reviewBtn" style="--acc:#D19A06"><span class="gicon">🔁</span><b>Review</b><small>${due} question${due>1?'s':''} to try again</small></button>` : '';
   const gameCard = id => {
     const g=GAMES[id];
     if(g.isSprint) return `<button class="card game tap" data-game="${id}" style="--acc:${g.acc}"><span class="gicon">${g.icon}</span><b>${g.name}</b><small>${g.learn}</small><div class="gprog">Best score: ${me.best.sprint||0}</div></button>`;
-    const s=gp(me,id), done=levelsDone(s);
-    return `<button class="card game tap" data-game="${id}" style="--acc:${g.acc}"><span class="gicon">${g.icon}</span><b>${g.name}</b><small>${g.skill?`<span class="skill">${g.skill}</span> `:''}${g.learn}</small><div class="gprog"><span class="bar"><i style="width:${done*10}%"></i></span>${done}/10</div></button>`;
+    const s=gp(me,id), cap=capOf(id), done=Math.min(levelsDone(s),cap);
+    return `<button class="card game tap" data-game="${id}" style="--acc:${g.acc}"><span class="gicon">${g.icon}</span><b>${g.name}</b><small>${g.skill?`<span class="skill">${g.skill}</span> `:''}${g.learn}</small><div class="gprog"><span class="bar"><i style="width:${Math.round(done*100/cap)}%"></i></span>${done}/${cap}</div></button>`;
   };
-  const list = eng ? ENGLISH.stepsFor(bandOf(me)).map(st=>`<h2 class="stephead">Step ${st.n} · ${st.name}</h2>`+st.games.map(gameCard).join('')).join('') : grp.games.map(gameCard).join('');
-  $('games').innerHTML=(eng||me.placement?card:check+card)+garden+rev+list;
+  const steps = SCH.cls ? ENGLISH.steps.map(st=>({n:st.n, name:st.name, games:st.games.filter(id=>grp.games.includes(id))})).filter(st=>st.games.length) : ENGLISH.stepsFor(bandOf(me));
+  const list = eng ? steps.map(st=>`<h2 class="stephead">Step ${st.n} · ${st.name}</h2>`+st.games.map(gameCard).join('')).join('') : grp.games.map(gameCard).join('');
+  const banner = SCH.preview ? `<div class="banner" style="grid-column:1/-1">Preview: try any game to check the questions. Nothing is saved.</div>` : '';
+  $('games').innerHTML=banner+(eng||me.placement||SCH.cls?card:check+card)+garden+rev+list;
   if(grp.voice) say(eng?`Hi ${me.name}! Let's learn English. Pick a game.`:`Hi ${me.name}! Tap today's practice, or pick a game.`);
 }
 
@@ -2115,7 +2608,7 @@ function openLevels(id){
   const g=GAMES[id], s=gp(me,id);
   document.querySelector('.app').style.setProperty('--acc', g.acc);
   $('ltop').innerHTML=`<span class="gicon" style="--acc:${g.acc}">${g.icon}</span><div><h1>${g.name}</h1><p>${g.learn}</p></div>`;
-  $('levels').innerHTML=Array.from({length:10},(_,i)=>{ const n=i+1, locked=n>s.unlocked, st=s.stars[n]||0, cur=n===s.unlocked&&!st;
+  $('levels').innerHTML=Array.from({length:capOf(id)},(_,i)=>{ const n=i+1, locked=n>s.unlocked, st=s.stars[n]||0, cur=n===s.unlocked&&!st;
     return locked ? `<button class="lvl locked" disabled aria-label="Level ${n} locked">${ICON_LOCK}<span style="font-size:13px">${n}</span></button>`
                   : `<button class="card lvl tap${cur?' current':''}" data-level="${n}" aria-label="Level ${n}">${n}${starsHTML(st)}</button>`; }).join('');
   const per=G().perLevel, need=Math.ceil(per*0.5);
@@ -2162,9 +2655,9 @@ function buildPractice(){
   const st=ids.map(id=>{ const g=gp(me,id); return {id, acc:g.tries>=3?g.right/g.tries:null, done:levelsDone(g), last:g.last||0}; });
   const used=new Set(), steps=[];
   if(dueReviews().length) steps.push({g:'review', lv:0});
-  const take = x => { if(x && !used.has(x.id)){ used.add(x.id); steps.push({g:x.id, lv:Math.min(10, gp(me,x.id).unlocked)}); } };
+  const take = x => { if(x && !used.has(x.id)){ used.add(x.id); steps.push({g:x.id, lv:Math.min(capOf(x.id), gp(me,x.id).unlocked)}); } };
   take(st.filter(x=>x.acc!==null && x.acc<0.75).sort((x,y)=>x.acc-y.acc)[0]);                       // the one that needs practice
-  take(st.filter(x=>!used.has(x.id) && x.done<10).sort((x,y)=>x.last-y.last)[0]);                  // keep moving forward, least recently played first
+  take(st.filter(x=>!used.has(x.id) && x.done<capOf(x.id)).sort((x,y)=>x.last-y.last)[0]);         // keep moving forward, least recently played first
   take(st.filter(x=>!used.has(x.id) && x.acc!==null && x.acc>=0.75).sort((x,y)=>y.last-x.last)[0]); // one they enjoy and are good at
   for(const x of st.slice().sort(()=>Math.random()-.5)){ if(steps.filter(z=>z.g!=='review').length>=3) break; take(x); }
   return steps;
@@ -2299,22 +2792,22 @@ function finishLevel(){
   }
   let stars = ratio>=0.99?3 : ratio>=0.7?2 : ratio>=0.5?1 : 0;
   if(little) stars=Math.max(1,stars);
-  const passed=stars>=1, s=gp(me,game), before=levelsDone(s);
+  const cap=capOf(game), passed=stars>=1, s=gp(me,game), before=Math.min(cap,levelsDone(s));
   s.plays++;
-  if(passed){ s.stars[level]=Math.max(s.stars[level]||0,stars); if(level===s.unlocked&&level<10) s.unlocked=level+1; }
+  if(passed){ s.stars[level]=Math.max(s.stars[level]||0,stars); if(level===s.unlocked&&level<cap) s.unlocked=level+1; }
   if(round){ round.stars=stars; round.passed=passed; }
   save(); logRound(true);
   show('sDone');
   if(passed) bigCelebration();
-  const last=level===10, pb=practiceButtons(), after=levelsDone(s);
+  const last=level>=cap, pb=practiceButtons(), after=Math.min(cap,levelsDone(s));
   $('result').innerHTML=`<div class="cele">${mascotSVG(passed?'cheer':'happy')}</div>
     <div class="bigstars">${[1,2,3].map(i=>`<span class="${i<=stars?'on':''}">★</span>`).join('')}</div>
-    <h2>${passed?(last?`You finished all 10 levels, ${esc(me.name)}!`:(stars===3?`Perfect, ${esc(me.name)}!`:`Well done, ${esc(me.name)}!`)):`Good try, ${esc(me.name)}!`}</h2>
+    <h2>${passed?(last?`You finished all ${cap} levels, ${esc(me.name)}!`:(stars===3?`Perfect, ${esc(me.name)}!`:`Well done, ${esc(me.name)}!`)):`Good try, ${esc(me.name)}!`}</h2>
     <p>${passed?`Level ${level} complete · `:''}${right} of ${per} right first time${passed?'':` · get ${Math.ceil(per*.5)} to pass`}</p>
-    <div class="gprogline" style="--acc:${GAMES[game].acc}"><span>${GAMES[game].icon} ${GAMES[game].name}</span><span class="bar" style="flex:1"><i id="progFill" style="width:${before*10}%"></i></span><span>${after}/10</span></div>
+    <div class="gprogline" style="--acc:${GAMES[game].acc}"><span>${GAMES[game].icon} ${GAMES[game].name}</span><span class="bar" style="flex:1"><i id="progFill" style="width:${Math.round(before*100/cap)}%"></i></span><span>${after}/${cap}</span></div>
     ${pb?pb.note:''}
     <div class="btns">${pb?pb.btns:`${passed&&!last?`<button class="btn primary" id="nextBtn">Next level ▶</button>`:''}<button class="btn${passed?'':' primary'}" id="againBtn">↻ Play again</button><button class="btn" id="levelsBtn">All levels</button>`}</div>`;
-  requestAnimationFrame(()=>requestAnimationFrame(()=>{ const f=$('progFill'); if(f) f.style.width=(after*10)+'%'; }));
+  requestAnimationFrame(()=>requestAnimationFrame(()=>{ const f=$('progFill'); if(f) f.style.width=Math.round(after*100/cap)+'%'; }));
   say(pb?[cheerLines(passed,stars,level), pb.say]:cheerLines(passed,stars,level));
 }
 
@@ -2335,11 +2828,12 @@ function startPlacement(p){
   $('pText').textContent='Warm-up'; $('stage').innerHTML=`<div class="cele">${mascotSVG('happy')}</div><p style="font-size:20px;font-weight:600;text-align:center;margin:0">A few warm-up questions<br>to find the best games for you.</p>`;
 }
 function placeQ(){
-  const [gid,lv]=LADDER[placing.pos];
+  const [gid,lv]=placing.start ? placing.list[placing.n] : LADDER[placing.pos];
   q=makeQ(gid,lv); q.isReview=false; renderQ();
-  $('pTitle').textContent=`Warm-up · ${placing.n+1} of ${placing.max}`;
+  $('pTitle').textContent=`${placing.start?'Starting exercise':'Warm-up'} · ${placing.n+1} of ${placing.max}`;
   $('qbar').style.width=`${100*placing.n/placing.max}%`;
-  if(GROUPS[gameBand(gid)].voice || bandOf(me)!=='older') setTimeout(()=>say(questionParts(q)),250);
+  if(placing.start){ const myQ=q; setTimeout(async()=>{ if(q.pre){ await q.pre(); if(q!==myQ) return; } say(questionParts(q)); },250); }
+  else if(GROUPS[gameBand(gid)].voice || bandOf(me)!=='older') setTimeout(()=>say(questionParts(q)),250);
 }
 function placeAnswer(ok, btn){
   locked=true;
@@ -2349,6 +2843,7 @@ function placeAnswer(ok, btn){
   if(ok){ ding(); if(btn) btn.classList.add('right'); else { const s=$('slot'); if(s) s.classList.add('ok'); } riseStars(8); }
   else tick();
   say(ok?pick(['Great!','Nice!','Yes!']):pick(['Okay! Next one.','Thank you! Next one.']));
+  if(placing.start){ setTimeout(()=>{ if(!placing) return; placing.n>=placing.max ? finishStarting() : placeQ(); }, 900); return; }
   const dir=ok?1:-1; if(placing.dir && dir!==placing.dir) placing.reversed=true; placing.dir=dir;
   placing.pos=Math.max(0,Math.min(LADDER.length-1,pos+dir*(placing.reversed?1:2)));   // big steps until the first change of direction
   const topOut = ok && pos===LADDER.length-1 && placing.hist.filter(h=>h.pos===pos&&h.ok).length>=2;
@@ -2452,6 +2947,10 @@ function renderParent(){
       <input class="input" id="pFamily" maxlength="30" value="${esc(store.family||'')}" placeholder="For example, Ahmed family" style="font-size:16px;padding:10px 12px">
       <p>Each child's name and age, and their game results, are shared with the Tiri organiser so progress can be followed.</p>
     </div>`:''}
+    <div class="card panel"><h3>This device</h3>
+      <p>Used by a family${store.familyCode?` · family code <b>${esc(store.familyCode)}</b>`:''}. Using Tiri at school instead? Switch this device to School.</p>
+      <div class="btns"><button class="btn small" id="switchDoors">Switch to School</button></div>
+    </div>
     <div class="card panel"><h3>Results log</h3>
       <p>${n} level${n===1?'':'s'} recorded on this device. ${st}</p>
       ${STANDALONE?`<label class="label" for="rEmail" style="font-size:14px">Send results to (email)</label>
@@ -2540,7 +3039,8 @@ const IOS = /iphone|ipad|ipod/i.test(navigator.userAgent) || (navigator.platform
 window.addEventListener('beforeinstallprompt', e=>{ e.preventDefault(); deferredInstall=e; if(current==='sHome') renderHome(); });
 window.addEventListener('appinstalled', ()=>{ deferredInstall=null; toast('Installed. Look for Tiri on your home screen.'); if(current==='sHome') renderHome(); });
 if(STANDALONE && 'serviceWorker' in navigator && (location.protocol==='https:'||location.hostname==='localhost')){ try{ navigator.serviceWorker.register('sw.js').catch(()=>{}); }catch(e){} }
-load(); renderMute(); renderHome(); show('sHome');
+load(); renderMute();
+if(store.mode==='school') openSchoolHome(); else { renderHome(); show('sHome'); }
 setTimeout(liveSync, 1500);
 })();
 </script>
