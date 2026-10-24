@@ -3,15 +3,16 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Tiri</title>
-<meta name="description" content="Maths and English games for children aged 3 to 12, at home and at school. Works offline.">
-<meta name="theme-color" content="#3657E0">
+<title>Garaad</title>
+<meta name="description" content="Garaad: maths and English games for children aged 3 to 12, at home and at school. Works offline.">
+<meta name="theme-color" content="#FFF7E8">
 <link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" sizes="64x64" href="favicon-64.png">
 <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="Tiri">
+<meta name="apple-mobile-web-app-title" content="Garaad">
 <style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);box-sizing:border-box;height:100%}body{margin:0}img{max-width:100%}[hidden]{display:none!important}
 
 .readcard{max-width:560px;margin:0 12px;padding:14px 20px;border-radius:18px;background:var(--surface);border:2px solid var(--line);font-size:clamp(24px,6.4vw,34px);font-weight:700;text-align:center;line-height:1.3}
@@ -99,30 +100,39 @@
 </head>
 <body>
 <meta name="claude:viewport-fit-sides" content="cover">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600;700&display=swap">
 <style>
+/* Garaad brand. Fonts are kept with the app so they work offline: Baloo 2 for the logo and titles,
+   Lexend (made for early readers) for reading text. */
+@font-face{font-family:"Baloo 2";src:url(fonts/baloo2-800.woff2) format("woff2");font-weight:800;font-display:swap}
+@font-face{font-family:"Lexend";src:url(fonts/lexend-400.woff2) format("woff2");font-weight:400;font-display:swap}
+@font-face{font-family:"Lexend";src:url(fonts/lexend-500.woff2) format("woff2");font-weight:500;font-display:swap}
+@font-face{font-family:"Lexend";src:url(fonts/lexend-600.woff2) format("woff2");font-weight:600;font-display:swap}
+@font-face{font-family:"Lexend";src:url(fonts/lexend-700.woff2) format("woff2");font-weight:700;font-display:swap}
 /* Layout: app shell — top bar, one screen at a time (family → games → levels → play → result).
-   Lexend was designed to make reading easier, which suits early readers. One calm light theme; colour comes from each game's accent. */
+   Colours are tokens. Each child picks a theme (Savanna sun, Ocean blue, Night sky); grown-up screens use the calm "adult" style.
+   --bg/--page-ink: the page and text on it. --surface/--ink: cards and play pieces and the text on them. */
 :root{
-  --bg:#F3F5FA;
-  --surface:#FFFFFF;
-  --ink:#172041;
-  --muted:#5B6483;
-  --line:#DFE4EE;
-  --primary:#3657E0;
-  --primary-soft:#E8EDFD;
-  --success:#22955A;
-  --success-soft:#DFF5E9;
-  --danger:#D63E55;
-  --danger-soft:#FCE6EA;
-  --gold:#F5B922;
+  --bg:#FFF7E8; --page-ink:#2B2118; --page-muted:#6B5743;
+  --surface:#FFFFFF; --ink:#2B2118; --muted:#6B5743; --line:#F0E2C8;
+  --primary:#0B7A6E; --primary-ink:#0A6F64; --primary-soft:#E0F4F1;
+  --cta:#F5B400; --on-cta:#2B2118; --cta-shadow:#D49B00;
+  --owl:#0E8C7E; --owl-pupil:#0A5E55; --owl-gold:#F5B400;
+  --star:#F28C28; --gold:#F5B400;
+  --success:#22955A; --success-soft:#DFF5E9; --danger:#D63E55; --danger-soft:#FCE6EA;
   --font:"Lexend", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --display:"Baloo 2", "Lexend", "Segoe UI", system-ui, sans-serif;
   color-scheme:light;
 }
+body[data-theme="ocean"]{ --bg:#F2F6FF; --page-ink:#172041; --page-muted:#4F5B82; --ink:#172041; --muted:#5B6483; --line:#DCE3F2;
+  --primary:#3657E0; --primary-ink:#2843B8; --primary-soft:#E8EDFD; --cta:#3657E0; --on-cta:#FFFFFF; --cta-shadow:#2843B8;
+  --owl:#3657E0; --owl-pupil:#172041; --owl-gold:#FFB800; --star:#FFA000; --gold:#FFB800; }
+body[data-theme="night"]{ --bg:#1E2257; --page-ink:#FFFFFF; --page-muted:#C9CCF0; --surface:#F4F2FF; --ink:#1E2257; --muted:#4E5385; --line:#D9D5F5;
+  --primary:#6F5EE0; --primary-ink:#5443C4; --primary-soft:#E9E5FF; --cta:#FFC93C; --on-cta:#2A1F00; --cta-shadow:#D9A21E;
+  --owl:#8E7CFF; --owl-pupil:#1E2257; --owl-gold:#FFC93C; --star:#FFC93C; --gold:#FFC93C; }
+body[data-theme="adult"]{ --bg:#F5F6F5; --page-ink:#24292B; --page-muted:#5F6B6E; --ink:#24292B; --muted:#5F6B6E; --line:#E3E6E5;
+  --primary:#0B7A6E; --primary-ink:#0A6F64; --primary-soft:#E0F4F1; --cta:#0E8C7E; --on-cta:#FFFFFF; --cta-shadow:#0A6F64; }
 html,body{height:100%}
-body{background:var(--bg);color:var(--ink);font-family:var(--font);font-size:16px;overflow:hidden;-webkit-tap-highlight-color:transparent}
+body{background:var(--bg);color:var(--page-ink);font-family:var(--font);font-size:16px;overflow:hidden;-webkit-tap-highlight-color:transparent;transition:background-color .25s}
 .app{height:100%;max-width:980px;margin:0 auto;display:flex;flex-direction:column;
   padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px));padding-block:10px;box-sizing:border-box}
 button{font-family:inherit;color:inherit;border:0;background:none;padding:0;cursor:pointer}
@@ -440,6 +450,201 @@ h1,h2,h3{margin:0;text-wrap:balance}
 .trow small{display:block;color:var(--muted);font-size:13px;margin-top:3px}
 .trow a{color:var(--primary)}
 @media (max-width:420px){ .kpis{grid-template-columns:repeat(2,minmax(0,1fr))} }
+
+/* ================= Garaad brand layer ================= */
+h1,h2,.result h2,.kid b,.door b,.task b,.cls,.game b,.ltop h1,.sp-title{font-family:var(--display);font-weight:800;letter-spacing:-.2px}
+.head h1{font-size:clamp(28px,6.5vw,36px);line-height:1.05}
+.head p,.legend,.hint,.note,.result p,.gprogline,.pracnext,.heard,.agehint,.ltop p{color:var(--page-muted)}
+body[data-theme="adult"] h1,body[data-theme="adult"] h2,body[data-theme="adult"] .task b,body[data-theme="adult"] .cls{font-family:var(--font);font-weight:600;letter-spacing:0}
+body[data-theme="adult"] .head h1{font-size:clamp(22px,5vw,28px)}
+.card{color:var(--ink);border:2px solid var(--line);border-radius:22px;box-shadow:none}
+body[data-theme="adult"] .card{border-width:1px;border-radius:14px}
+.btn{border-radius:99px;border-width:2px;color:var(--ink)}
+.btn.primary{background:var(--cta);border-color:var(--cta);color:var(--on-cta);box-shadow:0 3px 0 var(--cta-shadow)}
+.btn.primary:active{transform:translateY(2px);box-shadow:none}
+body[data-theme="adult"] .btn{border-radius:12px;border-width:1px}
+body[data-theme="adult"] .btn.primary{box-shadow:none}
+.ibtn{border-radius:50%;border:2px solid var(--line)}
+body[data-theme="adult"] .ibtn{border-radius:12px;border-width:1px}
+.age[aria-pressed="true"],.seg button[aria-pressed="true"]{background:var(--primary);border-color:var(--primary)}
+.subjtabs{background:color-mix(in srgb, var(--line) 70%, var(--surface));border:0;padding:5px}
+.subjtabs button{color:var(--muted);display:inline-flex;align-items:center;gap:7px}
+.subjtabs button.on{background:var(--primary);color:#fff}
+.subjtabs svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2.4;stroke-linecap:round}
+.linkbtn{color:var(--primary-ink)}
+.stephead{color:var(--page-ink);font-family:var(--display);font-weight:800;font-size:20px}
+.childchip .starcount{color:var(--page-muted);display:inline-flex;align-items:center;gap:4px;background:var(--surface);border-radius:99px;padding:5px 10px;color:var(--ink);font-weight:600}
+.starico{width:18px;height:18px;flex:none;fill:var(--star)}
+/* play pieces always show dark text on their light surface, whatever the theme */
+.opt,.qmark,.readcard,.story,.pad button,.target,.nl span,.sylls,.eqlines,.placednote{color:var(--ink)}
+.op{color:var(--page-muted)}
+.row .ntile{background:var(--primary-soft);color:var(--ink)}
+.placednote{background:var(--surface);border-color:var(--line)}
+.micbtn{color:var(--page-ink)}
+.micbtn .mi{background:var(--primary)}
+body[data-theme="night"] .readq{color:var(--cta)}
+.lvl{border-radius:50%;font-family:var(--display);font-weight:800}
+.lvl.done{background:var(--primary);color:#fff;border-color:var(--primary)}
+.lvl.done .st{color:var(--cta)}
+.lvl.done .st .off{color:color-mix(in srgb, #fff 35%, transparent)}
+.lvl.current{background:var(--cta);color:var(--on-cta);border-color:var(--cta);box-shadow:0 0 0 6px color-mix(in srgb, var(--cta) 28%, transparent)}
+.lvl.locked{border-radius:50%;background:color-mix(in srgb, var(--line) 75%, var(--bg));color:color-mix(in srgb, var(--muted) 70%, var(--bg))}
+.levels{gap:14px}
+.gicon{border-radius:18px}
+.game{border-width:3px}
+.game.next{border-color:var(--cta)}
+.bar{background:color-mix(in srgb, var(--line) 80%, var(--surface))}
+.qbar{height:14px;background:color-mix(in srgb, var(--line) 80%, var(--surface))}
+.qbar i{background:var(--primary)}
+.bigstars span.on{color:var(--gold)}
+
+/* brand: owl face and wordmark */
+.owl{display:block}
+.owl .oh{fill:var(--owl)} .owl .op2{fill:var(--owl-pupil)} .owl .og{fill:var(--owl-gold)} .owl .ogs{stroke:var(--owl-gold)} .owl .orng{stroke:var(--owl)}
+.owl .acc-dark{fill:#2B2118} .owl .acc-gls{fill:none;stroke:#2B2118;stroke-width:3}
+.brand{gap:8px}
+.brand .owl{width:34px;height:34px;flex:none}
+.wordmark{display:inline-flex;align-items:flex-end;font-family:var(--display);font-weight:800;line-height:1;letter-spacing:-.5px;color:var(--page-ink)}
+.wordmark .wm-eyes{flex:none}
+.brand .wordmark{font-size:24px}
+.brand .sname{font-family:var(--font);font-weight:600;font-size:15px;color:var(--page-muted);min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding-left:8px;border-left:1.5px solid var(--line)}
+.av{background:var(--av-bg,#E0F4F1)!important;border-radius:50%;padding:0;overflow:hidden}
+.av .owl{width:78%;height:78%}
+.av.lg{width:80px;height:80px}
+.av.xl{width:96px;height:96px}
+
+/* owl beside the question */
+.prompt{justify-content:flex-start;gap:10px;margin-top:6px}
+.powl{width:72px;height:72px;flex:none;transition:transform .2s}
+.powl.bounce{animation:hop .6s ease-in-out 2}
+.bubble2{flex:1;min-width:0;display:flex;align-items:center;gap:10px;background:var(--surface);color:var(--ink);border-radius:22px 22px 22px 6px;padding:10px 10px 10px 16px;margin-bottom:10px}
+.bubble2 .text{font-family:var(--display);font-weight:800;font-size:clamp(20px,5vw,27px);line-height:1.15;color:var(--ink)}
+.bubble2 .say{background:var(--primary-soft)}
+.bubble2 .say svg{stroke:var(--primary-ink)}
+.hintbtn{align-self:center;display:inline-flex;align-items:center;gap:10px;height:46px;padding:0 6px 0 14px;border-radius:99px;background:var(--surface);color:var(--ink);border:2px solid color-mix(in srgb, var(--gold) 55%, var(--surface));font-weight:600;font-size:15px;margin:2px 0 4px}
+.hintbtn svg.bulb{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.hintbtn .cost{display:inline-flex;align-items:center;gap:3px;height:34px;padding:0 10px;border-radius:99px;background:color-mix(in srgb, var(--gold) 28%, var(--surface))}
+.hintbtn[disabled]{opacity:.5;cursor:default}
+.hintnote{align-self:center;font-size:14px;font-weight:500;color:var(--page-muted);margin:2px 0 4px}
+.opt.hinted{opacity:.3;border-style:dashed;box-shadow:none;pointer-events:none}
+
+/* splash (first launch) */
+.splash{position:fixed;inset:0;z-index:80;display:flex;flex-direction:column;padding:calc(18px + env(safe-area-inset-top,0px)) 24px calc(30px + env(safe-area-inset-bottom,0px));box-sizing:border-box;background:#FFF7E8;color:#2B2118;font-family:var(--font)}
+.splash.dark{background:#0A6F64;color:#fff}
+.splash .sp-top{height:44px;display:flex;align-items:center}
+.splash .sp-back{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;color:inherit}
+.splash .sp-back svg{width:24px;height:24px;stroke:currentColor;fill:none;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+.splash .sp-art{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px;position:relative;animation:spin .5s ease-out both;min-height:0}
+@keyframes spin{from{opacity:0;transform:translateY(12px)}}
+.splash .sp-circle{width:min(290px,62vw);aspect-ratio:1;border-radius:50%;background:#FDE9B8;display:grid;place-items:center}
+.splash .sp-circle .owl{width:79%;height:79%}
+.splash .sp-star{position:absolute;fill:#F28C28}
+.splash .sp-text{text-align:center;display:flex;flex-direction:column;gap:10px;max-width:420px;margin:0 auto}
+.splash .sp-title{font-size:clamp(32px,9vw,42px);line-height:1.05;margin:0}
+.splash .sp-sub{margin:0;font-size:18px;line-height:1.5;color:#6B5743}
+.splash.dark .sp-sub{color:#D3EEEA}
+.splash .sp-dots{display:flex;justify-content:center;gap:8px;margin:28px 0 22px}
+.splash .sp-dots span{width:8px;height:8px;border-radius:4px;background:#E6D6BC;overflow:hidden;display:block}
+.splash.dark .sp-dots span{background:#3E958B}
+.splash .sp-dots span.on{width:28px}
+.splash .sp-dots span.full{background:#0E8C7E}
+.splash.dark .sp-dots span.full{background:#F5B400}
+.splash .sp-dots i{display:block;height:100%;background:#0E8C7E;width:0;animation:spfill var(--d,6s) linear forwards}
+.splash.dark .sp-dots i{background:#F5B400}
+@keyframes spfill{to{width:100%}}
+.splash .sp-go{height:60px;border-radius:30px;font-size:20px;font-weight:600;background:#F5B400;color:#2B2118;width:100%;max-width:440px;margin:0 auto;display:block}
+.splash .sp-go.teal{background:#0E8C7E;color:#fff}
+.splash .sp-feats{display:flex;flex-direction:column;gap:12px;width:100%;max-width:420px}
+.splash .sp-feat{display:flex;align-items:center;gap:14px;background:#fff;border-radius:20px;padding:14px 16px;text-align:left}
+.splash .sp-feat .fi{width:48px;height:48px;border-radius:14px;display:grid;place-items:center;flex:none}
+.splash .sp-feat .fi svg{width:26px;height:26px;stroke:currentColor;fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.splash .sp-feat b{display:block;font-size:17px}
+.splash .sp-feat small{display:block;font-size:15px;color:#6B5743;margin-top:2px}
+.splash .wordmark{color:#fff;font-size:clamp(52px,15vw,64px)}
+
+/* home doors */
+.homelogo{display:flex;align-items:center;justify-content:center;gap:8px;margin:18px 0 26px}
+.homelogo .owl{width:56px;height:56px}
+.homelogo .wordmark{font-size:42px}
+.doors{grid-template-columns:1fr;max-width:520px;margin:0 auto}
+.door{flex-direction:row;text-align:left;gap:18px;padding:20px}
+.door .di{width:72px;height:72px;border-radius:22px;display:grid;place-items:center;flex:none}
+.door .di svg{width:38px;height:38px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.door b{font-size:26px;line-height:1;display:block}
+.door span.ds{display:block;color:var(--muted);font-size:15px;margin-top:4px}
+.homehead{text-align:center}
+.homehead h1{font-size:clamp(26px,6vw,32px)}
+
+/* owl picker and theme sheet */
+.owls{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;max-width:420px}
+.owlpick{aspect-ratio:1;border-radius:22px;border:3px solid transparent;display:grid;place-items:center;position:relative;padding:6px}
+.owlpick .owl{width:82%;height:82%}
+.owlpick[aria-checked="true"]{border-color:var(--primary)}
+.owlpick[aria-checked="true"]::after{content:"";position:absolute;top:-8px;right:-8px;width:26px;height:26px;border-radius:50%;background:var(--primary) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M5 12l5 5 9-10' fill='none' stroke='white' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/14px no-repeat}
+.sheetwrap{position:fixed;inset:0;z-index:70;background:rgba(43,33,24,.5);display:flex;align-items:flex-end;justify-content:center}
+.sheet{background:#FFF7E8;color:#2B2118;width:100%;max-width:560px;border-radius:32px 32px 0 0;padding:12px 22px calc(28px + env(safe-area-inset-bottom,0px));box-sizing:border-box;display:flex;flex-direction:column;gap:14px;animation:sheetin .25s ease-out}
+@keyframes sheetin{from{transform:translateY(40px);opacity:0}}
+.sheet .grab{align-self:center;width:44px;height:5px;border-radius:3px;background:#D9C6A6}
+.sheet h2{font-size:28px;margin:0}
+.themeopt{display:flex;align-items:center;gap:14px;text-align:left;background:#fff;border:3px solid transparent;border-radius:24px;padding:12px;color:#2B2118}
+.themeopt[aria-pressed="true"]{border-color:#0E8C7E}
+.themeopt .tp{width:84px;height:84px;border-radius:18px;display:grid;place-items:center;flex:none}
+.themeopt .tp .owl{width:58px;height:58px}
+.themeopt b{font-family:var(--display);font-weight:800;font-size:22px;display:block;line-height:1}
+.themeopt small{display:block;color:#6B5743;font-size:14px;margin-top:4px}
+.themeopt .tick{margin-left:auto;width:34px;height:34px;border-radius:50%;border:2.5px solid #D9C6A6;box-sizing:border-box;flex:none;display:grid;place-items:center}
+.themeopt[aria-pressed="true"] .tick{background:#0E8C7E;border-color:#0E8C7E}
+.themeopt .tick svg{width:20px;height:20px;stroke:#fff;fill:none;stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
+.paletteBtn svg{stroke:var(--primary-ink)!important}
+
+/* teacher: needs help, rows with a report button, weekly report, pilot */
+.needhelp{background:#FFF7E6;border:1px solid #F3D99B;border-radius:14px;padding:12px 14px;display:flex;flex-direction:column;gap:8px;margin-bottom:12px}
+.needhelp h3{margin:0;display:flex;align-items:center;gap:8px;font-size:15px;font-weight:600;color:#6B4500;font-family:var(--font)}
+.needhelp h3 svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.needhelp .nh{display:flex;align-items:center;gap:8px;font-size:14px;text-align:left;width:100%;color:#24292B}
+.needhelp .nh b{font-weight:600;white-space:nowrap}
+.needhelp .nh span{flex:1;color:#5F6B6E;min-width:0}
+.crowwrap{display:flex;gap:8px;align-items:stretch}
+.crowwrap .crow{flex:1;min-width:0}
+.repbtn{width:52px;flex:none;border-radius:14px;border:1px solid var(--line);background:var(--surface);display:grid;place-items:center;color:var(--primary-ink)}
+.repbtn svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.pct{font-size:13px;font-weight:600;border-radius:8px;padding:4px 8px;white-space:nowrap}
+.pct.good{color:#1F6B35;background:#E3F3E7}.pct.mid{color:#6B4500;background:#FFF1D1}.pct.low{color:#8A4B08;background:#FCEBD7}
+.repcard{background:#FFF7E8;color:#2B2118;border-radius:24px;padding:20px 18px;display:flex;flex-direction:column;gap:14px;max-width:440px}
+.repcard .rtop{display:flex;align-items:center;justify-content:space-between}
+.repcard .rtop .brand .wordmark{color:#2B2118;font-size:20px}
+.repcard .rtop .brand .owl{width:28px;height:28px}
+.repcard .rwho{display:flex;align-items:center;gap:12px}
+.repcard .rwho h2{margin:0;font-size:26px;line-height:1}
+.repcard .rwho p{margin:4px 0 0;font-size:14px;color:#6B5743}
+.repcard .rstats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.repcard .rstats div{background:#fff;border-radius:16px;padding:10px;text-align:center}
+.repcard .rstats b{display:flex;align-items:center;justify-content:center;gap:4px;font-family:var(--display);font-weight:800;font-size:26px;line-height:1.1}
+.repcard .rstats span{font-size:12px;color:#6B5743}
+.repcard .rchips{display:flex;flex-wrap:wrap;gap:6px}
+.repcard .rchips span{font-size:13px;font-weight:500;color:#0A6F64;background:#E0F4F1;border-radius:10px;padding:5px 10px}
+.repcard .rtip{display:flex;gap:10px;background:#FDE9B8;border-radius:16px;padding:12px 14px;font-size:14px;line-height:1.45;color:#5A3D00}
+.repcard .rtip svg{width:22px;height:22px;flex:none;stroke:#7A5200;fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.btn.wa{background:#1D7F45;border-color:#1D7F45;color:#fff}
+.kgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-bottom:14px}
+.kcard{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px 16px}
+.kcard p{margin:0;font-size:13px;color:var(--muted)}
+.kcard b{display:flex;align-items:baseline;gap:8px;font-size:30px;font-weight:600;line-height:1.1;margin:6px 0 4px}
+.cbars{display:flex;flex-direction:column;gap:14px}
+.cbar{display:grid;grid-template-columns:96px minmax(0,1fr);gap:12px;align-items:center;font-size:14px}
+.cbar .bb{display:flex;flex-direction:column;gap:4px}
+.cbar .bb div{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted)}
+.cbar .bb i{display:block;height:12px;border-radius:4px;background:#C9CFCD;min-width:2px}
+.cbar .bb .now i{background:#0E8C7E}
+.cbar .bb .now{color:var(--ink);font-weight:600}
+.legend2{display:flex;gap:14px;font-size:13px;color:var(--muted);flex-wrap:wrap}
+.legend2 span{display:inline-flex;align-items:center;gap:6px}
+.legend2 i{width:12px;height:12px;border-radius:3px;background:#C9CFCD;display:inline-block}
+.legend2 i.n{background:#0E8C7E}
+.okchip{font-size:12px;font-weight:600;color:#6B4500;background:#FFF1D1;border-radius:6px;padding:3px 8px}
+.task .te svg,.door .di svg{display:block}
+.task .te{width:56px;height:56px;border-radius:16px;display:grid;place-items:center;background:var(--primary-soft);color:var(--primary-ink);flex:none}
+.task .te svg{width:30px;height:30px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 @media (prefers-reduced-motion: reduce){ *,*::before,*::after{animation:none!important;transition:none!important} }
 </style>
 
@@ -465,6 +670,8 @@ h1,h2,h3{margin:0;text-wrap:balance}
       <div class="label" id="ageLabel">Age</div>
       <div class="ages" id="ages" role="group" aria-labelledby="ageLabel"></div>
       <p class="agehint" id="ageHint"></p>
+      <div class="label" id="owlLabel">Choose your owl</div>
+      <div class="owls" id="owlPick" role="radiogroup" aria-labelledby="owlLabel"></div>
       <p class="err" id="fErr" hidden></p>
       <div class="btns"><button class="btn primary" id="fSave">Save</button><button class="btn" id="fCancel">Cancel</button><button class="btn danger" id="fRemove" hidden>Remove child</button></div>
     </div>
@@ -486,7 +693,8 @@ h1,h2,h3{margin:0;text-wrap:balance}
     <div class="ptop">
       <div class="meta"><b id="pTitle"></b><div class="qbar"><i id="qbar"></i></div></div>
     </div>
-    <div class="prompt"><button class="say" id="sayBtn" aria-label="Hear the question"><svg viewBox="0 0 24 24"><path d="M4 9v6h4l5 4V5L8 9H4z"/><path d="M16.5 8.5a5 5 0 010 7"/></svg></button><div class="text" id="pText"></div></div>
+    <div class="prompt"><span class="powl" id="pOwl" aria-hidden="true"></span><div class="bubble2"><div class="text" id="pText"></div><button class="say" id="sayBtn" aria-label="Hear the question"><svg viewBox="0 0 24 24"><path d="M4 9v6h4l5 4V5L8 9H4z"/><path d="M16.5 8.5a5 5 0 010 7"/></svg></button></div></div>
+    <div id="hintRow" style="display:flex;justify-content:center"></div>
     <div class="stage" id="stage"></div>
   </section>
 
@@ -667,29 +875,48 @@ function burst(el){
     const a=Math.random()*Math.PI*2, d=60+Math.random()*80;
     s.animate([{transform:`translate(${cx-13}px,${cy-13}px) scale(.4)`,opacity:1},{transform:`translate(${cx-13+Math.cos(a)*d}px,${cy-13+Math.sin(a)*d}px) scale(1)`,opacity:0}],{duration:750+Math.random()*250,easing:'cubic-bezier(.2,.7,.3,1)'}).onfinish=()=>s.remove(); }
 }
-/* Tiri's mascot: an original round friend with a star on its head */
-function mascotSVG(mood){
-  const cheer = mood==='cheer';
-  const arms = cheer
-    ? `<path d="M26 60 Q10 44 14 26" /><path d="M94 60 Q110 44 106 26" />`
-    : `<path d="M24 74 Q12 82 15 92" /><path d="M96 74 Q108 82 105 92" />`;
-  const mouth = cheer
-    ? `<path d="M45 71 Q60 92 75 71 Z" fill="#8A2135"/><path d="M52 80 Q60 86 68 80" fill="#F07A93"/>`
-    : `<path d="M46 72 Q60 85 74 72" stroke="#172041" stroke-width="4" fill="none" stroke-linecap="round"/>`;
-  return `<svg viewBox="0 0 120 120" aria-hidden="true">
-    <g stroke="#3657E0" stroke-width="9" stroke-linecap="round" fill="none">${arms}</g>
-    <line x1="60" y1="27" x2="60" y2="14" stroke="#172041" stroke-width="3" stroke-linecap="round"/>
-    <polygon points="${starPts(60,11,9,4)}" fill="#F5B922" stroke="#C98A00" stroke-width="1.5" stroke-linejoin="round"/>
-    <ellipse cx="45" cy="107" rx="11" ry="5.5" fill="#23306B"/><ellipse cx="75" cy="107" rx="11" ry="5.5" fill="#23306B"/>
-    <circle cx="60" cy="66" r="40" fill="#3657E0"/>
-    <ellipse cx="60" cy="82" rx="24" ry="17" fill="#7E97F2"/>
-    <circle cx="46" cy="56" r="9.5" fill="#fff"/><circle cx="74" cy="56" r="9.5" fill="#fff"/>
-    <circle cx="47.5" cy="57" r="4.8" fill="#172041"/><circle cx="75.5" cy="57" r="4.8" fill="#172041"/>
-    <circle cx="49" cy="55" r="1.6" fill="#fff"/><circle cx="77" cy="55" r="1.6" fill="#fff"/>
-    <circle cx="36" cy="70" r="5" fill="#F79AB5" opacity=".85"/><circle cx="84" cy="70" r="5" fill="#F79AB5" opacity=".85"/>
-    ${mouth}
-  </svg>`;
+/* Garaad, the wise owl. Its eyes are the double "aa" of the name. Colours come from CSS variables
+   (--owl, --owl-pupil, --owl-gold), so the same drawing follows each child's theme and owl avatar. */
+const OWL_HEAD='M14 8 L34 24 Q50 17 66 24 L86 8 Q95 40 91 62 Q85 93 50 95 Q15 93 9 62 Q5 40 14 8 Z';
+function owlEyes(mood, ring){
+  ring = ring || '#fff';
+  const stems = `<rect x="41" y="30" width="8" height="32" rx="4" fill="${ring}"/><rect x="75" y="30" width="8" height="32" rx="4" fill="${ring}"/>`;
+  const whites = `<circle cx="33" cy="46" r="12" fill="#fff" stroke="${ring}" stroke-width="8"/><circle cx="67" cy="46" r="12" fill="#fff" stroke="${ring}" stroke-width="8"/>`;
+  const smile = d => `<path d="${d}" fill="none" class="ogs" stroke-width="6" stroke-linecap="round"/>`;
+  if(mood==='cheer') return `<path d="M22 50 Q33 36 44 50 M56 50 Q67 36 78 50" fill="none" stroke="${ring}" stroke-width="8" stroke-linecap="round"/><rect x="41" y="34" width="8" height="28" rx="4" fill="${ring}"/><rect x="75" y="34" width="8" height="28" rx="4" fill="${ring}"/>${smile('M35 70 Q50 88 65 70')}`;
+  if(mood==='think') return whites+stems+`<circle cx="37" cy="42" r="5.5" class="op2"/><circle cx="71" cy="42" r="5.5" class="op2"/>`+smile('M43 76 Q50 79 57 76');
+  if(mood==='oops') return whites+stems+`<circle cx="33" cy="51" r="5.5" class="op2"/><circle cx="67" cy="51" r="5.5" class="op2"/>`+smile('M42 80 Q50 75 58 80');
+  return whites+stems+`<circle cx="34" cy="47" r="5.5" class="op2"/><circle cx="68" cy="47" r="5.5" class="op2"/><circle cx="35.8" cy="45.2" r="1.7" fill="#fff"/><circle cx="69.8" cy="45.2" r="1.7" fill="#fff"/>`+smile('M38 74 Q50 84 62 74');
 }
+const OWL_ACC = {
+  cap:`<polygon class="acc-dark" points="30,15 50,6 70,15 50,24"/><path d="M66 16 L67 30" stroke="#F5B400" stroke-width="2.5"/><circle cx="67" cy="31" r="3" fill="#F5B400"/>`,
+  glasses:`<circle class="acc-gls" cx="35" cy="53.5" r="15"/><circle class="acc-gls" cx="65" cy="53.5" r="15"/>`,
+  star:`<polygon class="og" points="${starPts(50,10,9.5,4.2)}" stroke-linejoin="round"/>`,
+  bow:`<polygon points="24,24 12,17 12,31" fill="#E0567A"/><polygon points="24,24 36,17 36,31" fill="#E0567A"/><circle cx="24" cy="24" r="4" fill="#BE185D"/>`
+};
+function owlSVG(mood, o){
+  o=o||{};
+  const stars = mood==='cheer' ? `<polygon points="${starPts(92,10,6,2.6)}" fill="#F28C28"/><polygon points="${starPts(8,10,6,2.6)}" fill="#F28C28"/>` : '';
+  return `<svg class="owl" viewBox="0 0 100 100" aria-hidden="true"><path class="oh" d="${OWL_HEAD}"/><g transform="translate(6 13) scale(0.88)">${owlEyes(mood)}</g><polygon class="og" points="46,63 54,63 50,70"/>${stars}${OWL_ACC[o.acc]||''}</svg>`;
+}
+const mascotSVG = mood => owlSVG(mood==='cheer'?'cheer':mood==='think'?'think':mood==='oops'?'oops':'happy');
+/* the wordmark: "Gar" + the owl-eye "aa" + "d" */
+function wordmarkHTML(){
+  return `<span class="wordmark" role="img" aria-label="Garaad"><span aria-hidden="true">Gar</span><svg class="wm-eyes" viewBox="14 12 72 72" aria-hidden="true" style="width:1.14em;height:1.14em;margin:0 .01em -.15em">
+    <polygon points="19,32 16,15 31,24" style="fill:var(--wm-ring,var(--owl))"/><polygon points="81,32 84,15 71,24" style="fill:var(--wm-ring,var(--owl))"/>
+    <circle cx="33" cy="46" r="12" fill="#fff" style="stroke:var(--wm-ring,var(--owl))" stroke-width="8"/><circle cx="67" cy="46" r="12" fill="#fff" style="stroke:var(--wm-ring,var(--owl))" stroke-width="8"/>
+    <rect x="41" y="30" width="8" height="32" rx="4" style="fill:var(--wm-ring,var(--owl))"/><rect x="75" y="30" width="8" height="32" rx="4" style="fill:var(--wm-ring,var(--owl))"/>
+    <circle cx="34" cy="47" r="5.5" style="fill:var(--wm-pupil,currentColor)"/><circle cx="68" cy="47" r="5.5" style="fill:var(--wm-pupil,currentColor)"/>
+    <path d="M38 74 Q50 84 62 74" fill="none" style="stroke:var(--owl-gold)" stroke-width="6" stroke-linecap="round"/></svg><span aria-hidden="true">d</span></span>`;
+}
+const brandHTML = extra => `<div class="brand">${owlSVG('happy')}${wordmarkHTML()}${extra?`<span class="sname">${esc(extra)}</span>`:''}</div>`;
+/* owl avatars: a colour and an accessory, e.g. "teal-cap" */
+const OWLCOL = {
+  teal:{h:'#0E8C7E', p:'#0A5E55', bg:'#E0F4F1', g:'#F5B400'}, blue:{h:'#3657E0', p:'#172041', bg:'#E8EDFD', g:'#F5B400'},
+  purple:{h:'#8E7CFF', p:'#1E2257', bg:'#ECE8FF', g:'#F5B400'}, orange:{h:'#E8862A', p:'#5A2E00', bg:'#FCE3D0', g:'#FFF7E8'}
+};
+const OWL_KEYS = ['teal','blue','purple','orange'].flatMap(c=>['cap','glasses','star','bow'].map(a=>c+'-'+a));
+const ICON_STAR = '<svg class="starico" viewBox="0 0 24 24" aria-hidden="true"><polygon points="12,2 14.6,8.6 21.5,9 16.2,13.4 18,20.2 12,16.4 6,20.2 7.8,13.4 2.5,9 9.4,8.6"/></svg>';
 let mascotT=null;
 function mascotPop(text){
   let m=$('mascot');
@@ -724,7 +951,7 @@ function confetti(n){
       {duration:1800+Math.random()*1400, delay:Math.random()*700, easing:'cubic-bezier(.3,.2,.6,1)', fill:'both'}).onfinish=()=>c.remove();
   }
 }
-function celebrateCorrect(){ riseStars(16); mascotPop(pick(['Great!','Yes!','Super!','Well done!','Brilliant!','You got it!'])); }
+function celebrateCorrect(){ riseStars(16); if(typeof setOwl==='function') setOwl('cheer'); mascotPop(pick(['Great!','Yes!','Super!','Well done!','Brilliant!','You got it!'])); }
 let toastT=null;
 function toast(m){ const t=$('toast'); t.textContent=m; t.classList.add('show'); clearTimeout(toastT); toastT=setTimeout(()=>t.classList.remove('show'),2200); }
 
@@ -1394,7 +1621,7 @@ const PARROT = {
 };
 function eParrot(lv){
   const set=T(lv,['words','words','words2','words2','phrases','phrases','sents','sents','long','long']);
-  const base=pick(PARROT[set]), text=base.w.replace('NAME', me?me.name:'Tiri'), ms=set==='long'?5000:set==='sents'?4000:set==='phrases'?3200:2600;
+  const base=pick(PARROT[set]), text=base.w.replace('NAME', me?me.name:'Garaad'), ms=set==='long'?5000:set==='sents'?4000:set==='phrases'?3200:2600;
   let myQ;
   myQ = {text:'Say it to the parrot', parts:['Say it after me.', text, text], answer:text, noReview:true,
     html:`<div class="parrot"><span class="pbird" id="pBird">🦜</span><span class="ppic">${base.e}</span></div><div class="pword">${esc(text)}</div>
@@ -1980,14 +2207,25 @@ function gp(p,id){ if(!p.games[id]) p.games[id]={unlocked:1,stars:{},plays:0,rig
 const starTotal = p => Object.values(p.games||{}).reduce((a,g)=>a+Object.values(g.stars||{}).reduce((x,y)=>x+y,0),0) + (p.bonus||0);
 const levelsDone = g => Object.keys(g.stars||{}).length;
 const initials = n => n.trim().split(/\s+/).map(w=>w[0]).slice(0,2).join('').toUpperCase();
-const avatar = (p,lg) => `<span class="av${lg?' lg':''}" style="background:${p.color}">${esc(initials(p.name))}</span>`;
+/* the child's owl: chosen when they are added; children added before owls existed get one from their id */
+function owlKey(p){
+  if(p && OWL_KEYS.includes(p.avatar)) return p.avatar;
+  let h=0; for(const ch of String((p&&(p.id||p.name))||'x')) h=(h*31+ch.charCodeAt(0))|0;
+  return OWL_KEYS[Math.abs(h)%OWL_KEYS.length];
+}
+function owlStyle(key){ const [c]=key.split('-'), o=OWLCOL[c]||OWLCOL.teal; return `--av-bg:${o.bg};--owl:${o.h};--owl-pupil:${o.p};--owl-gold:${o.g}`; }
+const owlAvatarSVG = key => owlSVG('happy', {acc:key.split('-')[1]});
+const avatar = (p,lg) => { const k=owlKey(p); return `<span class="av${lg?(lg===true?' lg':' '+lg):''}" style="${owlStyle(k)}" aria-hidden="true">${owlAvatarSVG(k)}</span>`; };
+const starBalance = p => Math.max(0, starTotal(p) - (p.spent||0));
+const HINT_COST = 2;
 
 /* ================= school mode, family codes and admin (data kept in Supabase) ================= */
 /* The app only holds the publishable key. Every call goes through a database function that checks the login token. */
 const SUPA = { url:'https://elrbvijhzunuuqbblnkl.supabase.co', key:'sb_publishable_ErlGWsYk8RHchg66yXEkTA_YV8idwVv' };
 const ADMIN_WHATSAPP = '';   // the admin's WhatsApp number, digits only with country code (e.g. '252612345678'); empty hides the link
-const SCH = { view:'code', klass:null, cls:null, child:null, preview:false, kids:null, classes:null, search:'', session:null, msg:'', err:'', addAge:null, addGroup:null, arm:'' };
-const ADM = { tok:null, data:null, err:'', msg:'', arm:'' };
+const SCH = { view:'code', klass:null, cls:null, child:null, preview:false, kids:null, classes:null, search:'', session:null, msg:'', err:'', addAge:null, addGroup:null, addOwl:null, arm:'',
+  assess:null, help:null, rep:null, pilot:null, back:null };
+const ADM = { tok:null, data:null, err:'', msg:'', arm:'', pilot:null };
 const GROUP_LABEL = {very_smart:'Very smart', medium:'Medium', lowest:'Lowest'};
 const START_EN = ['etap','esafari','erhyme','efish','eopp','esort','eletter','ecaption','eyesno','eread','emissing','eclap','efix'];   // tap-to-answer games only
 
@@ -2049,7 +2287,7 @@ document.addEventListener('visibilitychange', ()=>{ if(document.visibilityState=
 setInterval(()=>obFlush(), 30000);
 
 /* ---------- a child's session: opened when the teacher taps the child, closed when they go back ---------- */
-function progressOf(p){ return {games:p.games||{}, best:p.best||{}, review:p.review||[], words:p.words||{}, practiceDays:p.practiceDays||[], bonus:p.bonus||0, subject:p.subject||subject, last:p.last||0}; }
+function progressOf(p){ return {games:p.games||{}, best:p.best||{}, review:p.review||[], words:p.words||{}, practiceDays:p.practiceDays||[], bonus:p.bonus||0, spent:p.spent||0, subject:p.subject||subject, last:p.last||0}; }
 function saveChildProgress(){
   if(SCH.preview || !SCH.child || !me) return;
   const pr=progressOf(me); store.school.cache=store.school.cache||{}; store.school.cache[SCH.child.id]=pr;
@@ -2077,12 +2315,14 @@ function schoolRound(rec){
     p_skill:rec.game_id==='review'?'Review':(gg.skill||gg.name||rec.game), p_level:rec.level||0, p_questions:rec.questions,
     p_right_first_time:rec.right_first_try, p_stars:Math.max(0,Math.min(3,rec.stars||0)),
     p_missed:rec.items.filter(i=>!i.ok).map(i=>({game:i.game, answer:String(i.answer)})).slice(0,20),
-    p_played_at:new Date(Date.now()-rec.seconds*1000).toISOString()});
+    p_played_at:new Date(Date.now()-rec.seconds*1000).toISOString(),
+    p_hints_used:rec.hints_used||0, p_stars_spent:rec.stars_spent||0});
 }
 function profileFromChild(c, pr){
   pr=pr||{};
-  return {id:c.id, name:c.name, age:c.age||5, color:hashColor(c.id), games:pr.games||{}, best:pr.best||{}, review:pr.review||[], words:pr.words||{},
-    practiceDays:pr.practiceDays||[], bonus:pr.bonus||0, subject:pr.subject, last:pr.last||0, band:classCfg(c.class_name).band};
+  return {id:c.id, name:c.name, age:c.age||5, color:hashColor(c.id), avatar:c.avatar||null, theme:c.theme||'savanna', parent_phone:c.parent_phone||null,
+    games:pr.games||{}, best:pr.best||{}, review:pr.review||[], words:pr.words||{},
+    practiceDays:pr.practiceDays||[], bonus:pr.bonus||0, spent:pr.spent||0, subject:pr.subject, last:pr.last||0, band:classCfg(c.class_name).band};
 }
 async function openChild(id, btn){
   const listed=(SCH.kids||[]).find(x=>x.id===id), cached=(store.school.cache||{})[id];
@@ -2103,7 +2343,8 @@ async function openChild(id, btn){
   me=profileFromChild(Object.assign({}, c, {class_name:SCH.cls.name}), pr);
   subject=me.subject==='english'?'english':'maths';
   startChildSession();
-  SCH.child.start_done ? openGames() : startStarting();
+  if(SCH.assess) return startStarting(SCH.assess);
+  SCH.child.start_done ? openGames() : startStarting('baseline');
 }
 function openPreview(k){
   SCH.preview=true; SCH.child=null; SCH.session=null; SCH.cls={id:k.id, name:k.name};
@@ -2114,45 +2355,55 @@ function openPreview(k){
 }
 
 /* ---------- starting exercise: 8 questions from the class's games, once per child ---------- */
-function startStarting(){
+const ASSESS_NAME = {baseline:'Starting exercise', midline:'Mid-pilot check', endline:'End-of-pilot check'};
+function startStarting(kind){
+  kind = ASSESS_NAME[kind] ? kind : 'baseline';
   const c=classCfg(SCH.cls.name), lvls=[1,3,5,7];
   const mp=c.maths.filter(id=>!GAMES[id].isSprint), ep=c.english.filter(id=>START_EN.includes(id));
   const at=(pool,i)=>pool[Math.floor(i*pool.length/4)], list=[];
   for(let i=0;i<4;i++){ const m=at(mp,i); list.push([m, Math.min(capOf(m), lvls[i])]); if(ep.length){ const e=at(ep,i); list.push([e, Math.min(capOf(e), lvls[i])]); } }
   practice=null; stopSprint(); logRound(false);
-  placing={start:true, list, n:0, max:list.length, hist:[]};
+  placing={start:true, kind, list, n:0, max:list.length, hist:[]};
   game='placement'; level=0; plan=[];
   round={game:'placement', level:0, started:Date.now(), items:[], logged:false};
-  show('sPlay'); $('qbar').style.width='0%';
-  $('pTitle').textContent='Starting exercise';
-  $('pText').textContent='Starting exercise';
-  $('stage').innerHTML=`<div class="cele">${mascotSVG('happy')}</div><p style="font-size:20px;font-weight:600;text-align:center;margin:0">A few questions to find<br>where ${esc(me.name)} should start.</p>`;
+  show('sPlay'); $('qbar').style.width='0%'; $('hintRow').innerHTML=''; setOwl('happy');
+  $('pTitle').textContent=ASSESS_NAME[kind];
+  $('pText').textContent=ASSESS_NAME[kind];
+  $('stage').innerHTML=`<div class="cele">${mascotSVG('happy')}</div><p style="font-size:20px;font-weight:600;text-align:center;margin:0">${kind==='baseline'?`A few questions to find<br>where ${esc(me.name)} should start.`:`A few questions to see<br>how much ${esc(me.name)} has learned.`}</p>`;
   say(`Hi ${me.name}! Let's start with a few questions.`).then(()=>{ if(placing) placeQ(); });
 }
 function finishStarting(){
-  const right=placing.hist.filter(h=>h.ok).length, total=placing.hist.length; placing=null;
+  const kind=placing.kind||'baseline', hist=placing.hist; placing=null; SCH.assess=null;
+  const right=hist.filter(h=>h.ok).length, total=hist.length;
+  const part = eng => { const hs=hist.filter(h=>!!(GAMES[h.gid]||{}).skill===eng); return hs.length ? [hs.filter(h=>h.ok).length, hs.length] : [null, null]; };
+  const [ms, mt]=part(false), [es, et]=part(true);
   const r=total?right/total:0, start=r<0.4?1 : r<0.65?2 : r<0.9?3 : 4, c=classCfg(SCH.cls.name);
-  c.maths.concat(c.english).forEach(id=>{ const g=gp(me,id); g.unlocked=Math.max(g.unlocked||1, Math.min(start, capOf(id))); });
+  if(kind==='baseline') c.maths.concat(c.english).forEach(id=>{ const g=gp(me,id); g.unlocked=Math.max(g.unlocked||1, Math.min(start, capOf(id))); });
   if(round){ round.stars=0; round.passed=true; } logRound(true);   // saves the child's progress
-  if(!SCH.preview && SCH.child){ SCH.child.start_done=true; obPush('save_start_score', {p_child_id:SCH.child.id, p_score:right, p_total:total}); }
+  if(!SCH.preview && SCH.child){ if(kind==='baseline') SCH.child.start_done=true;
+    obPush('save_assessment', {p_child_id:SCH.child.id, p_kind:kind, p_maths_score:ms, p_maths_total:mt, p_english_score:es, p_english_total:et}); }
   show('sDone'); bigCelebration();
-  $('result').innerHTML=`<div class="cele">${mascotSVG('cheer')}</div><h2>All done, ${esc(me.name)}!</h2><p>Your games are ready.</p>
-    <div class="placednote">For the teacher: ${right} of ${total} right. ${esc(me.name)} starts at <b>level ${start}</b> in each game.</div>
+  const split = `${mt?` Maths ${ms}/${mt}.`:''}${et?` English ${es}/${et}.`:''}`;
+  $('result').innerHTML=`<div class="cele">${mascotSVG('cheer')}</div><h2>All done, ${esc(me.name)}!</h2><p>${kind==='baseline'?'Your games are ready.':'Thank you for trying your best.'}</p>
+    <div class="placednote">For the teacher: ${right} of ${total} right.${split} ${kind==='baseline'?`${esc(me.name)} starts at <b>level ${start}</b> in each game.`:`Saved as the <b>${ASSESS_NAME[kind].toLowerCase()}</b>.`}</div>
     <div class="btns"><button class="btn primary" id="placedGo">Let's play ▶</button></div>`;
-  say(`Great job, ${me.name}! Your games are ready. Let's play!`);
+  say(`Great job, ${me.name}! ${kind==='baseline'?'Your games are ready. ':''}Let's play!`);
 }
 
 /* ---------- home page doors and the family code ---------- */
+const ICON_HOME='<svg viewBox="0 0 24 24"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/><path d="M10 20v-6h4v6"/></svg>';
+const ICON_SCHOOL='<svg viewBox="0 0 24 24"><path d="M2 9l10-5 10 5-10 5z"/><path d="M6 11v5c0 1.5 3 3 6 3s6-1.5 6-3v-5"/><path d="M22 9v6"/></svg>';
 function doorsHTML(){
-  return `<div class="head"><h1>Welcome to Tiri</h1><p>Maths and English games for children. Where is this phone being used?</p></div>
+  return `<div class="homelogo">${owlSVG('happy')}${wordmarkHTML()}</div>
+    <div class="head homehead"><h1>Where are you playing?</h1></div>
     <div class="doors">
-      <button class="card door tap" data-s="door-school"><span class="de">🏫</span><b>School</b><span>Teachers and principals</span></button>
-      <button class="card door tap" data-s="door-family"><span class="de">🏠</span><b>Family</b><span>Children playing at home</span></button>
+      <button class="card door tap" data-s="door-family"><span class="di" style="background:#FDE9B8;color:#7A5200">${ICON_HOME}</span><span><b>Family</b><span class="ds">Learn at home with your children</span></span></button>
+      <button class="card door tap" data-s="door-school"><span class="di" style="background:#E0F4F1;color:#0A6F64">${ICON_SCHOOL}</span><span><b>School</b><span class="ds">Teachers and classes</span></span></button>
     </div>${installCard()}
-    <div class="foot"><button class="linkbtn" data-s="go-admin">Admin</button></div>`;
+    <div class="foot"><span class="note">Admin?</span><button class="linkbtn" data-s="go-admin">Open the admin area</button></div>`;
 }
 function familyCodeHTML(){
-  return `<div class="head"><h1>Family code</h1><p>The Tiri admin gives each family a code. You only type it once on this phone.</p></div>
+  return `<div class="head"><h1>Family code</h1><p>The Garaad admin gives each family a code. You only type it once on this phone.</p></div>
     <div class="card form">
       <label class="label" for="famCode">Family code</label>
       <input class="input" id="famCode" maxlength="20" autocomplete="off" autocapitalize="characters" style="text-transform:uppercase" placeholder="For example, AHMED">
@@ -2183,9 +2434,10 @@ function openSchoolHome(){
 }
 function openSchool(v, err){
   SCH.view=v; SCH.err=err||''; SCH.arm='';
-  if(v==='children'){ SCH.search=''; SCH.kids=null; loadKids(); }
+  if(v==='children'){ SCH.search=''; SCH.kids=null; SCH.help=null; loadKids(); loadNeedHelp(); }
   if(v==='classes' && !SCH.classes) loadClasses();
-  if(v==='addchild'){ SCH.addAge=null; SCH.addGroup=null; }
+  if(v==='addchild'){ SCH.addAge=null; SCH.addGroup=null; SCH.addOwl=OWL_KEYS[Math.floor(Math.random()*OWL_KEYS.length)]; }
+  if(v==='pilot'){ SCH.pilot=null; loadPilot(); }
   renderSchool(); show('sSchool');
   setTimeout(()=>{ const a=document.activeElement, f=$('schoolBody').querySelector('input');
     if(f && v!=='children' && SCH.view===v && !(a && a.tagName==='INPUT')) f.focus(); },60);
@@ -2198,6 +2450,7 @@ function schoolBack(){
   if(v==='register'||v==='setpin') return openSchool('login');
   if(v==='children') return openSchool('classes');
   if(v==='addchild') return openSchool('children');
+  if(v==='report') return SCH.klass ? openSchool('children') : openSchool('task');
   openSchool('task');
 }
 async function loadClasses(){
@@ -2221,12 +2474,171 @@ function kidRowsHTML(){
   if(!SCH.kids.length) return add + `<p class="note" style="text-align:center;margin-top:8px">No children in this class yet. Add the first one.</p>`;
   return add + (ks.length ? ks.map(k=>{
     const lp=k.last_played?Date.parse(k.last_played):0, start=k.start_score!=null?`starting exercise ${k.start_score}/${k.start_total}`:'starting exercise not done';
-    return `<button class="card crow tap" data-child="${esc(k.id)}">${avatar({name:k.name,color:hashColor(k.id)})}<span class="cn"><b>${esc(k.name)}</b><small>${k.age?`Age ${k.age} · `:''}${ago(lp)} · ${start}</small></span>${k.expected_group?`<span class="grp ${esc(k.expected_group)}">${esc(GROUP_LABEL[k.expected_group]||k.expected_group)}</span>`:''}</button>`; }).join('')
+    return `<div class="crowwrap"><button class="card crow tap" data-child="${esc(k.id)}">${avatar(k)}<span class="cn"><b>${esc(k.name)}</b><small>${k.age?`Age ${k.age} · `:''}${ago(lp)} · ${start}</small></span>${k.expected_group?`<span class="grp ${esc(k.expected_group)}">${esc(GROUP_LABEL[k.expected_group]||k.expected_group)}</span>`:''}</button>
+      <button class="repbtn" data-report="${esc(k.id)}" aria-label="Weekly report for ${esc(k.name)}">${ICON_REPORT}</button></div>`; }).join('')
     : `<p class="note" style="text-align:center;margin-top:8px">No child called “${esc(SCH.search.trim())}”.</p>`);
+}
+const ICON_REPORT='<svg viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>';
+const ICON_HEART='<svg viewBox="0 0 24 24"><path d="M12 21s-7-4.5-9.3-9A5.3 5.3 0 0 1 12 6.6 5.3 5.3 0 0 1 21.3 12C19 16.5 12 21 12 21z"/></svg>';
+/* children who struggled today: low first-try score or many hints (from the database) */
+function needHelpHTML(){
+  const h=SCH.help; if(!h || !h.length) return '';
+  return `<div class="needhelp"><h3>${ICON_HEART}Needs help today</h3>${h.map(r=>{
+    const g=GAMES[r.game], where=g?` on ${esc(g.name)}`:'';
+    const why = r.hints>=3 ? `used ${r.hints} hints${where}` : `${r.right_pct}% right first time${where}`;
+    return `<button class="nh" data-report="${esc(r.id)}"><b>${esc(r.name)}</b><span>${why}</span><svg viewBox="0 0 24 24" width="16" height="16" style="stroke:#5F6B6E;fill:none;stroke-width:2.4;stroke-linecap:round"><path d="M9 6l6 6-6 6"/></svg></button>`; }).join('')}</div>`;
+}
+/* ---------- weekly report for a child, shared with the parent ---------- */
+const HOME_TIPS = {
+  'Counting':'Count spoons, shoes or steps together before dinner.', 'Listening':'Give two-step instructions, like “touch your nose, then clap”.',
+  'Speaking':'Ask them to name five things they can see outside.', 'Sound play':'Play “I spy” with the first sound of words.',
+  'Vocabulary':'Name opposites together: big and small, hot and cold.', 'Letters':'Look for the letters of their name on signs and packets.',
+  'Reading':'Read a short story together and ask what happened first.', 'Writing':'Let them write a shopping list with you.',
+  'Plus and Minus':'Add and take away with fruit at the market.', 'Telling Time':'Ask what time it is at breakfast and bedtime.',
+  'Coins and Change':'Let them count coins and give change when shopping.', 'Times Tables':'Practise one times table on the way to school.'
+};
+const tipFor = s => !s ? 'Play Garaad together for 10 minutes and talk about the answers.' : (HOME_TIPS[s.skill] || HOME_TIPS[(GAMES[s.skill]||{}).name] || `Practise ${s.skill.toLowerCase()} together for 10 minutes.`);
+function openReport(id){
+  const k=(SCH.kids||[]).find(x=>x.id===id) || (SCH.help||[]).find(x=>x.id===id) || {id};
+  SCH.rep={id, name:k.name||'', avatar:k.avatar, data:null, err:'', phoneMsg:''};
+  openSchool('report'); loadReport();
+}
+async function loadReport(){
+  const r=SCH.rep; if(!r) return;
+  try{ r.data=await rpc('child_week_report', {p_token:tokenOf(), p_child_id:r.id}); r.err=''; if(r.data&&r.data.child){ r.name=r.data.child.name; r.avatar=r.data.child.avatar; } }
+  catch(e){ if(e.code==='invalid_token') return needLogin(); r.err=serr(e); }
+  if(current==='sSchool' && SCH.view==='report') renderSchool();
+}
+const fmtDay = s => { try{ return new Date(s+'T12:00:00').toLocaleDateString('en-GB', {day:'numeric', month:'short'}); }catch(e){ return s; } };
+function reportCardHTML(d, r){
+  const c=d.child||{}, skills=(d.improving&&d.improving.length?d.improving:(d.practised||[])).slice(0,3);
+  return `<div class="repcard" id="repCard" role="img" aria-label="Weekly report card for ${esc(c.name||r.name)}">
+    <div class="rtop"><div class="brand">${owlSVG('happy')}${wordmarkHTML()}</div><span style="font-size:13px;font-weight:500;color:#6B5743">${esc(fmtDay(d.from))} – ${esc(fmtDay(d.to))}</span></div>
+    <div class="rwho">${avatar({id:r.id, avatar:c.avatar||r.avatar},'lg')}<div><h2>${esc(c.name||r.name)}'s week</h2><p>${esc([c.class_name, d.teacher_name].filter(Boolean).join(' · '))}</p></div></div>
+    <div class="rstats"><div><b>${ICON_STAR}${d.stars||0}</b><span>${d.stars===1?'star':'stars'} earned</span></div><div><b>${d.games||0}</b><span>${d.games===1?'game':'games'} played</span></div><div><b>${Math.round(d.minutes||0)}</b><span>${Math.round(d.minutes||0)===1?'minute':'minutes'}</span></div></div>
+    ${skills.length?`<div><p style="margin:0 0 6px;font-size:14px;font-weight:600">${d.improving&&d.improving.length?'Getting better at':'Practised this week'}</p><div class="rchips">${skills.map(s=>`<span>${esc(s)}</span>`).join('')}</div></div>`:''}
+    <div class="rtip">${ICON_HOME}<span><b style="font-weight:600">Try at home:</b> ${esc(tipFor(d.practise))}</span></div>
+  </div>`;
+}
+function reportText(d, r){
+  const c=d.child||{}, n=c.name||r.name, sk=(d.improving&&d.improving.length?d.improving:(d.practised||[])).slice(0,3);
+  return `${n}'s week on Garaad (${fmtDay(d.from)} – ${fmtDay(d.to)})\n⭐ ${d.stars||0} star${d.stars===1?'':'s'} · ${d.games||0} game${d.games===1?'':'s'} · ${Math.round(d.minutes||0)} minute${Math.round(d.minutes||0)===1?'':'s'}`
+    + (sk.length?`\n${d.improving&&d.improving.length?'Getting better at':'Practised'}: ${sk.join(', ')}`:'')
+    + `\nTry at home: ${tipFor(d.practise)}` + (d.teacher_name?`\n— ${d.teacher_name}`:'');
+}
+function reportViewHTML(){
+  const r=SCH.rep||{}, d=r.data, ro=store.school&&store.school.role==='principal';
+  if(r.err) return `<div class="head"><h1>Weekly report</h1></div><p class="err">${esc(r.err)}</p>`;
+  if(!d) return `<div class="head"><h1>Weekly report</h1><p>${esc(r.name||'')}</p></div><div class="spin">Loading the report…</div>`;
+  const ph=(d.child&&d.child.parent_phone)||'', phD=String(ph).replace(/\D/g,'');
+  return `<div class="head"><h1>Weekly report</h1><p>The image the parent receives. Tap “Share image” to send it on WhatsApp.</p></div>
+    ${reportCardHTML(d, r)}
+    <div class="btns" style="margin-top:14px;max-width:440px;flex-direction:column">
+      <button class="btn primary" data-s="rep-share">Share image</button>
+      ${phD?`<a class="btn wa" style="text-decoration:none" target="_blank" rel="noopener" href="https://wa.me/${esc(phD)}?text=${encodeURIComponent(reportText(d,r))}">Send as a WhatsApp message to the parent</a>`:''}
+    </div>
+    ${ro?'':`<div class="card form" style="margin-top:16px;max-width:440px">
+      <label class="label" for="repPhone">Parent's WhatsApp number</label>
+      <div class="phone"><span class="cc">+252</span><input class="input" id="repPhone" type="tel" inputmode="numeric" maxlength="14" placeholder="61 234 5678" value="${esc(phD.replace(/^252/,''))}"></div>
+      ${r.phoneMsg?`<p class="okmsg">${esc(r.phoneMsg)}</p>`:''}<p class="err" id="sErr" hidden></p>
+      <div class="btns"><button class="btn small" data-s="rep-phone">Save number</button></div>
+    </div>
+    <div class="card panel" style="margin-top:16px;max-width:440px"><h3>End-of-pilot check</h3><p>The same short check as the starting exercise. Run it once at the end of the pilot to measure progress.</p>
+      <div class="btns"><button class="btn small" data-s="rep-endline">Start the check with ${esc(d.child&&d.child.name||r.name)}</button></div></div>`}`;
+}
+/* draw the report as a picture (1080 × 1350) for sharing */
+async function reportImage(d, r){
+  try{ await document.fonts.ready; }catch(e){}
+  const W=1080, H=1350, cv=document.createElement('canvas'); cv.width=W; cv.height=H; const x=cv.getContext('2d');
+  const rr=(X,Y,w,h,rad,fill)=>{ x.beginPath(); x.moveTo(X+rad,Y); x.arcTo(X+w,Y,X+w,Y+h,rad); x.arcTo(X+w,Y+h,X,Y+h,rad); x.arcTo(X,Y+h,X,Y,rad); x.arcTo(X,Y,X+w,Y,rad); x.closePath(); x.fillStyle=fill; x.fill(); };
+  const owlImg = (key, mood) => new Promise(res=>{ const [c,a]=(key||'teal-').split('-'), o=OWLCOL[c]||OWLCOL.teal;
+    const svg=owlSVG(mood||'happy',{acc:a}).replace('<svg ', `<svg xmlns="http://www.w3.org/2000/svg" width="400" height="400" `).replace('aria-hidden="true">', `aria-hidden="true"><style>.oh{fill:${o.h}}.op2{fill:${o.p}}.og{fill:${o.g}}.ogs{stroke:${o.g}}.acc-dark{fill:#2B2118}.acc-gls{fill:none;stroke:#2B2118;stroke-width:3}</style>`);
+    const im=new Image(); im.onload=()=>res(im); im.onerror=()=>res(null); im.src='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(svg); });
+  const c=d.child||{}, name=c.name||r.name, sk=(d.improving&&d.improving.length?d.improving:(d.practised||[])).slice(0,3);
+  rr(0,0,W,H,0,'#FFF7E8');
+  const logo=await owlImg('teal-none','happy'); if(logo) x.drawImage(logo,70,60,90,90);
+  x.fillStyle='#2B2118'; x.font='800 64px "Baloo 2", Lexend, sans-serif'; x.textBaseline='alphabetic'; x.fillText('Garaad',175,130);
+  x.font='500 34px Lexend, sans-serif'; x.fillStyle='#6B5743'; x.textAlign='right'; x.fillText(`${fmtDay(d.from)} – ${fmtDay(d.to)}`, W-70, 125); x.textAlign='left';
+  rr(70,200,190,190,95,(OWLCOL[(owlKey({id:r.id,avatar:c.avatar||r.avatar}).split('-')[0])]||OWLCOL.teal).bg);
+  const av=await owlImg(owlKey({id:r.id,avatar:c.avatar||r.avatar}),'happy'); if(av) x.drawImage(av,95,225,140,140);
+  x.fillStyle='#2B2118'; let fs=76; do{ x.font=`800 ${fs}px "Baloo 2", Lexend, sans-serif`; fs-=4; }while(x.measureText(`${name}'s week`).width>W-360 && fs>36); x.fillText(`${name}'s week`, 290, 300);
+  x.font='400 36px Lexend, sans-serif'; x.fillStyle='#6B5743'; x.fillText([c.class_name, d.teacher_name].filter(Boolean).join(' · '), 292, 355);
+  const mins=Math.round(d.minutes||0), stats=[[String(d.stars||0),d.stars===1?'star earned':'stars earned'],[String(d.games||0),d.games===1?'game played':'games played'],[String(mins),mins===1?'minute':'minutes']];
+  stats.forEach(([v,l],i)=>{ const X=70+i*320; rr(X,440,300,210,36,'#FFFFFF'); x.textAlign='center'; x.fillStyle='#2B2118'; x.font='800 96px "Baloo 2", Lexend, sans-serif'; x.fillText(v, X+150, 570); x.font='400 32px Lexend, sans-serif'; x.fillStyle='#6B5743'; x.fillText(l, X+150, 620); x.textAlign='left'; });
+  let y=730;
+  if(sk.length){ x.fillStyle='#2B2118'; x.font='600 38px Lexend, sans-serif'; x.fillText(d.improving&&d.improving.length?'Getting better at':'Practised this week', 70, y); y+=30;
+    let X=70; x.font='500 34px Lexend, sans-serif'; sk.forEach(s=>{ const w=x.measureText(s).width+56; if(X+w>W-70){ X=70; y+=84; } rr(X,y,w,70,22,'#E0F4F1'); x.fillStyle='#0A6F64'; x.fillText(s, X+28, y+47); X+=w+16; }); y+=130; }
+  const tip='Try at home: '+tipFor(d.practise); x.font='400 36px Lexend, sans-serif';
+  const words=tip.split(' '), lines=[]; let line=''; words.forEach(w=>{ const t=line?line+' '+w:w; if(x.measureText(t).width>W-220){ lines.push(line); line=w; } else line=t; }); lines.push(line);
+  rr(70,y,W-140,lines.length*52+70,36,'#FDE9B8'); x.fillStyle='#5A3D00'; lines.forEach((l,i)=>x.fillText(l, 110, y+70+i*52));
+  x.font='400 28px Lexend, sans-serif'; x.fillStyle='#6B5743'; x.textAlign='center'; x.fillText('Maths and English games for children · Garaad', W/2, H-60);
+  return await new Promise(res=>cv.toBlob(res,'image/png'));
+}
+async function shareReport(btn){
+  const r=SCH.rep; if(!r||!r.data) return;
+  await busy(btn, async()=>{
+    const blob=await reportImage(r.data, r), name=`garaad-${String(r.name||'report').toLowerCase().replace(/[^a-z0-9]+/g,'-')}-week.png`, text=reportText(r.data, r);
+    try{
+      const file=new File([blob], name, {type:'image/png'});
+      if(navigator.canShare && navigator.canShare({files:[file]})){ await navigator.share({files:[file], text}); return; }
+    }catch(e){ if(e && e.name==='AbortError') return; }
+    const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=name; document.body.appendChild(a); a.click();
+    setTimeout(()=>{ URL.revokeObjectURL(a.href); a.remove(); },1500); toast('Report image saved');
+  });
+}
+/* ---------- pilot results (principal: own school; admin: one or all schools) ---------- */
+async function loadPilot(){
+  try{ SCH.pilot=await rpc('pilot_summary', {p_token:tokenOf()}); SCH.err=''; }
+  catch(e){ if(e.code==='invalid_token') return needLogin(); SCH.pilot={error:serr(e)}; }
+  if(current==='sSchool' && SCH.view==='pilot') renderSchool();
+}
+const pctOr = v => v===null||v===undefined ? '–' : v+'%';
+function pilotHTML(d, ctx){
+  if(!d) return '';
+  if(d.error) return `<p class="err">${esc(d.error)}</p>`;
+  const ch = v => v===null||v===undefined ? '' : `<span class="pct ${v>0?'good':v<0?'low':'mid'}">${v>0?'+':''}${v} pts</span>`;
+  const bars = (d.by_class||[]).map(c=>`<div class="cbar"><span style="font-weight:500">${esc(c['class'])}</span><div class="bb">
+      <div><i style="width:${c.baseline_pct||0}%"></i>${pctOr(c.baseline_pct)}</div><div class="now"><i style="width:${c.latest_pct||0}%"></i>${pctOr(c.latest_pct)}</div></div></div>`).join('');
+  const subj = (d.by_subject||[]).map(s=>`<tr><td>${s.subject==='maths'?'Maths':'English'}</td><td class="n">${pctOr(s.baseline_pct)}</td><td class="n">${pctOr(s.latest_pct)}</td><td class="n">${s.baseline_pct!=null&&s.latest_pct!=null?ch(s.latest_pct-s.baseline_pct):'–'}</td></tr>`).join('');
+  const rows = (d.by_class||[]).map(c=>`<tr><td>${esc(c['class'])}</td><td class="n">${c.children}</td><td class="n">${c.with_both}</td><td class="n">${pctOr(c.baseline_pct)}</td><td class="n">${pctOr(c.latest_pct)}</td><td class="n">${ch(c.change_pts)||'–'}</td><td class="n">${c.played_this_week} of ${c.children}</td></tr>`).join('');
+  return `<div class="kgrid">
+      <div class="kcard"><p>Children taking part</p><b>${d.children||0}</b><p>${d.schools>1?`${d.schools} schools · `:''}${d.teachers||0} teacher${d.teachers===1?'':'s'}</p></div>
+      <div class="kcard"><p>Average starting score</p><b>${pctOr(d.baseline_pct)}</b><p>${d.with_baseline||0} ${d.with_baseline===1?'child':'children'} did the starting exercise</p></div>
+      <div class="kcard"><p>Score at the latest check</p><b>${pctOr(d.latest_pct)} ${ch(d.change_pts)}</b><p>${d.with_both||0} ${d.with_both===1?'child':'children'} with both checks${d.improved_pct!=null?` · ${d.improved_pct}% improved`:''}</p></div>
+      <div class="kcard"><p>Time learning</p><b>${d.minutes_per_child_per_week||0} min</b><p>per child, per week</p></div>
+    </div>
+    ${(d.with_both||0)===0?`<div class="banner">No end-of-pilot checks yet. Teachers start one from a child's weekly report. The comparison fills in as they are done.</div>`:''}
+    <div class="card panel"><h3 style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px">Starting check and latest check, by class <span class="legend2"><span><i></i>Starting</span><span><i class="n"></i>Latest</span></span></h3>
+      <div class="cbars">${bars||'<p>No classes yet.</p>'}</div><p style="margin-top:6px">Only children with both checks are compared.</p></div>
+    <div class="card panel"><h3>By subject</h3><div class="tablewrap"><table class="gtable"><thead><tr><th>Subject</th><th class="n">Starting</th><th class="n">Latest</th><th class="n">Change</th></tr></thead><tbody>${subj}</tbody></table></div>
+      <p>Children added before this update did the starting exercise without a maths and English split, so they appear only in the overall scores.</p></div>
+    <div class="card panel"><h3>Classes</h3><div class="tablewrap"><table class="gtable"><thead><tr><th>Class</th><th class="n">Children</th><th class="n">Both checks</th><th class="n">Starting</th><th class="n">Latest</th><th class="n">Change</th><th class="n">Played this week</th></tr></thead><tbody>${rows}</tbody></table></div></div>
+    <div class="card panel"><h3>Share with funders</h3><p>Names are removed from the download. Each child appears as a code.</p>
+      <div class="btns"><button class="btn small primary" ${ctx==='admin'?'data-a="pilot-csv"':'data-s="pilot-csv"'}>Download data (CSV)</button></div></div>`;
+}
+async function downloadPilotCSV(tok, schoolId, btn){
+  await busy(btn, async()=>{
+    try{
+      const rows=await rpc('pilot_export', {p_token:tok, p_school_id:schoolId||null}) || [];
+      if(!rows.length){ toast('No children to export yet'); return; }
+      const cols=Object.keys(rows[0]), q=v=>{ if(v===null||v===undefined) return ''; const s=String(v); return /[",\n]/.test(s)?'"'+s.replace(/"/g,'""')+'"':s; };
+      const csv=[cols.join(',')].concat(rows.map(r=>cols.map(c=>q(r[c])).join(','))).join('\n');
+      const d=new Date(), a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));
+      a.download=`garaad-pilot-${d.getFullYear()}-${pad2(d.getMonth()+1)}-${pad2(d.getDate())}.csv`; document.body.appendChild(a); a.click();
+      setTimeout(()=>{ URL.revokeObjectURL(a.href); a.remove(); },1500);
+    }catch(e){ toast(serr(e)); }
+  });
+}
+async function loadNeedHelp(){
+  const k=SCH.klass; if(!k) return;
+  try{ await obFlush(); }catch(e){}   // send this phone's waiting results first, so today's list includes them
+  try{ const rows=await rpc('class_needs_help', {p_token:tokenOf(), p_class_id:k.id}); if(SCH.klass===k) SCH.help=rows||[]; }
+  catch(e){ SCH.help=[]; }
+  if(current==='sSchool' && SCH.view==='children'){ const el=$('needHelp'); if(el) el.innerHTML=needHelpHTML(); }
 }
 function renderSchool(){
   const sc=store.school||{}, v=SCH.view, b=$('schoolBody');
-  if(v==='code') b.innerHTML=`<div class="head"><h1>School</h1><p>Type the school code. The school or the Tiri admin gives it to you.</p></div>
+  if(v==='code') b.innerHTML=`<div class="head"><h1>School</h1><p>Type the school code. The school or the Garaad admin gives it to you.</p></div>
     <div class="card form"><label class="label" for="sCode">School code</label>
       <input class="input" id="sCode" maxlength="20" autocomplete="off" autocapitalize="characters" style="text-transform:uppercase" placeholder="For example, ARAN" value="${esc(sc.code||'')}">
       ${errP()}<div class="btns"><button class="btn primary" data-s="code">Continue</button></div></div>
@@ -2238,7 +2650,7 @@ function renderSchool(){
     <div class="foot"><button class="linkbtn" data-s="change-school">Change school</button><button class="linkbtn" data-s="go-admin">Admin</button>${contactHTML()}</div>`;
   else if(v==='register') b.innerHTML=`<div class="head"><h1>New teacher</h1><p>${esc(sc.name||'')}</p></div>
     <div class="card form"><label class="label" for="sName">Your name</label><input class="input" id="sName" maxlength="40" autocomplete="name" placeholder="For example, Asha Ali">
-      ${phoneInput(sc.phone)}<p class="note">We'll add this number to the Tiri teachers' WhatsApp group to share guidance.</p>
+      ${phoneInput(sc.phone)}<p class="note">We'll add this number to the Garaad teachers' WhatsApp group to share guidance.</p>
       ${pinInput('sPin','Choose a 4-number PIN','new-password')}${pinInput('sPin2','Type the PIN again','new-password')}
       ${errP()}<div class="btns"><button class="btn primary" data-s="register">Register</button></div></div>
     <div class="foot">${contactHTML()}</div>`;
@@ -2252,10 +2664,10 @@ function renderSchool(){
     b.innerHTML=`<div class="head"><h1>Hi ${esc(sc.teacher||'')}!</h1><p>${pr?'Principal · look at each class and try the questions.':'What would you like to do?'}</p></div>
     ${SCH.msg?`<p class="okmsg" style="margin:0 0 12px">${esc(SCH.msg)}</p>`:''}
     <div class="tasks">
-      <button class="card task tap" data-s="inclass"><span class="te">🏫</span><span><b>In-class exercise</b><small>${pr?'See the games for each class':'A child plays now, on this phone'}</small></span></button>
-      <button class="card task" disabled aria-disabled="true"><span class="te">🏠</span><span><b>Send homework</b><small>Children practise at home</small><br><span class="soon">Coming soon</span></span></button>
+      <button class="card task tap" data-s="inclass"><span class="te">${ICON_SCHOOL}</span><span><b>In-class exercise</b><small>${pr?'See the games for each class':'A child plays now, on this phone'}</small></span></button>
+      ${pr?`<button class="card task tap" data-s="pilot"><span class="te">${ICON_REPORT}</span><span><b>Pilot results</b><small>Starting scores and progress, by class</small></span></button>`:''}
+      <button class="card task" disabled aria-disabled="true"><span class="te">${ICON_HOME}</span><span><b>Send homework</b><small>Children practise at home</small><br><span class="soon">Coming soon</span></span></button>
     </div>
-    ${pr?`<p class="note" style="margin-top:14px">The principal dashboard with every child's scores is coming soon.</p>`:''}
     ${wait?`<p class="note" style="margin-top:14px">${wait} result${wait>1?'s':''} waiting to be sent. They go when the internet is back.</p>`:''}
     <div class="foot"><button class="linkbtn" data-s="go-changepin">Change PIN</button><button class="linkbtn" data-s="logout">${SCH.arm==='logout'?'Results are waiting. Tap again to log out':'Log out'}</button>${contactHTML()}</div>`;
     SCH.msg=''; }
@@ -2263,12 +2675,20 @@ function renderSchool(){
     ${SCH.classes===null?`<div class="spin">Loading classes…</div>`:`<div class="classes">${SCH.classes.map((k,i)=>`<button class="card cls tap" data-cls="${i}">${esc(k.name)}</button>`).join('')}</div>`}`;
   else if(v==='children') b.innerHTML=`<div class="head"><h1>${esc(SCH.klass?SCH.klass.name:'')}</h1><p>Who is playing?</p></div>
     <div class="search"><input class="input" id="sSearch" type="search" autocomplete="off" placeholder="Search a name" value="${esc(SCH.search)}" aria-label="Search children"></div>
+    <div id="needHelp">${needHelpHTML()}</div>
     ${errP()}<div class="rows" id="kidRows">${kidRowsHTML()}</div>`;
   else if(v==='addchild') b.innerHTML=`<div class="head"><h1>Add a child</h1><p>${esc(SCH.klass?SCH.klass.name:'')} · a short starting exercise comes next.</p></div>
     <div class="card form"><label class="label" for="sName">Child's name</label><input class="input" id="sName" maxlength="40" autocomplete="off" placeholder="For example, Hodan">
       <div class="label" id="sAgeL">Age</div><div class="ages" role="group" aria-labelledby="sAgeL">${[3,4,5,6,7,8,9,10,11,12].map(a=>`<button class="age" data-sage="${a}" aria-pressed="${a===SCH.addAge}">${a}</button>`).join('')}</div>
       <div class="label" id="sGrpL">Expected performance</div><div class="seg" role="group" aria-labelledby="sGrpL">${Object.keys(GROUP_LABEL).map(k=>`<button data-sgroup="${k}" aria-pressed="${k===SCH.addGroup}">${GROUP_LABEL[k]}</button>`).join('')}</div>
+      <div class="label" id="sOwlL">The child's owl</div><div class="owls" id="sOwlPick" role="radiogroup" aria-labelledby="sOwlL">${owlPickHTML(SCH.addOwl, 'data-sowl')}</div>
+      <p class="note" style="margin-top:-6px">The child finds their owl on the list, even before they can read their name.</p>
+      <label class="label" for="sParentPh">Parent's WhatsApp number <span style="font-weight:400;color:var(--muted)">(optional)</span></label>
+      <div class="phone"><span class="cc">+252</span><input class="input" id="sParentPh" type="tel" inputmode="numeric" maxlength="14" placeholder="61 234 5678"></div>
+      <p class="note" style="margin-top:-6px">Used to send the weekly report to the parent.</p>
       ${errP()}<div class="btns"><button class="btn primary" data-s="addchild">Save and start</button></div></div>`;
+  else if(v==='report') b.innerHTML=reportViewHTML();
+  else if(v==='pilot') b.innerHTML=`<div class="head"><h1>Pilot results</h1><p>${esc(sc.name||'')}</p></div>${errP()}${SCH.pilot===null?`<div class="spin">Loading results…</div>`:pilotHTML(SCH.pilot, 'school')}`;
 }
 async function schoolAction(a, btn){
   const sc=store.school||(store.school={outbox:[]});
@@ -2296,20 +2716,31 @@ async function schoolAction(a, btn){
     const tok=sc.token; if(tok) rpc('logout', {p_token:tok}).catch(()=>{});
     sc.token=null; SCH.classes=null; if(a==='change-school'){ sc.code=''; sc.name=''; } save();
     return openSchool(a==='logout'?'login':'code'); }
+  if(a==='pilot') return openSchool('pilot');
+  if(a==='pilot-csv') return downloadPilotCSV(tokenOf(), null, btn);
+  if(a==='rep-share') return shareReport(btn);
+  if(a==='rep-phone'){ const r=SCH.rep; if(!r) return; const pp=phoneDigits(($('repPhone')||{}).value);
+    if(pp && !/^\d{7,9}$/.test(pp)) return setErr('sErr','Type the number after +252, for example 61 234 5678.');
+    return busy(btn, async()=>{ try{ await rpc('update_child', {p_token:tokenOf(), p_child_id:r.id, p_parent_phone:pp?'+252'+pp:''});
+      if(r.data&&r.data.child) r.data.child.parent_phone=pp?'+252'+pp:null; r.phoneMsg=pp?'Number saved.':'Number removed.'; renderSchool(); }
+      catch(e){ if(e.code==='invalid_token') return needLogin(); setErr('sErr', serr(e)); } }); }
+  if(a==='rep-endline'){ const r=SCH.rep; if(!r) return; SCH.assess='endline'; return openChild(r.id, btn); }
   if(a==='inclass') return openSchool('classes');
   if(a==='go-register') return openSchool('register');
   if(a==='go-changepin') return openSchool('changepin');
   if(a==='go-addchild') return openSchool('addchild');
   if(a==='addchild'){ const name=($('sName').value||'').trim().replace(/\s+/g,' ');
     if(!name) return setErr('sErr','Type the child’s name.'); if(!SCH.addAge) return setErr('sErr','Pick the child’s age.'); if(!SCH.addGroup) return setErr('sErr','Pick the expected performance.');
-    return busy(btn, async()=>{ try{ const r=await rpc('add_child', {p_token:tokenOf(), p_class_id:SCH.klass.id, p_name:name, p_age:SCH.addAge, p_expected_group:SCH.addGroup});
+    const pp=phoneDigits(($('sParentPh')||{}).value); if(pp && !/^\d{7,9}$/.test(pp)) return setErr('sErr','Type the parent’s number after +252, for example 61 234 5678, or leave it empty.');
+    return busy(btn, async()=>{ try{ const r=await rpc('add_child', {p_token:tokenOf(), p_class_id:SCH.klass.id, p_name:name, p_age:SCH.addAge, p_expected_group:SCH.addGroup,
+        p_avatar:SCH.addOwl, p_theme:'savanna', p_parent_phone:pp?'+252'+pp:null});
       if(!r.ok) return setErr('sErr', serr(r.error)); await openChild(r.child_id); }catch(e){ if(e.code==='invalid_token') return needLogin(); setErr('sErr', serr(e)); } }); }
 }
 function loggedIn(r){ const sc=store.school; Object.assign(sc, {token:r.token, teacher:r.name, role:r.role, name:r.school||sc.name}); save(); SCH.classes=null; openSchool('task'); obFlush(); }
 
 /* ---------- admin: school and family codes, PIN resets ---------- */
 function openAdmin(){ ADM.err=''; ADM.arm=''; renderAdmin(); show('sAdmin'); if(ADM.tok) adminLoad(); else setTimeout(()=>{ const i=$('aPin'); if(i) i.focus(); },60); }
-function adminBack(){ if(store.mode==='school') return openSchoolHome(); renderHome(); show('sHome'); }
+function adminBack(){ if(ADM.pilot){ ADM.pilot=null; return renderAdmin(); } if(store.mode==='school') return openSchoolHome(); renderHome(); show('sHome'); }
 async function adminLoad(){
   try{ ADM.data=await rpc('admin_overview', {p_token:ADM.tok}); ADM.err=''; }
   catch(e){ if(e.code==='invalid_token'||e.code==='admin_only'){ ADM.tok=null; ADM.err='Please log in again.'; } else ADM.err=serr(e); }
@@ -2317,14 +2748,19 @@ async function adminLoad(){
 }
 function renderAdmin(){
   const b=$('adminBody'), err=`<p class="err" id="aErr" ${ADM.err?'':'hidden'}>${esc(ADM.err)}</p>`;
-  if(!ADM.tok){ b.innerHTML=`<div class="head"><h1>Admin</h1><p>For the Tiri organiser: school codes, family codes and teacher PINs.</p></div>
+  if(!ADM.tok){ b.innerHTML=`<div class="head"><h1>Admin</h1><p>For the Garaad organiser: school codes, family codes and teacher PINs.</p></div>
       <div class="card form"><label class="label" for="aPin">Admin PIN</label><input class="input pin" id="aPin" type="password" inputmode="numeric" pattern="[0-9]*" maxlength="12" autocomplete="current-password" placeholder="••••••" style="max-width:260px">
       ${err}<div class="btns"><button class="btn primary" data-a="login">Log in</button></div></div>`; return; }
+  if(ADM.pilot){ const p=ADM.pilot;
+    b.innerHTML=`<div class="head"><h1>Pilot results</h1><p>${esc(p.name)}</p></div>${err}
+      ${p.data?pilotHTML(p.data,'admin'):`<div class="spin">Loading results…</div>`}
+      <div class="foot"><button class="linkbtn" data-a="pilot-back">Back to admin</button></div>`; return; }
   const d=ADM.data;
   if(!d){ b.innerHTML=`<div class="head"><h1>Admin</h1></div>${err}<div class="spin">Loading…</div>`; return; }
   const schools=d.schools.map(s=>`<div class="card panel adm">
       <h3><span>${esc(s.name)}</span><span class="chip">Code ${esc(s.code)}</span></h3>
       <p>${s.children} child${s.children===1?'':'ren'} · ${(s.teachers||[]).length} teacher${(s.teachers||[]).length===1?'':'s'}</p>
+      <div class="btns"><button class="btn small" data-a="pilot" data-sid="${esc(s.id)}" data-sname="${esc(s.name)}">Pilot results</button></div>
       <div class="chips">${(s.classes||[]).map(c=>`<span class="chip">${esc(c)}</span>`).join('')}</div>
       <div class="inline"><input class="input" id="cls-${esc(s.id)}" maxlength="30" placeholder="New class, e.g. Standard 3"><button class="btn small" data-a="addclass" data-sid="${esc(s.id)}">Add class</button></div>
       ${(s.teachers||[]).length?`<div class="tlist">
@@ -2333,8 +2769,9 @@ function renderAdmin(){
         <div class="btns"><button class="btn small" data-a="reset" data-tid="${esc(t.id)}">${ADM.arm==='reset'+t.id?'Tap again to reset':'Reset PIN'}</button><button class="btn small" data-a="role" data-tid="${esc(t.id)}" data-role="${t.role==='principal'?'teacher':'principal'}">${t.role==='principal'?'Make teacher':'Make principal'}</button></div></div>`).join('')}
       </div><div class="btns"><button class="btn small" data-a="copyphones" data-sid="${esc(s.id)}">Copy teacher numbers</button></div>`:'<p>No teachers yet. They register with the school code.</p>'}
     </div>`).join('');
-  b.innerHTML=`<div class="head"><h1>Admin</h1><p>Reset a teacher's PIN, make the principal, and create codes.</p></div>${err}
+  b.innerHTML=`<div class="head"><h1>Admin</h1><p>Reset a teacher's PIN, make the principal, create codes and see pilot results.</p></div>${err}
     ${ADM.msg?`<p class="okmsg" style="margin:0 0 12px">${esc(ADM.msg)}</p>`:''}
+    ${d.schools.length>1?`<div class="btns" style="margin-bottom:14px"><button class="btn small primary" data-a="pilot" data-sid="" data-sname="All pilot schools">Pilot results · all schools</button></div>`:''}
     ${schools||'<div class="card panel"><p>No schools yet.</p></div>'}
     <div class="card panel adm"><h3>New school</h3><p>Creates the school with KG1, KG2, KG3, Standard 1 and Standard 2.</p>
       <div class="inline"><input class="input" id="nsName" maxlength="60" placeholder="School name"><input class="input" id="nsCode" maxlength="20" placeholder="School code" style="text-transform:uppercase"><button class="btn small primary" data-a="newschool">Create</button></div></div>
@@ -2350,7 +2787,13 @@ async function adminAction(a, el){
   if(a==='login'){ const pin=($('aPin').value||'').trim(); if(!pin) return setErr('aErr','Type the admin PIN.');
     return busy(el, async()=>{ try{ const r=await rpc('admin_login', {p_pin:pin}); if(!r.ok) return setErr('aErr', r.error==='wrong_pin'?'That PIN is not right. After 5 wrong tries admin login locks for 15 minutes.':serr(r.error));
       ADM.tok=r.token; ADM.data=null; ADM.err=''; renderAdmin(); adminLoad(); }catch(e){ setErr('aErr', serr(e)); } }); }
-  if(a==='logout'){ if(ADM.tok) rpc('logout', {p_token:ADM.tok}).catch(()=>{}); ADM.tok=null; ADM.data=null; return renderAdmin(); }
+  if(a==='logout'){ if(ADM.tok) rpc('logout', {p_token:ADM.tok}).catch(()=>{}); ADM.tok=null; ADM.data=null; ADM.pilot=null; return renderAdmin(); }
+  if(a==='pilot'){ ADM.pilot={sid:el.dataset.sid||null, name:el.dataset.sname||'', data:null}; ADM.err=''; renderAdmin(); window.scrollTo(0,0);
+    try{ ADM.pilot.data=await rpc('pilot_summary', {p_token:ADM.tok, p_school_id:ADM.pilot.sid}); }
+    catch(e){ if(e.code==='invalid_token'||e.code==='not_allowed'){ ADM.tok=null; ADM.pilot=null; ADM.err='Please log in again.'; } else ADM.pilot.data={error:serr(e)}; }
+    return renderAdmin(); }
+  if(a==='pilot-back'){ ADM.pilot=null; return renderAdmin(); }
+  if(a==='pilot-csv') return downloadPilotCSV(ADM.tok, ADM.pilot&&ADM.pilot.sid, el);
   if(a==='reset'){ const k='reset'+el.dataset.tid; if(ADM.arm!==k){ ADM.arm=k; return renderAdmin(); } ADM.arm=''; return busy(el, ()=>call('admin_reset_pin', {p_teacher_id:el.dataset.tid}, 'PIN reset. The teacher chooses a new PIN at their next login.')); }
   if(a==='role') return busy(el, ()=>call('admin_set_role', {p_teacher_id:el.dataset.tid, p_role:el.dataset.role}, el.dataset.role==='principal'?'Now a principal. The new role applies at their next login.':'Now a teacher. The new role applies at their next login.'));
   if(a==='addclass'){ const i=$('cls-'+el.dataset.sid), name=(i&&i.value||'').trim(); if(!name) return; return busy(el, ()=>call('admin_add_class', {p_school_id:el.dataset.sid, p_name:name}, `Class ${name} added.`)); }
@@ -2372,7 +2815,9 @@ document.addEventListener('click', e=>{
     if(a==='famcode') return submitFamilyCode(s);
     return schoolAction(a, s); }
   const c=t.closest('[data-cls]'); if(c && SCH.classes){ audio(); const k=SCH.classes[+c.dataset.cls]; SCH.klass=k; return store.school.role==='principal' ? openPreview(k) : openSchool('children'); }
-  const ch=t.closest('[data-child]'); if(ch){ audio(); return openChild(ch.dataset.child, ch); }
+  const ch=t.closest('[data-child]'); if(ch){ audio(); SCH.assess=null; return openChild(ch.dataset.child, ch); }
+  const rp=t.closest('[data-report]'); if(rp){ audio(); return openReport(rp.dataset.report); }
+  const so=t.closest('[data-sowl]'); if(so){ SCH.addOwl=so.dataset.sowl; const box=$('sOwlPick'); if(box){ box.innerHTML=owlPickHTML(SCH.addOwl,'data-sowl'); const f=box.querySelector(`[data-sowl="${SCH.addOwl}"]`); if(f) f.focus(); } return; }
   const ag=t.closest('[data-sage]'); if(ag){ setErr('sErr',''); SCH.addAge=+ag.dataset.sage; ag.parentNode.querySelectorAll('[data-sage]').forEach(x=>x.setAttribute('aria-pressed', String(x===ag))); return; }
   const gr=t.closest('[data-sgroup]'); if(gr){ setErr('sErr',''); SCH.addGroup=gr.dataset.sgroup; gr.parentNode.querySelectorAll('[data-sgroup]').forEach(x=>x.setAttribute('aria-pressed', String(x===gr))); return; }
   const ad=t.closest('[data-a]'); if(ad){ audio(); return adminAction(ad.dataset.a, ad); }
@@ -2418,7 +2863,7 @@ function logRound(completed){
   if(!round||round.logged||!me) return;
   round.logged=true;
   const items=round.items; if(!items.length){ round=null; return; }
-  const d=new Date(round.started), right=items.filter(i=>i.ok).length;
+  const d=new Date(round.started), right=items.filter(i=>i.ok && !i.hint).length;   // an answer found after a hint is not counted as right first time
   const rec={
     id:'s'+Date.now().toString(36)+Math.random().toString(36).slice(2,6),
     date:`${d.getFullYear()}-${pad2(d.getMonth()+1)}-${pad2(d.getDate())}`, time:`${pad2(d.getHours())}:${pad2(d.getMinutes())}`,
@@ -2426,7 +2871,8 @@ function logRound(completed){
     game:GAMES[round.game].name, game_id:round.game, level:round.level,
     questions:items.length, right_first_try:right, wrong_tries:items.reduce((a,i)=>a+i.wrong,0), answers_shown:items.filter(i=>i.shown).length,
     stars:round.stars||0, passed:!!round.passed, seconds:Math.round((Date.now()-round.started)/1000), completed:!!completed,
-    sprint_score: round.game==='sprint'?right:null, device:store.device, items, synced:false
+    sprint_score: round.game==='sprint'?right:null, device:store.device,
+    hints_used: items.filter(i=>i.hint).length, stars_spent: round.spent||0, items, synced:false
   };
   if(SCH.cls){ schoolRound(rec); round=null; return; }      // school children are saved to the school database, not this device's log
   store.sessions.push(rec); if(store.sessions.length>1500) store.sessions=store.sessions.slice(-1500);
@@ -2443,7 +2889,7 @@ async function syncPending(){
 (async()=>{ try{ if(!window.claude||!window.claude.use){ dbState='off'; return; }
   const [db,dl]=await Promise.all([claude.use('db'),claude.use('downloads')]); dbRef=db; dlRef=dl; dbState=db?'on':'off';
   if(current==='sParent') renderParent(); syncPending(); }catch(e){ dbState='off'; } })();
-const CSV_COLS=['id','date','time','child','child_age','age_group','game','level','questions','right_first_try','wrong_tries','answers_shown','stars','passed','seconds','completed','sprint_score','device'];
+const CSV_COLS=['id','date','time','child','child_age','age_group','game','level','questions','right_first_try','wrong_tries','answers_shown','hints_used','stars','passed','seconds','completed','sprint_score','device'];
 function toCSV(){ const q=v=>{ if(v===null||v===undefined) return ''; const s=String(v); return /[",\n]/.test(s)?'"'+s.replace(/"/g,'""')+'"':s; };
   return [CSV_COLS.join(',')].concat(store.sessions.map(r=>CSV_COLS.map(c=>q(r[c])).join(','))).join('\n'); }
 function totals(p){ const rs=store.sessions.filter(r=>r.child_id===p.id); return {rounds:rs.length, answers:rs.reduce((a,r)=>a+r.questions,0), right:rs.reduce((a,r)=>a+r.right_first_try,0), wrong:rs.reduce((a,r)=>a+r.wrong_tries,0)}; }
@@ -2454,14 +2900,14 @@ function sendHelp(){
   if(canShare()) return 'Tap <b>Send results</b> and choose Gmail or WhatsApp.';
   return 'Tap <b>Copy results message</b> and paste it into an email or WhatsApp message.';
 }
-function csvName(){ const d=new Date(); return `tiri-${store.device}-${d.getFullYear()}-${pad2(d.getMonth()+1)}-${pad2(d.getDate())}.csv`; }
+function csvName(){ const d=new Date(); return `garaad-${store.device}-${d.getFullYear()}-${pad2(d.getMonth()+1)}-${pad2(d.getDate())}.csv`; }
 function summaryText(){ return resultsMessage().split('\n--- Spreadsheet data')[0].trim(); }
 async function shareResults(){
   const summary=summaryText();
   try{
     const file = typeof File==='function' ? new File([toCSV()], csvName(), {type:'text/csv'}) : null;
-    if(file && navigator.canShare && navigator.canShare({files:[file]})) await navigator.share({title:'Tiri results', text:summary, files:[file]});
-    else await navigator.share({title:'Tiri results', text:resultsMessage()});
+    if(file && navigator.canShare && navigator.canShare({files:[file]})) await navigator.share({title:'Garaad results', text:summary, files:[file]});
+    else await navigator.share({title:'Garaad results', text:resultsMessage()});
     dataMsg='';
   }catch(err){ if(!(err&&err.name==='AbortError')) dataMsg='Sharing did not open. Use “Copy results message” instead.'; }
 }
@@ -2469,11 +2915,11 @@ function emailResults(){
   let body=resultsMessage();
   if(body.length>7000){ const lines=body.split('\n'); while(lines.join('\n').length>6800 && lines.length>12) lines.splice(lines.findIndex(l=>/^s[a-z0-9]+,/.test(l)),1); body=lines.join('\n')+'\n(Older rounds left out to fit the email. Use Download spreadsheet for everything.)'; }
   const names=store.profiles.map(p=>p.name).join(', ');
-  location.href=`mailto:${encodeURIComponent(store.sendTo)}?subject=${encodeURIComponent('Tiri results'+(names?' — '+names:''))}&body=${encodeURIComponent(body)}`;
+  location.href=`mailto:${encodeURIComponent(store.sendTo)}?subject=${encodeURIComponent('Garaad results'+(names?' — '+names:''))}&body=${encodeURIComponent(body)}`;
 }
 function resultsMessage(){
   const d=new Date(), today=`${d.getFullYear()}-${pad2(d.getMonth()+1)}-${pad2(d.getDate())}`;
-  const lines=[`Tiri results — ${today} — device ${store.device}`,''];
+  const lines=[`Garaad results — ${today} — device ${store.device}`,''];
   store.profiles.forEach(p=>{ const t=totals(p), acc=t.answers?Math.round(100*t.right/t.answers):0;
     const lv=GROUPS[bandOf(p)].games.concat(ENGLISH.games).filter(id=>!GAMES[id].isSprint&&p.games[id]&&levelsDone(p.games[id])).map(id=>`${GAMES[id].name} ${levelsDone(p.games[id])}/10`).join(', ');
     lines.push(`${p.name} (age ${p.age}): ${t.rounds} rounds played, ${t.answers} answers, ${t.right} right first time (${acc}%), ${t.wrong} wrong tries.${lv?` Levels completed: ${lv}.`:''}`); });
@@ -2492,17 +2938,55 @@ function show(id){
   current=id; SCREENS.forEach(s=>$(s).hidden=s!==id);
   if(id!=='sPlay'){ const m=$('mascot'); if(m){ clearTimeout(mascotT); m.classList.remove('show'); } }
   $('backBtn').hidden = id==='sHome';
+  const kidScreen = !!me && ['sGames','sLevels','sPlay','sDone','sGarden'].includes(id);
+  applyTheme(kidScreen ? (me.theme||'savanna') : ['sSchool','sAdmin','sParent'].includes(id) ? 'adult' : 'savanna');
   const mid=$('topMid');
-  if(me && ['sGames','sLevels','sPlay','sDone','sGarden'].includes(id)) mid.innerHTML=`<div class="childchip">${avatar(me)}<b>${esc(me.name)}</b><span class="starcount">★ ${starTotal(me)}</span></div>`;
-  else if(id==='sParent') mid.innerHTML=`<div class="brand">Parent area</div>`;
-  else if(id==='sAdmin') mid.innerHTML=`<div class="brand"><span class="mark">123</span>Tiri admin</div>`;
-  else if(id==='sSchool' && store.school && store.school.name) mid.innerHTML=`<div class="brand"><span class="mark">123</span><span style="min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(store.school.name)}</span></div>`;
-  else mid.innerHTML=`<div class="brand"><span class="mark">123</span>Tiri</div>`;
+  if(kidScreen) renderChip();
+  else if(id==='sParent') mid.innerHTML=brandHTML('Parents');
+  else if(id==='sAdmin') mid.innerHTML=brandHTML('Admin');
+  else if(id==='sSchool' && store.school && store.school.name) mid.innerHTML=brandHTML(store.school.name);
+  else if(id==='sHome' && !store.mode) mid.innerHTML='';
+  else mid.innerHTML=brandHTML();
   if(id==='sSchool') $('backBtn').hidden = SCH.view==='task';
   if(id==='sHome') $('backBtn').hidden = !(store.mode==='family' && !store.familyCode && !store.familyLegacy);   // the family code screen can go back to the two doors
   if(id==='sPlay') document.querySelector('.app').style.setProperty('--acc', GAMES[game].acc);
 }
+/* ---------- themes: each child picks Savanna sun, Ocean blue or Night sky ---------- */
+const THEMES = {
+  savanna:{name:'Savanna sun', note:'Warm and sunny', bg:'#FFF7E8', owl:'#0E8C7E', pupil:'#0A5E55', gold:'#F5B400', meta:'#FFF7E8'},
+  ocean:{name:'Ocean blue', note:'Cool and calm', bg:'#F2F6FF', owl:'#3657E0', pupil:'#172041', gold:'#FFB800', meta:'#F2F6FF'},
+  night:{name:'Night sky', note:'For evening play', bg:'#1E2257', owl:'#8E7CFF', pupil:'#1E2257', gold:'#FFC93C', meta:'#1E2257'}
+};
+function applyTheme(t){
+  if(t!=='adult' && !THEMES[t]) t='savanna';
+  document.body.dataset.theme=t;
+  const m=document.querySelector('meta[name="theme-color"]'); if(m) m.content = t==='adult' ? '#F5F6F5' : THEMES[t].meta;
+}
+const ICON_PALETTE='<svg viewBox="0 0 24 24"><path d="M12 3a9 9 0 1 0 0 18c1.1 0 1.6-.8 1.6-1.6 0-1.3-1.1-1.5-1.1-2.6 0-.9.7-1.6 1.6-1.6H16a5 5 0 0 0 5-5c0-4-4-7.2-9-7.2z"/><circle cx="7.5" cy="11" r="1.1"/><circle cx="10.5" cy="7" r="1.1"/><circle cx="15" cy="7.5" r="1.1"/></svg>';
+function renderChip(){
+  if(!me) return;
+  $('topMid').innerHTML=`<div class="childchip">${avatar(me)}<b>${esc(me.name)}</b><span class="starcount" aria-label="${starBalance(me)} stars">${ICON_STAR}${starBalance(me)}</span>${current==='sGames'?`<button class="ibtn paletteBtn" id="themeBtn" aria-label="Change colours">${ICON_PALETTE}</button>`:''}</div>`;
+}
+function openThemeSheet(){
+  closeSheet();
+  const cur=me.theme||'savanna', w=document.createElement('div'); w.className='sheetwrap'; w.id='sheet';
+  w.innerHTML=`<div class="sheet" role="dialog" aria-modal="true" aria-label="Pick your colours"><span class="grab"></span>
+    <div style="display:flex;align-items:center;justify-content:space-between"><h2>Pick your colours</h2><button class="ibtn" id="sheetX" aria-label="Close"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+    ${Object.keys(THEMES).map(k=>{ const t=THEMES[k]; return `<button class="themeopt" data-theme-pick="${k}" aria-pressed="${k===cur}"><span class="tp" style="background:${t.bg};--owl:${t.owl};--owl-pupil:${t.pupil};--owl-gold:${t.gold}">${owlSVG('happy')}</span><span><b>${t.name}</b><small>${t.note}</small></span><span class="tick"><svg viewBox="0 0 24 24"><path d="M5 12l5 5 9-10"/></svg></span></button>`; }).join('')}
+  </div>`;
+  document.body.appendChild(w);
+  w.addEventListener('click', e=>{ if(e.target===w || e.target.closest('#sheetX')) closeSheet(); });
+  setTimeout(()=>{ const b=w.querySelector('[aria-pressed="true"]'); if(b) b.focus(); },50);
+}
+function closeSheet(){ const s=$('sheet'); if(s) s.remove(); }
+function pickTheme(t){
+  if(!me || !THEMES[t]) return;
+  me.theme=t; me.dirty=true; save(); applyTheme(t); closeSheet(); renderChip();
+  if(SCH.child && !SCH.preview){ obPush('update_child', {p_child_id:SCH.child.id, p_theme:t}); }
+  say(`${THEMES[t].name}!`);
+}
 function goBack(){
+  if($('sheet')){ closeSheet(); return; }
   if(current==='sHome'){ store.mode=null; save(); renderHome(); show('sHome'); return; }
   if(current==='sSchool') return schoolBack();
   if(current==='sAdmin') return adminBack();
@@ -2526,19 +3010,24 @@ function renderHome(){
   if(!store.mode){ $('homeBody').innerHTML = doorsHTML(); return; }
   if(store.mode==='family' && !store.familyCode && !store.familyLegacy){ $('homeBody').innerHTML = familyCodeHTML(); setTimeout(()=>{ const i=$('famCode'); if(i) i.focus(); },50); return; }
   const ps=store.profiles;
-  $('homeBody').innerHTML = (ps.length ? `<div class="head"><h1>Who is playing?</h1><p>Tap your name to start.</p></div>
-    <div class="kids">${ps.map(p=>`<button class="card kid tap" data-kid="${p.id}">${avatar(p,true)}<b>${esc(p.name)}</b><span>Age ${p.age} · ★ ${starTotal(p)}</span></button>`).join('')}
+  $('homeBody').innerHTML = (ps.length ? `<div class="head"><h1>Who's learning today?</h1><p>Tap your owl to start.</p></div>
+    <div class="kids">${ps.map(p=>`<button class="card kid tap" data-kid="${p.id}">${avatar(p,true)}<b>${esc(p.name)}</b><span style="display:inline-flex;align-items:center;gap:5px">Age ${p.age} · ${ICON_STAR}${starBalance(p)}</span></button>`).join('')}
     <button class="card kid add tap" id="addKid"><span class="plus">+</span>Add a child</button></div>`
-  : `<div class="card empty"><div class="big">👋</div><h1 style="font-size:24px">Welcome to Tiri</h1><p>Maths games for children aged 3 to 12. Add each child with their name and age, and the right games appear for them.</p><button class="btn primary" id="addKid">Add a child</button></div>`)
+  : `<div class="card empty"><div class="cele" style="width:120px;animation:none">${owlSVG('happy')}</div><h1 style="font-size:28px">Welcome to Garaad</h1><p>Maths and English games for children aged 3 to 12. Add each child with their name, age and owl, and the right games appear for them.</p><button class="btn primary" id="addKid">Add a child</button></div>`)
   + installCard()
   + `<div class="parentlink"><button class="btn small hold" id="parentBtn"><span class="fill"></span>${ICON_LOCK.replace('<svg','<svg width="18" height="18" style="stroke:currentColor;fill:none;stroke-width:2.2"')} Parent area</button><p class="hint">Press and hold to open</p></div>`;
   wireHold();
 }
 
 /* ---------- add / edit child ---------- */
-let editing=null, edAge=null, editReturn='sHome';
+let editing=null, edAge=null, edOwl=null, editReturn='sHome';
+function owlPickHTML(sel, attr){
+  return OWL_KEYS.map(k=>{ const [c,a]=k.split('-'); return `<button type="button" class="owlpick" ${attr}="${k}" role="radio" aria-checked="${k===sel}" aria-label="${c} owl with ${a==='glasses'?'glasses':a==='cap'?'a school cap':'a '+a}" style="${owlStyle(k)};background:var(--av-bg)">${owlAvatarSVG(k)}</button>`; }).join('');
+}
+function freeOwl(){ const used=new Set(store.profiles.map(p=>p.avatar)); return OWL_KEYS.find(k=>!used.has(k)) || OWL_KEYS[0]; }
+function renderOwls(){ $('owlPick').innerHTML=owlPickHTML(edOwl, 'data-owl'); }
 function openEditor(p,from){
-  editing=p||null; editReturn=from||'sHome'; edAge=p?p.age:null;
+  editing=p||null; editReturn=from||'sHome'; edAge=p?p.age:null; edOwl=p?owlKey(p):freeOwl(); renderOwls();
   $('editTitle').textContent=p?`Edit ${p.name}`:'Add a child';
   $('fName').value=p?p.name:''; $('fErr').hidden=true; $('fRemove').hidden=!p; $('fRemove').textContent='Remove child'; removeArmed=false;
   const askFam = LIVE.url && STANDALONE && !store.family;
@@ -2556,8 +3045,8 @@ function saveChild(){
   const err=(!$('famWrap').hidden && !fam)?'Type your family name.':!name?'Type the child’s name.':!edAge?'Pick the child’s age.':'';
   if(err){ $('fErr').textContent=err; $('fErr').hidden=false; return; }
   if(!$('famWrap').hidden){ store.family=fam; }
-  if(editing){ editing.name=name; editing.age=edAge; editing.dirty=true; }
-  else store.profiles.push({id:'k'+Date.now().toString(36)+Math.random().toString(36).slice(2,5), name, age:edAge, color:AVCOL[store.profiles.length%AVCOL.length], games:{}, best:{}, last:0, dirty:true});
+  if(editing){ editing.name=name; editing.age=edAge; editing.avatar=edOwl; editing.dirty=true; }
+  else store.profiles.push({id:'k'+Date.now().toString(36)+Math.random().toString(36).slice(2,5), name, age:edAge, avatar:edOwl, theme:'savanna', color:AVCOL[store.profiles.length%AVCOL.length], games:{}, best:{}, last:0, dirty:true});
   save(); liveSync(); editReturn==='sParent'?openParent():goHome();
 }
 
@@ -2567,7 +3056,7 @@ function openGames(){
   const grp=G(), eng=subject==='english';
   $('gamesTitle').textContent=`Hi ${me.name}!`;
   practice=null;
-  $('subjTabs').innerHTML=`<button class="tap${eng?'':' on'}" data-subject="maths" aria-pressed="${!eng}">🔢 Maths</button><button class="tap${eng?' on':''}" data-subject="english" aria-pressed="${eng}">🔤 English</button>`;
+  $('subjTabs').innerHTML=`<button class="tap${eng?'':' on'}" data-subject="maths" aria-pressed="${!eng}"><svg viewBox="0 0 24 24"><path d="M7 4v7M3.5 7.5h7M14 17.5h7M4 16l6 6M10 16l-6 6M17.5 3.5v0M17.5 11v0M14 7.5h7"/></svg>Maths</button><button class="tap${eng?' on':''}" data-subject="english" aria-pressed="${eng}"><svg viewBox="0 0 24 24"><path d="M4 19l5-14 5 14M6 14h6M15 9h5v10M15 14h5"/></svg>English</button>`;
   $('gamesSub').innerHTML=`<span class="tag">${grp.label}</span>&nbsp; ${eng?'Listen, speak, read and write.':'Start today\'s practice, or pick a game.'}`;
   const due=dueReviews().length, days=practiceDays(me), doneToday=(me.practiceDays||[]).includes(todayStr());
   const card=`<button class="card practice tap" id="practiceBtn"><span class="pi">${doneToday?'✅':'🌟'}</span><span class="pt"><b>Today's ${eng?'English ':''}practice</b><small>${doneToday?'Done today. You can play it again.':'About 10 minutes · games picked for you'}</small>${days?`<small class="streak">⭐ ${days} day${days>1?'s':''} in a row</small>`:''}</span><span class="btn primary small go">${doneToday?'Again':'Start'}</span></button>`;
@@ -2610,7 +3099,7 @@ function openLevels(id){
   $('ltop').innerHTML=`<span class="gicon" style="--acc:${g.acc}">${g.icon}</span><div><h1>${g.name}</h1><p>${g.learn}</p></div>`;
   $('levels').innerHTML=Array.from({length:capOf(id)},(_,i)=>{ const n=i+1, locked=n>s.unlocked, st=s.stars[n]||0, cur=n===s.unlocked&&!st;
     return locked ? `<button class="lvl locked" disabled aria-label="Level ${n} locked">${ICON_LOCK}<span style="font-size:13px">${n}</span></button>`
-                  : `<button class="card lvl tap${cur?' current':''}" data-level="${n}" aria-label="Level ${n}">${n}${starsHTML(st)}</button>`; }).join('');
+                  : `<button class="card lvl tap${cur?' current':''}${st?' done':''}" data-level="${n}" aria-label="Level ${n}${st?`, ${st} star${st>1?'s':''}`:cur?', play now':''}">${n}${starsHTML(st)}</button>`; }).join('');
   const per=G().perLevel, need=Math.ceil(per*0.5);
   $('legend').textContent = bandOf(me)==='little' ? `Each level has ${per} questions. Finish a level to open the next one.` : `Each level has ${per} questions. Get at least ${need} right first time to open the next level. Get them all right for 3 stars.`;
   if(G().voice) say(`${g.name}. Pick a level.`);
@@ -2693,6 +3182,46 @@ function renderQ(){
   $('stage').innerHTML = (q.isReview?'<div class="revtag">🔁 One to try again</div>':'') + q.html + (q.pad ? padHTML(q.decimal) : '');
   typed=''; tries=0; locked=false;
   if(q.mount) q.mount($('stage'));
+  setOwl('think'); renderHint();
+}
+/* the owl beside the question: thinking, cheering on a right answer, a gentle "try again" face on a wrong one */
+let owlT=null;
+function setOwl(mood, back){
+  const el=$('pOwl'); if(!el) return;
+  clearTimeout(owlT); el.innerHTML=owlSVG(mood); el.classList.remove('bounce');
+  if(mood==='cheer'){ void el.offsetWidth; el.classList.add('bounce'); }
+  if(back) owlT=setTimeout(()=>{ if(current==='sPlay' && !locked) el.innerHTML=owlSVG('think'); }, back);
+}
+/* hints bought with stars: tap choices lose some wrong answers; typed answers get a worked first step */
+function hintKind(){
+  if(!q || placing || sprint || q.seq) return null;
+  if(q.pad) return (q.hint||maskHint(q)) ? 'pad' : null;
+  const opts=[...$('stage').querySelectorAll('[data-choice]')];
+  return opts.length>=3 && opts.some(b=>b.dataset.choice===q.answer) ? 'choice' : null;
+}
+function renderHint(){
+  const row=$('hintRow'); if(!row) return;
+  const kind=hintKind();
+  if(!kind || !me){ row.innerHTML=''; return; }
+  if(q.hinted){ row.innerHTML=`<p class="hintnote">Hint used${kind==='choice'?' · some wrong answers removed':''}</p>`; return; }
+  const free=SCH.preview, ok=free || starBalance(me)>=HINT_COST;
+  row.innerHTML=`<button class="hintbtn" id="hintBtn" ${ok?'':'disabled'} aria-label="${ok?`Get a hint for ${HINT_COST} stars`:`A hint needs ${HINT_COST} stars`}"><svg class="bulb" viewBox="0 0 24 24"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3z"/></svg>${ok?'Get a hint':'Hint'}<span class="cost">${free?'free':HINT_COST}${free?'':ICON_STAR}</span></button>`;
+}
+function useHint(){
+  const kind=hintKind();
+  if(!kind || q.hinted || locked) return;
+  if(!SCH.preview){ if(starBalance(me)<HINT_COST) return; me.spent=(me.spent||0)+HINT_COST; if(round) round.spent=(round.spent||0)+HINT_COST; }
+  q.hinted=true; save();
+  if(kind==='choice'){
+    const wrong=shuffle([...$('stage').querySelectorAll('[data-choice]')].filter(b=>b.dataset.choice!==q.answer && !b.classList.contains('wrong')));
+    wrong.slice(0, Math.max(1, wrong.length-1)).forEach(b=>{ b.classList.add('hinted'); b.setAttribute('aria-disabled','true'); });
+    setOwl('happy');
+    say(wrong.length>1?'Let me help. Some answers are gone. Look again.':'Let me help. One answer is gone. Look again.');
+  } else {
+    const h=q.hint||maskHint(q); if(h){ showWhy(h.html); say(['Here is a hint.', h.say]); }
+    setOwl('happy');
+  }
+  renderHint(); renderChip();
 }
 function showWhy(html){
   const st=$('stage'); let w=st.querySelector('.why');
@@ -2721,7 +3250,7 @@ function submitTyped(){
   if(sprint){ sprintAnswer(isRight()); return; }
   const s=$('slot');
   if(isRight()){ locked=true; s.classList.add('ok'); ding(); burst(s); celebrateCorrect(); completeQ(tries===0, false, async()=>{ if(G().voice) await say(`Correct! ${speakify(q.explain)}.`); else await wait(700); }); return; }
-  tries++; boop(); s.classList.remove('shake'); void s.offsetWidth; s.classList.add('shake'); typed=''; setTimeout(updateSlot,300);
+  tries++; boop(); setOwl('oops', 1600); s.classList.remove('shake'); void s.offsetWidth; s.classList.add('shake'); typed=''; setTimeout(updateSlot,300);
   if(tries===1){ const h=q.hint||maskHint(q); if(h){ showWhy(h.html); if(G().voice) say(['Not quite. Here is a hint.', h.say]); return; } }
   if(tries>=2){ locked=true;
     setTimeout(async()=>{ s.textContent=q.answer; s.classList.remove('empty'); s.classList.add('reveal'); $('pText').textContent=q.explain;
@@ -2748,7 +3277,7 @@ function onChoice(btn){
   if(btn.dataset.choice===q.answer){ locked=true; btn.classList.add('right'); ding(); burst(btn); celebrateCorrect();
     completeQ(tries===0,false, q.after ? ()=>q.after($('stage')) : ()=>say(`${pick(['Well done!','Great!','Yes!'])} ${q.praise||''}`)); }
   else {
-    tries++; btn.classList.add('wrong'); boop();
+    tries++; btn.classList.add('wrong'); boop(); setOwl('oops', 1600);
     const w = q.why ? q.why($('stage'), btn.dataset.choice, btn) : null;
     if(w && w.html) showWhy(w.html);
     if(tries>=2){ const c=[...$('stage').querySelectorAll('[data-choice]')].find(b=>b.dataset.choice===q.answer); if(c) c.classList.add('pulse'); }
@@ -2760,7 +3289,7 @@ async function completeQ(firstTry, shown, celebrate){
   if(celebrate) await celebrate();
   const s=gp(me,q.gid); s.tries++; if(firstTry) s.right++; s.last=Date.now();
   if(firstTry){ if(q.isReview) clearReview(q); if(q.word) learnWord(q.word); } else if(!q.noReview) addReview(q);
-  if(round) round.items.push({game:q.gid, answer:q.answer, ok:!!firstTry, wrong:tries, shown:!!shown, review:!!q.isReview});
+  if(round) round.items.push({game:q.gid, answer:q.answer, ok:!!firstTry, wrong:tries, shown:!!shown, review:!!q.isReview, hint:!!q.hinted});
   save(); qi++; setBar(); await wait(350); nextQ();
 }
 function practiceButtons(){
@@ -2838,7 +3367,7 @@ function placeQ(){
 function placeAnswer(ok, btn){
   locked=true;
   const pos=placing.pos;
-  placing.hist.push({pos, ok}); placing.n++;
+  placing.hist.push({pos, ok, gid:q.gid}); placing.n++;
   if(round) round.items.push({game:q.gid, answer:q.answer, ok, wrong:ok?0:1, shown:false});
   if(ok){ ding(); if(btn) btn.classList.add('right'); else { const s=$('slot'); if(s) s.classList.add('ok'); } riseStars(8); }
   else tick();
@@ -2945,10 +3474,10 @@ function renderParent(){
       <p><span class="status ${liveState==='offline'?'bad':'on'}"><i></i>${liveState==='offline'?`No internet right now. ${livePending()} item${livePending()===1?'':'s'} will be sent when it returns.`:livePending()?'Sending…':`Up to date${liveLast?' · last sent '+new Date(liveLast).toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'}):''}`}</span></p>
       <label class="label" for="pFamily" style="font-size:14px">Family name</label>
       <input class="input" id="pFamily" maxlength="30" value="${esc(store.family||'')}" placeholder="For example, Ahmed family" style="font-size:16px;padding:10px 12px">
-      <p>Each child's name and age, and their game results, are shared with the Tiri organiser so progress can be followed.</p>
+      <p>Each child's name and age, and their game results, are shared with the Garaad organiser so progress can be followed.</p>
     </div>`:''}
     <div class="card panel"><h3>This device</h3>
-      <p>Used by a family${store.familyCode?` · family code <b>${esc(store.familyCode)}</b>`:''}. Using Tiri at school instead? Switch this device to School.</p>
+      <p>Used by a family${store.familyCode?` · family code <b>${esc(store.familyCode)}</b>`:''}. Using Garaad at school instead? Switch this device to School.</p>
       <div class="btns"><button class="btn small" id="switchDoors">Switch to School</button></div>
     </div>
     <div class="card panel"><h3>Results log</h3>
@@ -2966,6 +3495,10 @@ function renderParent(){
 /* ================= events ================= */
 document.addEventListener('click', async e=>{
   const t=e.target;
+  if(t.closest('#themeBtn')){ audio(); openThemeSheet(); return; }
+  const tpk=t.closest('[data-theme-pick]'); if(tpk){ audio(); pickTheme(tpk.dataset.themePick); return; }
+  const ow=t.closest('[data-owl]'); if(ow){ edOwl=ow.dataset.owl; renderOwls(); const b=$('owlPick').querySelector(`[data-owl="${edOwl}"]`); if(b) b.focus(); return; }
+  if(t.closest('#hintBtn')){ audio(); useHint(); return; }
   if(t.closest('#addKid')||t.closest('#pAdd')){ openEditor(null, current==='sParent'?'sParent':'sHome'); return; }
   const kid=t.closest('[data-kid]'); if(kid){ audio(); me=store.profiles.find(p=>p.id===kid.dataset.kid); subject=me.subject==='english'?'english':'maths';
     const fresh=!me.placement && !me.placementSkipped && !Object.values(me.games||{}).some(g=>g.tries>0);
@@ -2999,7 +3532,7 @@ document.addEventListener('click', async e=>{
   if(t.closest('#emailRes')){ emailResults(); return; }
   if(t.closest('#dlCsv')&&!dlRef&&STANDALONE){ const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([toCSV()],{type:'text/csv'})); a.download=csvName(); document.body.appendChild(a); a.click(); setTimeout(()=>{ URL.revokeObjectURL(a.href); a.remove(); },1000); return; }
   if(t.closest('#dlCsv')&&dlRef){ const d=new Date();
-    try{ await dlRef.save({filename:`tiri-${d.getFullYear()}-${pad2(d.getMonth()+1)}-${pad2(d.getDate())}.csv`,data:toCSV()}); dataMsg=''; }
+    try{ await dlRef.save({filename:`garaad-${d.getFullYear()}-${pad2(d.getMonth()+1)}-${pad2(d.getDate())}.csv`,data:toCSV()}); dataMsg=''; }
     catch(err){ dataMsg=err&&err.code==='declined'?'':'Download is not available here. Use “Copy spreadsheet data” instead.'; }
     renderParent(); return; }
 });
@@ -3037,10 +3570,44 @@ let deferredInstall=null;
 const INSTALLED = (()=>{ try{ return matchMedia('(display-mode: standalone)').matches || navigator.standalone===true; }catch(e){ return false; } })();
 const IOS = /iphone|ipad|ipod/i.test(navigator.userAgent) || (navigator.platform==='MacIntel' && navigator.maxTouchPoints>1);
 window.addEventListener('beforeinstallprompt', e=>{ e.preventDefault(); deferredInstall=e; if(current==='sHome') renderHome(); });
-window.addEventListener('appinstalled', ()=>{ deferredInstall=null; toast('Installed. Look for Tiri on your home screen.'); if(current==='sHome') renderHome(); });
+window.addEventListener('appinstalled', ()=>{ deferredInstall=null; toast('Installed. Look for Garaad on your home screen.'); if(current==='sHome') renderHome(); });
 if(STANDALONE && 'serviceWorker' in navigator && (location.protocol==='https:'||location.hostname==='localhost')){ try{ navigator.serviceWorker.register('sw.js').catch(()=>{}); }catch(e){} }
+/* ---------- splash: three short screens the first time Garaad opens on a phone ---------- */
+const SPLASH_SECS=[6,7];   // seconds on screens 1 and 2; screen 3 waits for "Let's start"
+let spI=0, spT=null;
+function splashHTML(i){
+  const star=(s,css,fill)=>`<svg class="sp-star" style="${css}" width="${s}" height="${s}" viewBox="0 0 24 24" aria-hidden="true"><polygon fill="${fill||'#F28C28'}" points="12,2 14.6,8.6 21.5,9 16.2,13.4 18,20.2 12,16.4 6,20.2 7.8,13.4 2.5,9 9.4,8.6"/></svg>`;
+  const dots=`<div class="sp-dots" aria-label="Screen ${i+1} of 3">${[0,1,2].map(k=>k===i?`<span class="on${i===2?' full':''}">${i<2?`<i style="--d:${SPLASH_SECS[i]}s"></i>`:''}</span>`:`<span class="${k<i?'full':''}"></span>`).join('')}</div>`;
+  const back=i?`<button class="sp-back" id="spBack" aria-label="Back"><svg viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></svg></button>`:'';
+  if(i===0) return `<div class="sp-top">${back}</div><div class="sp-art"><div class="sp-circle" style="--owl:#0E8C7E;--owl-pupil:#0A5E55;--owl-gold:#F5B400">${owlSVG('happy')}</div>${star(34,'top:8%;right:10%')}${star(22,'bottom:14%;left:6%','#F5B400')}${star(16,'top:20%;left:12%')}</div>
+    <div class="sp-text"><h1 class="sp-title">Hi, I'm Garaad</h1><p class="sp-sub">A wise owl who loves to learn with you.</p></div>${dots}<button class="sp-go" id="spNext">Next</button>`;
+  if(i===1) return `<div class="sp-top">${back}</div><div class="sp-art"><div style="width:min(190px,45vw);--owl:#FFFFFF;--owl-pupil:#0A5E55;--owl-gold:#F5B400">${owlSVG('cheer').replace(/stroke="#fff"/g,'stroke="#0E8C7E"').replace(/fill="#fff"(?= ?\/>)/g,'fill="#0E8C7E"')}</div>
+      <div style="--owl:#F5B400;--wm-pupil:#0A5E55;--owl-gold:#F5B400">${wordmarkHTML()}</div>${star(30,'top:10%;left:6%','#F5B400')}${star(20,'top:22%;right:9%')}</div>
+    <div class="sp-text"><h1 class="sp-title">Unleash your garaad</h1><p class="sp-sub">In Somali, garaad means wisdom. Every child has it.</p></div>${dots}<button class="sp-go" id="spNext">Next</button>`;
+  const feat=(bg,col,icon,t,s)=>`<div class="sp-feat"><span class="fi" style="background:${bg};color:${col}">${icon}</span><span><b>${t}</b><small>${s}</small></span></div>`;
+  return `<div class="sp-top">${back}</div><div class="sp-art" style="gap:28px"><div style="display:flex;flex-direction:column;align-items:center;gap:14px"><div style="width:104px;--owl:#0E8C7E;--owl-pupil:#0A5E55;--owl-gold:#F5B400">${owlSVG('think')}</div><h1 class="sp-title">Learn by playing</h1></div>
+    <div class="sp-feats">${feat('#E0F4F1','#0A6F64','<svg viewBox="0 0 24 24"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v16H6.5A2.5 2.5 0 0 0 4 21.5z"/><path d="M4 21.5V5.5M9 8h7M9 12h5"/></svg>','Maths and English','Games for ages 3 to 12')}
+      ${feat('#FDE9B8','#7A5200','<svg viewBox="0 0 24 24"><path d="M11 5L6 9H3v6h3l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M18.5 5.5a9 9 0 0 1 0 13"/></svg>','Read aloud','No reading needed to start')}
+      ${feat('#FCE3D0','#9A4A10','<svg viewBox="0 0 24 24"><path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z"/></svg>','Earn stars','Works offline, at home or school')}</div></div>
+    ${dots}<button class="sp-go teal" id="spStart">Let's start</button>`;
+}
+function showSplash(i){
+  spI=i||0; clearTimeout(spT);
+  let el=$('splash'); if(!el){ el=document.createElement('div'); el.id='splash'; el.className='splash'; el.setAttribute('role','dialog'); el.setAttribute('aria-modal','true'); el.setAttribute('aria-label','Welcome to Garaad'); document.body.appendChild(el); }
+  el.className='splash'+(spI===1?' dark':''); el.innerHTML=splashHTML(spI);
+  if(spI<2) spT=setTimeout(()=>showSplash(spI+1), SPLASH_SECS[spI]*1000);
+}
+function endSplash(){ clearTimeout(spT); const el=$('splash'); if(el) el.remove(); store.splashSeen=true; save(); }
+document.addEventListener('click', e=>{
+  if(!$('splash')) return;
+  if(e.target.closest('#spNext')){ audio(); showSplash(spI+1); }
+  else if(e.target.closest('#spBack')){ showSplash(Math.max(0,spI-1)); }
+  else if(e.target.closest('#spStart')){ audio(); endSplash(); }
+});
+
 load(); renderMute();
 if(store.mode==='school') openSchoolHome(); else { renderHome(); show('sHome'); }
+if(!store.splashSeen && !store.mode && !store.profiles.length) showSplash(0);   // new phones only
 setTimeout(liveSync, 1500);
 })();
 </script>
