@@ -35,4 +35,4 @@ The **admin** screen (link on the first page) creates school and family codes, a
 
 ## Database
 
-The scripts in `database/` set up Supabase. Run them in order in the Supabase SQL Editor: `01-schema.sql`, then `02-progress-and-offline.sql`. The app holds only the publishable key; every read and write goes through database functions that check the login.
+The scripts in `database/` set up Supabase. Run them in order in the Supabase SQL Editor: `01-schema.sql`, then `02-progress-and-offline.sql`, then `03-design-features.sql` (owl avatars, themes, hints bought with stars, parent phone, assessments, needs-help list, weekly report and pilot results; the current app keeps working before and after it). The app holds only the publishable key; every read and write goes through database functions that check the login.
