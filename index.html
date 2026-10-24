@@ -2023,7 +2023,7 @@ const SERR = {
   admin_only:'Please log in as admin again.', no_admin:'The admin login has not been set up yet.',
   bad_class:'Pick a class first.', bad_role:'Unknown role.'
 };
-const serr = e => SERR[typeof e==='string'?e:((e&&(e.code||e.message))||'')] || 'Something went wrong. Please try again.';
+const serr = e => SERR[typeof e==='string'?e:((e&&(e.code||e.message))||'')] || (e&&e.http===404 ? 'The database needs an update. Ask the admin to run the latest database script.' : 'Something went wrong. Please try again.');
 const contactHTML = () => ADMIN_WHATSAPP ? `<a class="linkbtn" href="https://wa.me/${ADMIN_WHATSAPP}" target="_blank" rel="noopener">Contact admin on WhatsApp</a>` : '';
 function setErr(id, msg){ const el=$(id); if(!el) return; el.textContent=msg||''; el.hidden=!msg; }
 async function busy(btn, fn){ if(btn&&btn.disabled) return; const t=btn?btn.textContent:''; if(btn){ btn.disabled=true; btn.textContent='Please wait…'; } try{ await fn(); } finally{ if(btn&&btn.isConnected){ btn.disabled=false; btn.textContent=t; } } }
@@ -2235,7 +2235,7 @@ function renderSchool(){
     <div class="card form">${phoneInput(sc.phone)}${pinInput('sPin','PIN','current-password')}
       ${errP()}<div class="btns"><button class="btn primary" data-s="login">Log in</button></div>
       <p class="note">First time here? <button class="linkbtn" data-s="go-register">New teacher</button></p></div>
-    <div class="foot"><button class="linkbtn" data-s="change-school">Change school</button>${contactHTML()}</div>`;
+    <div class="foot"><button class="linkbtn" data-s="change-school">Change school</button><button class="linkbtn" data-s="go-admin">Admin</button>${contactHTML()}</div>`;
   else if(v==='register') b.innerHTML=`<div class="head"><h1>New teacher</h1><p>${esc(sc.name||'')}</p></div>
     <div class="card form"><label class="label" for="sName">Your name</label><input class="input" id="sName" maxlength="40" autocomplete="name" placeholder="For example, Asha Ali">
       ${phoneInput(sc.phone)}<p class="note">We'll add this number to the Tiri teachers' WhatsApp group to share guidance.</p>
