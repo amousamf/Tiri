@@ -621,6 +621,11 @@ body[data-theme="night"] .readq{color:var(--cta)}
 .repcard .rtop .brand .wordmark{color:#2B2118;font-size:20px}
 .repcard .rtop .brand .owl{width:28px;height:28px}
 .repcard .rwho{display:flex;align-items:center;gap:12px}
+.repcard .rjour{display:flex;flex-direction:column;gap:8px}
+.repcard .rjh{display:flex;align-items:baseline;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.repcard .rjh b{font-size:15px;font-weight:600}
+.repcard .rjh span{font-size:13px;color:#6B5743}
+.repcard .jmap{display:block;width:100%;height:auto}
 .repcard .rwho h2{margin:0;font-size:26px;line-height:1}
 .repcard .rwho p{margin:4px 0 0;font-size:14px;color:#6B5743}
 .repcard .rstats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
@@ -2531,11 +2536,83 @@ function openReport(id){
 }
 async function loadReport(){
   const r=SCH.rep; if(!r) return;
-  try{ r.data=await rpc('child_week_report', {p_token:tokenOf(), p_child_id:r.id}); r.err=''; if(r.data&&r.data.child){ r.name=r.data.child.name; r.avatar=r.data.child.avatar; } }
+  try{ await obFlush(); }catch(e){}
+  try{ const [d, det]=await Promise.all([rpc('child_week_report', {p_token:tokenOf(), p_child_id:r.id}), rpc('child_detail', {p_token:tokenOf(), p_child_id:r.id}).catch(()=>null)]);
+    r.data=d; r.err=''; if(d&&d.child){ r.name=d.child.name; r.avatar=d.child.avatar; }
+    r.journey = det ? journeyOf((d&&d.child&&d.child.class_name)||(det.child&&det.child.class_name), det.rounds) : null; }
   catch(e){ if(e.code==='invalid_token') return needLogin(); r.err=serr(e); }
   if(current==='sSchool' && SCH.view==='report') renderSchool();
 }
 const fmtDay = s => { try{ return new Date(s+'T12:00:00').toLocaleDateString('en-GB', {day:'numeric', month:'short'}); }catch(e){ return s; } };
+/* ---------- the journey map on the report: skills of the child's class, from Start to the next class ---------- */
+const MATH_SKILL = {count:'Numbers', findnum:'Numbers', order:'Numbers', place:'Numbers', sequence:'Numbers',
+  shapes:'Shapes and colours', colours:'Shapes and colours', sizes:'Comparing', more:'Comparing', compare:'Comparing',
+  odd:'Patterns', pattern:'Patterns', logic:'Patterns',
+  addpics:'Plus and minus', takeaway:'Plus and minus', addsub:'Plus and minus', missing:'Plus and minus', doubles:'Plus and minus', story:'Plus and minus',
+  skip:'Times and groups', groups:'Times and groups', times:'Times and groups', divide:'Times and groups',
+  clock:'Time and money', money:'Time and money', fractions:'Fractions', decimals:'Fractions', percent:'Fractions',
+  area:'Problem solving', orderops:'Problem solving', words:'Problem solving'};
+const skillOfGame = id => MATH_SKILL[id] || (GAMES[id] && GAMES[id].skill) || null;
+const NEXT_CLASS = {'KG1':'KG2', 'KG2':'KG3', 'KG3':'Standard 1', 'Standard 1':'Standard 2', 'Standard 2':'Standard 3'};
+function classKey(name){ if(CLASS_GAMES[name]) return name; const c=classCfg(name); return Object.keys(CLASS_GAMES).find(k=>CLASS_GAMES[k]===c)||'Standard 2'; }
+const STRONG = 0.7;   // a skill is "strong" once 70% of its levels are passed
+function journeyOf(className, rounds){
+  const key=classKey(className), cfg=CLASS_GAMES[key], caps=cfg.caps||{}, order=[], games={};
+  for(let i=0;i<Math.max(cfg.maths.length, cfg.english.length);i++) [cfg.maths[i], cfg.english[i]].forEach(id=>{   // maths and English side by side, easiest first
+    const s=id&&skillOfGame(id); if(!s) return; if(!games[s]){ games[s]=[]; order.push(s); } games[s].push(id); });
+  const passed={}; (rounds||[]).forEach(r=>{ if(r.stars>0 && r.level>0) (passed[r.game]=passed[r.game]||new Set()).add(r.level); });
+  const skills=order.slice(0,12).map(s=>{ let tot=0, done=0;
+    games[s].forEach(id=>{ const cap=caps[id]||10; tot+=cap; done+=[...(passed[id]||[])].filter(l=>l<=cap).length; });
+    const p=tot?done/tot:0; return {name:s, p, state:p>=STRONG?'done':p>0?'started':'todo'}; });
+  const tiers=[]; for(let i=0;i<skills.length;i+=3) tiers.push(skills.slice(i,i+3));
+  let here=0; while(here<tiers.length && tiers[here].filter(s=>s.state==='done').length>=Math.ceil(tiers[here].length*2/3)) here++;   // 2 of 3 strong opens the next camp
+  return {key, goal:NEXT_CLASS[key]||'the next class', skills, tiers, here, strong:skills.filter(s=>s.state==='done').length};
+}
+/* positions in a W × H box: Start at the bottom, the goal at the top, trails that split at each camp and meet again */
+function journeyLayout(j, W, H){
+  const T=j.tiers.length, top=H*0.12, bot=H*0.9, step=(bot-top)/(2*T), xs={1:[.5], 2:[.3,.7], 3:[.17,.5,.83]};
+  const camps=[...Array(T+1)].map((_,k)=>({x:W*(k===T?.5:k%2?.57:.43), y:bot-2*k*step}));
+  const stops=j.tiers.map((t,i)=>t.map((s,n)=>({s, x:W*xs[t.length][n], y:bot-(2*i+1)*step + (t.length===3&&n!==1?step*.18:0)})));
+  const curve=(a,b)=>{ const m=(a.y+b.y)/2; return `M${a.x.toFixed(1)} ${a.y.toFixed(1)}C${a.x.toFixed(1)} ${m.toFixed(1)} ${b.x.toFixed(1)} ${m.toFixed(1)} ${b.x.toFixed(1)} ${b.y.toFixed(1)}`; };
+  const trails=[]; stops.forEach((row,i)=>row.forEach(st=>{ trails.push({d:curve(camps[i],st), on:st.s.state!=='todo'}); trails.push({d:curve(st,camps[i+1]), on:st.s.state==='done'}); }));
+  return {camps, stops, trails, step};
+}
+const journeySize = j => ({W:1000, H:Math.max(640, 260*j.tiers.length+170)});
+/* every word on the map, so the shared picture can draw them in the app's font */
+function journeyTexts(j, W, H){
+  const L=journeyLayout(j,W,H), g=L.camps[L.camps.length-1], me=L.camps[Math.min(j.here, L.camps.length-1)], out=[];
+  L.stops.flat().forEach(st=>{ const t=st.s.name, w=t.split(' '), h=Math.ceil(w.length/2), ln=t.length>12&&w.length>1?[w.slice(0,h).join(' '), w.slice(h).join(' ')]:[t];
+    ln.forEach((l,i)=>out.push({t:l, x:st.x, y:st.y+60+i*31, f:27, w:500, a:'middle', c:st.s.state==='todo'?'#8C7558':'#2B2118'})); });
+  out.push({t:j.goal, x:g.x+52, y:g.y+10, f:32, w:700, a:'start', c:'#7A5200'});
+  out.push({t:'Start', x:L.camps[0].x, y:L.camps[0].y+50, f:26, w:400, a:'middle', c:'#6B5743'});
+  if(j.here<j.tiers.length) out.push({t:'You are here', x:me.x+(me.x<W/2?-143:143), y:me.y+30, f:25, w:600, a:'middle', c:'#FFFFFF', halo:false});
+  return out;
+}
+function journeySVG(j, ownerKey, name, bare){
+  const {W,H}=journeySize(j), L=journeyLayout(j,W,H), g=L.camps[L.camps.length-1], me=L.camps[Math.min(j.here, L.camps.length-1)];
+  const [oc]=ownerKey.split('-'), o=OWLCOL[oc]||OWLCOL.teal, done=j.here>=j.tiers.length;
+  const ring=(x,y,p)=>{ const r=22, a=2*Math.PI*Math.min(p,.999), ex=x+r*Math.sin(a), ey=y-r*Math.cos(a); return `<path d="M${x} ${y-r}A${r} ${r} 0 ${a>Math.PI?1:0} 1 ${ex.toFixed(1)} ${ey.toFixed(1)}" fill="none" stroke="#F5B400" stroke-width="8" stroke-linecap="round"/>`; };
+  return `<svg class="jmap" viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(name)}'s journey to ${esc(j.goal)}: ${j.strong} of ${j.skills.length} skills strong" font-family="Lexend, sans-serif">
+    <rect width="${W}" height="${H}" rx="40" fill="#FFFFFF"/>
+    <path d="M0 ${H*.86} Q${W*.3} ${H*.76} ${W*.55} ${H*.84} T${W} ${H*.8} V${H-40} Q${W} ${H} ${W-40} ${H} H40 Q0 ${H} 0 ${H-40} Z" fill="#EAF2DC"/>
+    <path d="M${W*.32} ${H*.2} L${W*.5} ${H*.02} L${W*.68} ${H*.2} Z" fill="#F3E7D2"/>
+    ${L.trails.map(t=>`<path d="${t.d}" fill="none" stroke-linecap="round" ${t.on?'stroke="#F5B400" stroke-width="12"':'stroke="#D9C6A6" stroke-width="6" stroke-dasharray="2 16"'}/>`).join('')}
+    ${L.camps.slice(0,-1).map((c,k)=>k===j.here?'':`<circle cx="${c.x}" cy="${c.y}" r="${k?14:16}" fill="${k<=j.here?'#0E8C7E':'#EFE3CD'}"/>`).join('')}
+    ${L.stops.flat().map(st=>{ const s=st.s;
+      const dot = s.state==='done' ? `<circle cx="${st.x}" cy="${st.y}" r="26" fill="#F5B400"/><path d="M${st.x-11} ${st.y} l8 8 l14 -16" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>`
+        : s.state==='started' ? `<circle cx="${st.x}" cy="${st.y}" r="26" fill="#FFFFFF" stroke="#E0F4F1" stroke-width="8"/>${ring(st.x,st.y,s.p)}`
+        : `<circle cx="${st.x}" cy="${st.y}" r="22" fill="#FFFFFF" stroke="#E5D6BC" stroke-width="5"/>`;
+      return dot; }).join('')}
+    <circle cx="${g.x}" cy="${g.y}" r="38" fill="#FDE9B8" stroke="#F5B400" stroke-width="6"/>
+    <path d="M${g.x-14} ${g.y-16}h28v10a14 14 0 0 1-28 0zM${g.x} ${g.y+8}v8M${g.x-10} ${g.y+19}h20" fill="none" stroke="#B07D00" stroke-width="5" stroke-linecap="round"/>
+    <g transform="translate(${me.x-(done?120:38)} ${me.y-(done?38:46)})"><svg width="76" height="76" viewBox="0 0 100 100"><path d="${OWL_HEAD}" fill="${o.h}"/><g transform="translate(6 13) scale(0.88)"><circle cx="33" cy="46" r="12" fill="#fff" stroke="#fff" stroke-width="8"/><circle cx="67" cy="46" r="12" fill="#fff" stroke="#fff" stroke-width="8"/><rect x="41" y="30" width="8" height="32" rx="4" fill="#fff"/><rect x="75" y="30" width="8" height="32" rx="4" fill="#fff"/><circle cx="34" cy="47" r="5.5" fill="${o.p}"/><circle cx="68" cy="47" r="5.5" fill="${o.p}"/><path d="M38 74 Q50 84 62 74" fill="none" stroke="#F5B400" stroke-width="6" stroke-linecap="round"/></g><polygon points="46,63 54,63 50,70" fill="#F5B400"/></svg></g>
+    ${done?'':`<g><rect x="${me.x+(me.x<W/2?-238:48)}" y="${me.y-2}" width="190" height="46" rx="23" fill="#0E8C7E"/></g>`}
+    ${bare?'':journeyTexts(j,W,H).map(t=>`<text x="${t.x}" y="${t.y}" text-anchor="${t.a}" font-size="${t.f}" font-weight="${t.w}" fill="${t.c}"${t.halo===false?'':' stroke="#FFFFFF" stroke-width="9" stroke-linejoin="round" paint-order="stroke"'}>${esc(t.t)}</text>`).join('')}
+  </svg>`;
+}
+function journeyHead(j, name){ return j.here>=j.tiers.length ? `${name} is ready for ${j.goal}!` : `${name}'s journey to ${j.goal}`; }
+function svgToImg(svg){ return new Promise(res=>{ const im=new Image(); im.onload=()=>res(im); im.onerror=()=>res(null);
+  im.src='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(svg.replace('<svg class="jmap"', '<svg xmlns="http://www.w3.org/2000/svg" class="jmap"')); }); }
 function reportCardHTML(d, r){
   const c=d.child||{}, skills=(d.improving&&d.improving.length?d.improving:(d.practised||[])).slice(0,3);
   return `<div class="repcard" id="repCard" role="img" aria-label="Weekly report card for ${esc(c.name||r.name)}">
@@ -2543,6 +2620,7 @@ function reportCardHTML(d, r){
     <div class="rwho">${avatar({id:r.id, avatar:c.avatar||r.avatar},'lg')}<div><h2>${esc(c.name||r.name)}'s week</h2><p>${esc([c.class_name, d.teacher_name].filter(Boolean).join(' · '))}</p></div></div>
     <div class="rstats"><div><b>${ICON_STAR}${d.stars||0}</b><span>${d.stars===1?'star':'stars'} earned</span></div><div><b>${d.games||0}</b><span>${d.games===1?'game':'games'} played</span></div><div><b>${Math.round(d.minutes||0)}</b><span>${Math.round(d.minutes||0)===1?'minute':'minutes'}</span></div></div>
     ${skills.length?`<div><p style="margin:0 0 6px;font-size:14px;font-weight:600">${d.improving&&d.improving.length?'Getting better at':'Practised this week'}</p><div class="rchips">${skills.map(s=>`<span>${esc(s)}</span>`).join('')}</div></div>`:''}
+    ${r.journey&&r.journey.skills.length?`<div class="rjour"><div class="rjh"><b>${esc(journeyHead(r.journey, c.name||r.name))}</b><span>${r.journey.strong} of ${r.journey.skills.length} skills strong</span></div>${journeySVG(r.journey, owlKey({id:r.id,avatar:c.avatar||r.avatar}), c.name||r.name)}</div>`:''}
     <div class="rtip">${ICON_HOME}<span><b style="font-weight:600">Try at home:</b> ${esc(tipFor(d.practise))}</span></div>
   </div>`;
 }
@@ -2550,6 +2628,7 @@ function reportText(d, r){
   const c=d.child||{}, n=c.name||r.name, sk=(d.improving&&d.improving.length?d.improving:(d.practised||[])).slice(0,3);
   return `${n}'s week on Garaad (${fmtDay(d.from)} – ${fmtDay(d.to)})\n⭐ ${d.stars||0} star${d.stars===1?'':'s'} · ${d.games||0} game${d.games===1?'':'s'} · ${Math.round(d.minutes||0)} minute${Math.round(d.minutes||0)===1?'':'s'}`
     + (sk.length?`\n${d.improving&&d.improving.length?'Getting better at':'Practised'}: ${sk.join(', ')}`:'')
+    + (r.journey&&r.journey.skills.length?`\n🗺️ ${journeyHead(r.journey, n)}: ${r.journey.strong} of ${r.journey.skills.length} skills strong`:'')
     + `\nTry at home: ${tipFor(d.practise)}` + (d.teacher_name?`\n— ${d.teacher_name}`:'');
 }
 function reportViewHTML(){
@@ -2575,7 +2654,7 @@ function reportViewHTML(){
 /* draw the report as a picture (1080 × 1350) for sharing */
 async function reportImage(d, r){
   try{ await document.fonts.ready; }catch(e){}
-  const W=1080, H=1350, cv=document.createElement('canvas'); cv.width=W; cv.height=H; const x=cv.getContext('2d');
+  const W=1080, H=2600, cv=document.createElement('canvas'); cv.width=W; cv.height=H; const x=cv.getContext('2d');   // drawn tall, cropped at the end
   const rr=(X,Y,w,h,rad,fill)=>{ x.beginPath(); x.moveTo(X+rad,Y); x.arcTo(X+w,Y,X+w,Y+h,rad); x.arcTo(X+w,Y+h,X,Y+h,rad); x.arcTo(X,Y+h,X,Y,rad); x.arcTo(X,Y,X+w,Y,rad); x.closePath(); x.fillStyle=fill; x.fill(); };
   const owlImg = (key, mood) => new Promise(res=>{ const [c,a]=(key||'teal-').split('-'), o=OWLCOL[c]||OWLCOL.teal;
     const svg=owlSVG(mood||'happy',{acc:a}).replace('<svg ', `<svg xmlns="http://www.w3.org/2000/svg" width="400" height="400" `).replace('aria-hidden="true">', `aria-hidden="true"><style>.oh{fill:${o.h}}.op2{fill:${o.p}}.og{fill:${o.g}}.ogs{stroke:${o.g}}.acc-dark{fill:#2B2118}.acc-gls{fill:none;stroke:#2B2118;stroke-width:3}</style>`);
@@ -2594,11 +2673,21 @@ async function reportImage(d, r){
   let y=730;
   if(sk.length){ x.fillStyle='#2B2118'; x.font='600 38px Lexend, sans-serif'; x.fillText(d.improving&&d.improving.length?'Getting better at':'Practised this week', 70, y); y+=30;
     let X=70; x.font='500 34px Lexend, sans-serif'; sk.forEach(s=>{ const w=x.measureText(s).width+56; if(X+w>W-70){ X=70; y+=84; } rr(X,y,w,70,22,'#E0F4F1'); x.fillStyle='#0A6F64'; x.fillText(s, X+28, y+47); X+=w+16; }); y+=130; }
+  const j=r.journey;
+  if(j && j.skills.length){   // the journey map under the progress
+    x.fillStyle='#2B2118'; x.font='600 38px Lexend, sans-serif'; x.fillText(journeyHead(j, name), 70, y);
+    x.font='400 30px Lexend, sans-serif'; x.fillStyle='#6B5743'; x.fillText(`${j.strong} of ${j.skills.length} skills strong`, 70, y+46);
+    const {W:mw, H:mh}=journeySize(j), dw=W-140, k=dw/mw, my=y+80;
+    const im=await svgToImg(journeySVG(j, owlKey({id:r.id,avatar:c.avatar||r.avatar}), name, true)); if(im) x.drawImage(im, 70, my, dw, mh*k);
+    journeyTexts(j, mw, mh).forEach(t=>{ x.font=`${t.w} ${Math.round(t.f*k)}px Lexend, sans-serif`; x.fillStyle=t.c; x.textAlign=t.a==='middle'?'center':'left'; if(t.halo!==false){ x.strokeStyle='#FFFFFF'; x.lineWidth=9*k; x.lineJoin='round'; x.strokeText(t.t, 70+t.x*k, my+t.y*k); } x.fillText(t.t, 70+t.x*k, my+t.y*k); });
+    x.textAlign='left'; y = my + mh*k + 50; }
   const tip='Try at home: '+tipFor(d.practise); x.font='400 36px Lexend, sans-serif';
   const words=tip.split(' '), lines=[]; let line=''; words.forEach(w=>{ const t=line?line+' '+w:w; if(x.measureText(t).width>W-220){ lines.push(line); line=w; } else line=t; }); lines.push(line);
   rr(70,y,W-140,lines.length*52+70,36,'#FDE9B8'); x.fillStyle='#5A3D00'; lines.forEach((l,i)=>x.fillText(l, 110, y+70+i*52));
-  x.font='400 28px Lexend, sans-serif'; x.fillStyle='#6B5743'; x.textAlign='center'; x.fillText('Maths and English games for children · Garaad', W/2, H-60);
-  return await new Promise(res=>cv.toBlob(res,'image/png'));
+  const FH=Math.max(1350, Math.ceil(y+lines.length*52+70+150));
+  x.font='400 28px Lexend, sans-serif'; x.fillStyle='#6B5743'; x.textAlign='center'; x.fillText('Maths and English games for children · Garaad', W/2, FH-60);
+  const out=document.createElement('canvas'); out.width=W; out.height=FH; out.getContext('2d').drawImage(cv,0,0);
+  return await new Promise(res=>out.toBlob(res,'image/png'));
 }
 async function shareReport(btn){
   const r=SCH.rep; if(!r||!r.data) return;
