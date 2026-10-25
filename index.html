@@ -2561,56 +2561,105 @@ function journeyOf(className, rounds){
   for(let i=0;i<Math.max(cfg.maths.length, cfg.english.length);i++) [cfg.maths[i], cfg.english[i]].forEach(id=>{   // maths and English side by side, easiest first
     const s=id&&skillOfGame(id); if(!s) return; if(!games[s]){ games[s]=[]; order.push(s); } games[s].push(id); });
   const passed={}; (rounds||[]).forEach(r=>{ if(r.stars>0 && r.level>0) (passed[r.game]=passed[r.game]||new Set()).add(r.level); });
-  const skills=order.slice(0,12).map(s=>{ let tot=0, done=0;
+  const all=order.slice(0,12).map((s,i)=>{ let tot=0, done=0;
     games[s].forEach(id=>{ const cap=caps[id]||10; tot+=cap; done+=[...(passed[id]||[])].filter(l=>l<=cap).length; });
-    const p=tot?done/tot:0; return {name:s, p, state:p>=STRONG?'done':p>0?'started':'todo'}; });
-  const tiers=[]; for(let i=0;i<skills.length;i+=3) tiers.push(skills.slice(i,i+3));
-  let here=0; while(here<tiers.length && tiers[here].filter(s=>s.state==='done').length>=Math.ceil(tiers[here].length*2/3)) here++;   // 2 of 3 strong opens the next camp
-  return {key, goal:NEXT_CLASS[key]||'the next class', skills, tiers, here, strong:skills.filter(s=>s.state==='done').length};
+    const p=tot?done/tot:0; return {name:s, p, i, state:p>=STRONG?'done':p>0?'started':'todo'}; });
+  // along the trail: strong skills first, then the ones being practised, then the ones ahead
+  const rank={done:0, started:1, todo:2}, skills=all.slice().sort((a,b)=>rank[a.state]-rank[b.state] || (a.state==='started'?b.p-a.p:0) || a.i-b.i);
+  const strong=skills.filter(s=>s.state==='done').length;
+  return {key, goal:NEXT_CLASS[key]||'the next class', skills, strong, ready:skills.length>0 && strong===skills.length};
 }
-/* positions in a W × H box: Start at the bottom, the goal at the top, trails that split at each camp and meet again */
+/* the map: one winding trail across an island, Start bottom left, the goal top right */
+const journeySize = () => ({W:1000, H:780});
+const MAP_TREES = [[470,690],[500,705],[120,560],[900,410],[600,180]];
+const TRAIL_PTS = [[.08,.87],[.27,.83],[.25,.63],[.43,.53],[.63,.64],[.79,.52],[.64,.35],[.75,.21],[.9,.12]];
+function trailLine(W, H){
+  const P=TRAIL_PTS.map(([x,y])=>[x*W,y*H]), out=[];
+  for(let i=0;i<P.length-1;i++){ const p0=P[Math.max(0,i-1)], p1=P[i], p2=P[i+1], p3=P[Math.min(P.length-1,i+2)];
+    for(let t=0;t<1;t+=1/40){ const t2=t*t, t3=t2*t, f=(a,b,c,d)=>.5*(2*b+(-a+c)*t+(2*a-5*b+4*c-d)*t2+(-a+3*b-3*c+d)*t3);
+      out.push([f(p0[0],p1[0],p2[0],p3[0]), f(p0[1],p1[1],p2[1],p3[1])]); } }
+  out.push(P[P.length-1]);
+  const len=[0]; for(let i=1;i<out.length;i++) len.push(len[i-1]+Math.hypot(out[i][0]-out[i-1][0], out[i][1]-out[i-1][1]));
+  return {pts:out, len};
+}
+function trailAt(T, s){   // point and direction at distance s along the trail
+  const L=T.len; let i=1; while(i<L.length-1 && L[i]<s) i++;
+  const a=T.pts[i-1], b=T.pts[i], f=(s-L[i-1])/((L[i]-L[i-1])||1), dx=b[0]-a[0], dy=b[1]-a[1], d=Math.hypot(dx,dy)||1;
+  return {x:a[0]+dx*f, y:a[1]+dy*f, tx:dx/d, ty:dy/d, i};
+}
+const ptsD = pts => 'M'+pts.map(p=>p[0].toFixed(1)+' '+p[1].toFixed(1)).join('L');
 function journeyLayout(j, W, H){
-  const T=j.tiers.length, top=H*0.12, bot=H*0.9, step=(bot-top)/(2*T), xs={1:[.5], 2:[.3,.7], 3:[.17,.5,.83]};
-  const camps=[...Array(T+1)].map((_,k)=>({x:W*(k===T?.5:k%2?.57:.43), y:bot-2*k*step}));
-  const stops=j.tiers.map((t,i)=>t.map((s,n)=>({s, x:W*xs[t.length][n], y:bot-(2*i+1)*step + (t.length===3&&n!==1?step*.18:0)})));
-  const curve=(a,b)=>{ const m=(a.y+b.y)/2; return `M${a.x.toFixed(1)} ${a.y.toFixed(1)}C${a.x.toFixed(1)} ${m.toFixed(1)} ${b.x.toFixed(1)} ${m.toFixed(1)} ${b.x.toFixed(1)} ${b.y.toFixed(1)}`; };
-  const trails=[]; stops.forEach((row,i)=>row.forEach(st=>{ trails.push({d:curve(camps[i],st), on:st.s.state!=='todo'}); trails.push({d:curve(st,camps[i+1]), on:st.s.state==='done'}); }));
-  return {camps, stops, trails, step};
+  const T=trailLine(W,H), total=T.len[T.len.length-1], n=j.skills.length, F=27, LH=30;
+  const hereS = j.ready ? total : j.strong===0 ? 0 : total*(.07+.81*(n>1?(j.strong-.5)/(n-1):.5)), here=trailAt(T, hereS);
+  const cut=T.len.findIndex(l=>l>=hereS), walked=T.pts.slice(0, cut<0?T.pts.length:cut+1);
+  const start=T.pts[0], goal=T.pts[T.pts.length-1];
+  const at=k=>total*(.07+.81*(n>1?k/(n-1):.5)), stops=j.skills.map((s,k)=>Object.assign({s}, trailAt(T, at(k))));
+  // things labels must not cover: the owl and its tag, the stops, the trophy, the compass
+  const boxes=[], add=(x0,y0,x1,y1)=>boxes.push([x0,y0,x1,y1]);
+  stops.forEach(st=>add(st.x-28,st.y-28,st.x+28,st.y+28)); add(goal[0]-46,goal[1]-46,goal[0]+46,goal[1]+46); const gx=Math.min(goal[0], W-44-j.goal.length*32*.3), gw=j.goal.length*32*.3+6; add(gx-gw,goal[1]+50,gx+gw,goal[1]+92); add(40,50,180,190); MAP_TREES.forEach(([x,y])=>add(x-24,y-42,x+24,y+20));
+  const tw = t => t.length*F*0.56;
+  const hit0=(r)=>hit(r), hit=(r)=>{ let bad=0; boxes.forEach(b=>{ const ox=Math.min(r[2],b[2])-Math.max(r[0],b[0]), oy=Math.min(r[3],b[3])-Math.max(r[1],b[1]); if(ox>0&&oy>0) bad+=4000+ox*oy*4; });
+    T.pts.forEach(p=>{ if(p[0]>r[0]-6&&p[0]<r[2]+6&&p[1]>r[1]-6&&p[1]<r[3]+6) bad+=12; });
+    if(r[0]<34||r[2]>W-34||r[1]<34||r[3]>H-34) bad+=1e6; return bad; };
+  let owl={x:goal[0], y:goal[1]};
+  let tag=null;
+  if(!j.ready){ owl={x:here.x, y:here.y}; add(owl.x-40,owl.y-40,owl.x+40,owl.y+40);   // the owl stands on the trail; its tag goes where there is room
+    let best=null; [[0,-70],[0,70],[132,0],[-132,0]].forEach(([dx,dy],ci)=>{ const x=owl.x+dx, y=owl.y+dy, r=[x-90,y-22,x+90,y+22], sc=hit(r)+ci;
+      if(!best||sc<best.sc) best={sc,x,y,r}; });
+    tag={x:best.x, y:best.y}; add(...best.r); }
+  stops.forEach(st=>{ const t=st.s.name, w=t.split(' '), h=Math.ceil(w.length/2);
+    const ln=t.length>12&&w.length>1?[w.slice(0,h).join(' '), w.slice(h).join(' ')]:[t], wd=Math.max(...ln.map(tw)), ht=ln.length*LH;
+    const cands=[['start',st.x+36,st.y-ht/2],['end',st.x-36,st.y-ht/2],['middle',st.x,st.y+34],['middle',st.x,st.y-34-ht]];
+    let best=null; cands.forEach(([a,x,y],ci)=>{ const x0=a==='start'?x:a==='end'?x-wd:x-wd/2, r=[x0,y,x0+wd,y+ht], sc=hit(r)+ci*5; if(!best||sc<best.sc) best={sc,a,x,y,r}; });
+    add(...best.r); st.label={a:best.a, x:best.x, y:best.y, ln}; });
+  return {T, stops, here, owl, tag, walked, start, goal};
 }
-const journeySize = j => ({W:1000, H:Math.max(640, 260*j.tiers.length+170)});
-/* every word on the map, so the shared picture can draw them in the app's font */
 function journeyTexts(j, W, H){
-  const L=journeyLayout(j,W,H), g=L.camps[L.camps.length-1], me=L.camps[Math.min(j.here, L.camps.length-1)], out=[];
-  L.stops.flat().forEach(st=>{ const t=st.s.name, w=t.split(' '), h=Math.ceil(w.length/2), ln=t.length>12&&w.length>1?[w.slice(0,h).join(' '), w.slice(h).join(' ')]:[t];
-    ln.forEach((l,i)=>out.push({t:l, x:st.x, y:st.y+60+i*31, f:27, w:500, a:'middle', c:st.s.state==='todo'?'#8C7558':'#2B2118'})); });
-  out.push({t:j.goal, x:g.x+52, y:g.y+10, f:32, w:700, a:'start', c:'#7A5200'});
-  out.push({t:'Start', x:L.camps[0].x, y:L.camps[0].y+50, f:26, w:400, a:'middle', c:'#6B5743'});
-  if(j.here<j.tiers.length) out.push({t:'You are here', x:me.x+(me.x<W/2?-143:143), y:me.y+30, f:25, w:600, a:'middle', c:'#FFFFFF', halo:false});
+  const L=journeyLayout(j,W,H), out=[];
+  L.stops.forEach(st=>st.label.ln.forEach((l,i)=>out.push({t:l, x:st.label.x, y:st.label.y+22+i*30, f:27, w:600, a:st.label.a, c:st.s.state==='todo'?'#8A6F4A':'#3B2A1A'})));
+  out.push({t:j.goal, x:Math.min(L.goal[0], W-44-j.goal.length*32*.3), y:L.goal[1]+82, f:32, w:700, a:'middle', c:'#7A4A10'});
+  out.push({t:'Start', x:L.start[0], y:L.start[1]+50, f:26, w:600, a:'middle', c:'#5C4630'});
+  if(!j.ready) out.push({t:'You are here', x:L.tag.x, y:L.tag.y+9, f:24, w:600, a:'middle', c:'#FFFFFF', halo:false});
   return out;
 }
 function journeySVG(j, ownerKey, name, bare){
-  const {W,H}=journeySize(j), L=journeyLayout(j,W,H), g=L.camps[L.camps.length-1], me=L.camps[Math.min(j.here, L.camps.length-1)];
-  const [oc]=ownerKey.split('-'), o=OWLCOL[oc]||OWLCOL.teal, done=j.here>=j.tiers.length;
+  const {W,H}=journeySize(j), L=journeyLayout(j,W,H), P=TRAIL_PTS.map(([x,y])=>[x*W,y*H]), d=ptsD(L.T.pts);
+  const [oc]=ownerKey.split('-'), o=OWLCOL[oc]||OWLCOL.teal, g=L.goal, me=L.owl;
+  const tot=L.T.len[L.T.len.length-1], blobs=[];
+  for(let q=0;q<=tot;q+=34){ const at=trailAt(L.T,q), r=78+26*Math.sin(q/95)+14*Math.sin(q/31+1), sh=18*Math.sin(q/70);
+    blobs.push([at.x-at.ty*sh, at.y+at.tx*sh, r]); }
+  [[.17,.91,60],[.36,.70,62],[.72,.66,66],[.86,.44,60],[.6,.24,58],[.84,.09,52]].forEach(([x,y,r])=>blobs.push([x*W,y*H,r]));
+  blobs.forEach(b=>{ b[2]=Math.min(b[2], b[0]-34, W-34-b[0], b[1]-34, H-34-b[1]); });
+  const land=(c,dr)=>blobs.map(([x,y,r])=>`<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${Math.max(4,r+dr).toFixed(1)}" fill="${c}"/>`).join('');
+  const wave=(x,y)=>`<path d="M${x} ${y}q12 -10 24 0t24 0t24 0" fill="none" stroke="#C2A97C" stroke-width="3.5" stroke-linecap="round"/>`;
+  const tree=(x,y)=>`<g transform="translate(${x} ${y})"><path d="M0 -40L18 -6H-18Z M0 -26L22 10H-22Z" fill="#3F7D52"/><rect x="-4" y="10" width="8" height="10" rx="2" fill="#7A5534"/></g>`;
   const ring=(x,y,p)=>{ const r=22, a=2*Math.PI*Math.min(p,.999), ex=x+r*Math.sin(a), ey=y-r*Math.cos(a); return `<path d="M${x} ${y-r}A${r} ${r} 0 ${a>Math.PI?1:0} 1 ${ex.toFixed(1)} ${ey.toFixed(1)}" fill="none" stroke="#F5B400" stroke-width="8" stroke-linecap="round"/>`; };
+  const cx=110, cy=120;   // compass, top left
+  const compass=`<g transform="translate(${cx} ${cy})"><circle r="58" fill="#FBF3E2" stroke="#B89A6A" stroke-width="4"/><circle r="44" fill="none" stroke="#D9C49C" stroke-width="2"/>
+    <path d="M0 -50L10 -10L50 0L10 10L0 50L-10 10L-50 0L-10 -10Z" fill="#D2552E"/><path d="M0 -50L10 -10L0 0Z M50 0L10 10L0 0Z M0 50L-10 10L0 0Z M-50 0L-10 -10L0 0Z" fill="#A63E1F"/>
+    <circle r="6" fill="#FBF3E2"/>${bare?'':'<text y="-66" text-anchor="middle" font-size="22" font-weight="700" fill="#5C4630">N</text>'}</g>`;
   return `<svg class="jmap" viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(name)}'s journey to ${esc(j.goal)}: ${j.strong} of ${j.skills.length} skills strong" font-family="Lexend, sans-serif">
-    <rect width="${W}" height="${H}" rx="40" fill="#FFFFFF"/>
-    <path d="M0 ${H*.86} Q${W*.3} ${H*.76} ${W*.55} ${H*.84} T${W} ${H*.8} V${H-40} Q${W} ${H} ${W-40} ${H} H40 Q0 ${H} 0 ${H-40} Z" fill="#EAF2DC"/>
-    <path d="M${W*.32} ${H*.2} L${W*.5} ${H*.02} L${W*.68} ${H*.2} Z" fill="#F3E7D2"/>
-    ${L.trails.map(t=>`<path d="${t.d}" fill="none" stroke-linecap="round" ${t.on?'stroke="#F5B400" stroke-width="12"':'stroke="#D9C6A6" stroke-width="6" stroke-dasharray="2 16"'}/>`).join('')}
-    ${L.camps.slice(0,-1).map((c,k)=>k===j.here?'':`<circle cx="${c.x}" cy="${c.y}" r="${k?14:16}" fill="${k<=j.here?'#0E8C7E':'#EFE3CD'}"/>`).join('')}
-    ${L.stops.flat().map(st=>{ const s=st.s;
-      const dot = s.state==='done' ? `<circle cx="${st.x}" cy="${st.y}" r="26" fill="#F5B400"/><path d="M${st.x-11} ${st.y} l8 8 l14 -16" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>`
-        : s.state==='started' ? `<circle cx="${st.x}" cy="${st.y}" r="26" fill="#FFFFFF" stroke="#E0F4F1" stroke-width="8"/>${ring(st.x,st.y,s.p)}`
-        : `<circle cx="${st.x}" cy="${st.y}" r="22" fill="#FFFFFF" stroke="#E5D6BC" stroke-width="5"/>`;
-      return dot; }).join('')}
-    <circle cx="${g.x}" cy="${g.y}" r="38" fill="#FDE9B8" stroke="#F5B400" stroke-width="6"/>
-    <path d="M${g.x-14} ${g.y-16}h28v10a14 14 0 0 1-28 0zM${g.x} ${g.y+8}v8M${g.x-10} ${g.y+19}h20" fill="none" stroke="#B07D00" stroke-width="5" stroke-linecap="round"/>
-    <g transform="translate(${me.x-(done?120:38)} ${me.y-(done?38:46)})"><svg width="76" height="76" viewBox="0 0 100 100"><path d="${OWL_HEAD}" fill="${o.h}"/><g transform="translate(6 13) scale(0.88)"><circle cx="33" cy="46" r="12" fill="#fff" stroke="#fff" stroke-width="8"/><circle cx="67" cy="46" r="12" fill="#fff" stroke="#fff" stroke-width="8"/><rect x="41" y="30" width="8" height="32" rx="4" fill="#fff"/><rect x="75" y="30" width="8" height="32" rx="4" fill="#fff"/><circle cx="34" cy="47" r="5.5" fill="${o.p}"/><circle cx="68" cy="47" r="5.5" fill="${o.p}"/><path d="M38 74 Q50 84 62 74" fill="none" stroke="#F5B400" stroke-width="6" stroke-linecap="round"/></g><polygon points="46,63 54,63 50,70" fill="#F5B400"/></svg></g>
-    ${done?'':`<g><rect x="${me.x+(me.x<W/2?-238:48)}" y="${me.y-2}" width="190" height="46" rx="23" fill="#0E8C7E"/></g>`}
-    ${bare?'':journeyTexts(j,W,H).map(t=>`<text x="${t.x}" y="${t.y}" text-anchor="${t.a}" font-size="${t.f}" font-weight="${t.w}" fill="${t.c}"${t.halo===false?'':' stroke="#FFFFFF" stroke-width="9" stroke-linejoin="round" paint-order="stroke"'}>${esc(t.t)}</text>`).join('')}
+    <rect width="${W}" height="${H}" rx="36" fill="#F6EBD3"/><rect x="18" y="18" width="${W-36}" height="${H-36}" rx="24" fill="none" stroke="#D8C29A" stroke-width="3"/>
+    ${wave(60,330)}${wave(110,365)}${wave(800,690)}${wave(860,725)}${wave(470,110)}${wave(300,250)}
+    <ellipse cx="905" cy="560" rx="26" ry="16" fill="#E8D2A4" stroke="#A5814F" stroke-width="4"/><ellipse cx="560" cy="730" rx="18" ry="11" fill="#E8D2A4" stroke="#A5814F" stroke-width="4"/>
+    <path d="${d}" fill="none" stroke="#A5814F" stroke-width="118" stroke-linecap="round" stroke-linejoin="round"/>${land('#A5814F',5)}<path d="${d}" fill="none" stroke="#E8D2A4" stroke-width="108" stroke-linecap="round" stroke-linejoin="round"/>${land('#E8D2A4',0)}
+    ${MAP_TREES.map(([x,y])=>tree(x,y)).join('')}
+    ${compass}
+    <path d="${d}" fill="none" stroke="#B4572F" stroke-width="7" stroke-linecap="round" stroke-dasharray="3 15" opacity=".75"/>
+    <path d="${ptsD(L.walked.length>1?L.walked:[L.start,L.start])}" fill="none" stroke="#D2552E" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="${L.start[0]}" cy="${L.start[1]}" r="15" fill="#0E8C7E" stroke="#FBF3E2" stroke-width="5"/>
+    ${L.stops.map(st=>{ const s=st.s;
+      return s.state==='done' ? `<circle cx="${st.x}" cy="${st.y}" r="26" fill="#F5B400" stroke="#FBF3E2" stroke-width="5"/><path d="M${st.x-11} ${st.y} l8 8 l14 -16" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>`
+        : s.state==='started' ? `<circle cx="${st.x}" cy="${st.y}" r="26" fill="#FBF3E2" stroke="#E6D3AE" stroke-width="8"/>${ring(st.x,st.y,s.p)}`
+        : `<circle cx="${st.x}" cy="${st.y}" r="20" fill="#FBF3E2" stroke="#B89A6A" stroke-width="4" stroke-dasharray="5 5"/>`; }).join('')}
+    <circle cx="${g[0]}" cy="${g[1]}" r="42" fill="#FDE9B8" stroke="#F5B400" stroke-width="7"/>
+    <path d="M${g[0]-15} ${g[1]-18}h30v11a15 15 0 0 1-30 0zM${g[0]-15} ${g[1]-14}h-7a7 7 0 0 0 7 10M${g[0]+15} ${g[1]-14}h7a7 7 0 0 1-7 10M${g[0]} ${g[1]+8}v8M${g[0]-11} ${g[1]+20}h22" fill="none" stroke="#B07D00" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+    ${j.ready?`<circle cx="${g[0]}" cy="${g[1]}" r="42" fill="#FDE9B8"/>`:''}<g transform="translate(${me.x-(j.ready?33:38)} ${me.y-(j.ready?36:40)})"><svg width="${j.ready?66:76}" height="${j.ready?66:76}" viewBox="0 0 100 100"><path d="${OWL_HEAD}" fill="${o.h}"/><g transform="translate(6 13) scale(0.88)"><circle cx="33" cy="46" r="12" fill="#fff" stroke="#fff" stroke-width="8"/><circle cx="67" cy="46" r="12" fill="#fff" stroke="#fff" stroke-width="8"/><rect x="41" y="30" width="8" height="32" rx="4" fill="#fff"/><rect x="75" y="30" width="8" height="32" rx="4" fill="#fff"/><circle cx="34" cy="47" r="5.5" fill="${o.p}"/><circle cx="68" cy="47" r="5.5" fill="${o.p}"/><path d="M38 74 Q50 84 62 74" fill="none" stroke="#F5B400" stroke-width="6" stroke-linecap="round"/></g><polygon points="46,63 54,63 50,70" fill="#F5B400"/></svg></g>
+    ${j.ready?'':`<rect x="${L.tag.x-90}" y="${L.tag.y-22}" width="180" height="44" rx="22" fill="#0E8C7E"/>`}
+    ${bare?'':journeyTexts(j,W,H).map(t=>`<text x="${t.x.toFixed(1)}" y="${t.y.toFixed(1)}" text-anchor="${t.a}" font-size="${t.f}" font-weight="${t.w}" fill="${t.c}"${t.halo===false?'':' stroke="#F3E4C4" stroke-width="9" stroke-linejoin="round" paint-order="stroke"'}>${esc(t.t)}</text>`).join('')}
   </svg>`;
 }
-function journeyHead(j, name){ return j.here>=j.tiers.length ? `${name} is ready for ${j.goal}!` : `${name}'s journey to ${j.goal}`; }
+function journeyHead(j, name){ return j.ready ? `${name} is ready for ${j.goal}!` : `${name}'s journey to ${j.goal}`; }
 function svgToImg(svg){ return new Promise(res=>{ const im=new Image(); im.onload=()=>res(im); im.onerror=()=>res(null);
   im.src='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(svg.replace('<svg class="jmap"', '<svg xmlns="http://www.w3.org/2000/svg" class="jmap"')); }); }
 function reportCardHTML(d, r){
@@ -2679,7 +2728,7 @@ async function reportImage(d, r){
     x.font='400 30px Lexend, sans-serif'; x.fillStyle='#6B5743'; x.fillText(`${j.strong} of ${j.skills.length} skills strong`, 70, y+46);
     const {W:mw, H:mh}=journeySize(j), dw=W-140, k=dw/mw, my=y+80;
     const im=await svgToImg(journeySVG(j, owlKey({id:r.id,avatar:c.avatar||r.avatar}), name, true)); if(im) x.drawImage(im, 70, my, dw, mh*k);
-    journeyTexts(j, mw, mh).forEach(t=>{ x.font=`${t.w} ${Math.round(t.f*k)}px Lexend, sans-serif`; x.fillStyle=t.c; x.textAlign=t.a==='middle'?'center':'left'; if(t.halo!==false){ x.strokeStyle='#FFFFFF'; x.lineWidth=9*k; x.lineJoin='round'; x.strokeText(t.t, 70+t.x*k, my+t.y*k); } x.fillText(t.t, 70+t.x*k, my+t.y*k); });
+    journeyTexts(j, mw, mh).forEach(t=>{ x.font=`${t.w} ${Math.round(t.f*k)}px Lexend, sans-serif`; x.fillStyle=t.c; x.textAlign=t.a==='middle'?'center':t.a==='end'?'right':'left'; if(t.halo!==false){ x.strokeStyle='#F3E4C4'; x.lineWidth=9*k; x.lineJoin='round'; x.strokeText(t.t, 70+t.x*k, my+t.y*k); } x.fillText(t.t, 70+t.x*k, my+t.y*k); });
     x.textAlign='left'; y = my + mh*k + 50; }
   const tip='Try at home: '+tipFor(d.practise); x.font='400 36px Lexend, sans-serif';
   const words=tip.split(' '), lines=[]; let line=''; words.forEach(w=>{ const t=line?line+' '+w:w; if(x.measureText(t).width>W-220){ lines.push(line); line=w; } else line=t; }); lines.push(line);
@@ -3684,7 +3733,7 @@ function wireHold(){
 }
 try{ speechSynthesis.getVoices(); }catch(e){}
 
-window.__cwm={GAMES,GROUPS,makeQ,maskHint,cur:()=>q,placementEstimate,placementResult,LADDER,START_BY_AGE};
+window.__cwm={GAMES,GROUPS,makeQ,maskHint,journeyOf,journeySVG,journeyHead,cur:()=>q,placementEstimate,placementResult,LADDER,START_BY_AGE};
 /* ---------- installable app (only when opened from its own web address) ---------- */
 let deferredInstall=null;
 const INSTALLED = (()=>{ try{ return matchMedia('(display-mode: standalone)').matches || navigator.standalone===true; }catch(e){ return false; } })();
