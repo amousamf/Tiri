@@ -3039,9 +3039,118 @@ const IOS = /iphone|ipad|ipod/i.test(navigator.userAgent) || (navigator.platform
 window.addEventListener('beforeinstallprompt', e=>{ e.preventDefault(); deferredInstall=e; if(current==='sHome') renderHome(); });
 window.addEventListener('appinstalled', ()=>{ deferredInstall=null; toast('Installed. Look for Tiri on your home screen.'); if(current==='sHome') renderHome(); });
 if(STANDALONE && 'serviceWorker' in navigator && (location.protocol==='https:'||location.hostname==='localhost')){ try{ navigator.serviceWorker.register('sw.js').catch(()=>{}); }catch(e){} }
-load(); renderMute();
-if(store.mode==='school') openSchoolHome(); else { renderHome(); show('sHome'); }
-setTimeout(liveSync, 1500);
+/* ---------- new home: garaad.app ----------
+   The same page runs at the old address (amousamf.github.io/Tiri) and at garaad.app.
+   Browser storage belongs to one address, so the old address packs the phone's games into the
+   link (after #, which never leaves the phone) and opens garaad.app, which unpacks and keeps them.
+   The old copy is left as it was; from then on the old address just forwards.
+   Nothing happens until garaad.app answers move.json, so this is safe to publish early. */
+const DEVTEST = location.hostname==='localhost' || location.hostname==='127.0.0.1';
+const QS = new URLSearchParams(location.search);
+const NEW_HOME = (DEVTEST && QS.get('newhome')) || 'https://garaad.app/';
+const OLD_HOME_URL = (DEVTEST && QS.get('oldurl')) || 'https://amousamf.github.io/Tiri/';
+const AT_OLD_HOME = /^amousamf\.github\.io$/i.test(location.hostname) || (DEVTEST && QS.get('oldhome')==='1');
+const fwdSearch = () => { const p=new URLSearchParams(location.search); p.delete('newhome'); p.delete('oldhome'); const s=p.toString(); return s?'?'+s:''; };
+const toB64u = bytes => { let s=''; for(let i=0;i<bytes.length;i+=0x8000) s+=String.fromCharCode.apply(null, bytes.subarray(i,i+0x8000)); return btoa(s).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,''); };
+const fromB64u = str => { const s=atob(str.replace(/-/g,'+').replace(/_/g,'/')); const b=new Uint8Array(s.length); for(let i=0;i<s.length;i++) b[i]=s.charCodeAt(i); return b; };
+async function packMove(obj){
+  const raw = new TextEncoder().encode(JSON.stringify(obj));
+  if(typeof CompressionStream==='function'){
+    try{ const z = new Uint8Array(await new Response(new Blob([raw]).stream().pipeThrough(new CompressionStream('gzip'))).arrayBuffer()); return 'z.'+toB64u(z); }catch(e){}
+  }
+  return 'j.'+toB64u(raw);
+}
+async function unpackMove(str){
+  const kind=str.slice(0,2), bytes=fromB64u(str.slice(2));
+  let raw;
+  if(kind==='z.') raw = new Uint8Array(await new Response(new Blob([bytes]).stream().pipeThrough(new DecompressionStream('gzip'))).arrayBuffer());
+  else if(kind==='j.') raw = bytes;
+  else throw new Error('bad_move');
+  const obj = JSON.parse(new TextDecoder().decode(raw));
+  if(!obj || typeof obj!=='object' || !obj.store || typeof obj.store!=='object') throw new Error('bad_move');
+  return obj;
+}
+const hasData = s => !!(s && ((Array.isArray(s.profiles) && s.profiles.length) || s.school || (Array.isArray(s.sessions) && s.sessions.length)));
+function mergeMove(cur, inc){
+  inc = Object.assign({}, inc); delete inc.movedTo;
+  if(!hasData(cur)) return inc;                       // usual case: nothing here yet
+  const out = Object.assign({}, cur);
+  const ids = a => new Set((a||[]).map(x=>x && x.id));
+  const have = ids(out.profiles), seen = ids(out.sessions);
+  out.profiles = (out.profiles||[]).concat((inc.profiles||[]).filter(p=>p && !have.has(p.id)));
+  out.sessions = (out.sessions||[]).concat((inc.sessions||[]).filter(r=>r && !seen.has(r.id)));
+  if(!out.school && inc.school) out.school = inc.school;
+  else if(out.school && inc.school){ out.school = Object.assign({}, inc.school, out.school); out.school.outbox = (inc.school.outbox||[]).concat(out.school.outbox||[]); }
+  for(const k of Object.keys(inc)) if(out[k]===undefined) out[k]=inc[k];
+  delete out.movedTo;
+  return out;
+}
+function moveScreen(msg){
+  const d=document.createElement('div');
+  d.style.cssText='position:fixed;inset:0;z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:24px;text-align:center;background:#FFF7E8;color:#2B2118;font:600 20px/1.4 system-ui,sans-serif';
+  d.innerHTML='<svg width="96" height="96" viewBox="0 0 100 100" aria-hidden="true"><path d="M14 8 L34 24 Q50 17 66 24 L86 8 Q95 40 91 62 Q85 93 50 95 Q15 93 9 62 Q5 40 14 8 Z" fill="#0E8C7E"/><circle cx="35" cy="53" r="11" fill="#fff"/><circle cx="65" cy="53" r="11" fill="#fff"/><circle cx="36" cy="54" r="5" fill="#0A5E55"/><circle cx="66" cy="54" r="5" fill="#0A5E55"/><polygon points="46,63 54,63 50,70" fill="#F5B400"/></svg><div></div>';
+  d.lastChild.textContent=msg; document.body.appendChild(d); return d;
+}
+async function newHomeReady(){
+  try{
+    const ctl = ('AbortController' in window) ? new AbortController() : null;
+    const t = setTimeout(()=>ctl && ctl.abort(), 5000);
+    const r = await fetch(NEW_HOME+'move.json?t='+Date.now(), {cache:'no-store', signal: ctl && ctl.signal});
+    clearTimeout(t);
+    return r.ok && (await r.json()).accept===1;
+  }catch(e){ return false; }
+}
+async function moveOut(){                            // at the old address; true = leaving
+  let s=null; try{ s=JSON.parse(localStorage.getItem(KEY)||'null'); }catch(e){}
+  const again = location.hash==='#again';              // garaad.app asks for the games once more
+  if(s && s.movedTo && !again){
+    if(navigator.onLine===false){ moveScreen('Tiri is now Garaad. Connect to the internet once to open it.'); return true; }
+    location.replace(NEW_HOME+fwdSearch()); return true;
+  }
+  if(!(await newHomeReady())) return false;          // not live yet, or offline: keep playing here
+  if(!hasData(s)){ location.replace(NEW_HOME+fwdSearch()); return true; }
+  const pack = Object.assign({}, s); delete pack.movedTo;
+  // finished results don't need their question lists on the trip
+  pack.sessions = (s.sessions||[]).map(r=> (r && r.live) ? Object.assign({}, r, {items:undefined}) : r);
+  let muted=null; try{ muted=localStorage.getItem('cwm.muted'); }catch(e){}
+  let data = await packMove({v:1, store:pack, muted});
+  if(data.length > 1500000){                          // very long history: keep everything not yet sent + the last 300 sent
+    const sent = pack.sessions.filter(r=>r && r.live);
+    pack.sessions = pack.sessions.filter(r=>r && !r.live).concat(sent.slice(-300));
+    data = await packMove({v:1, store:pack, muted});
+  }
+  s.movedTo = NEW_HOME; s.movedAt = new Date().toISOString();
+  try{ localStorage.setItem(KEY, JSON.stringify(s)); }catch(e){}
+  moveScreen('Tiri is moving to its new home, Garaad…');
+  setTimeout(()=>location.replace(NEW_HOME+fwdSearch()+'#move='+data), 600);
+  return true;
+}
+async function moveIn(){                              // at garaad.app, arriving with a phone's games
+  const m = location.hash.match(/^#move=(.+)$/); if(!m) return null;
+  try{ history.replaceState(null, '', location.pathname+location.search); }catch(e){}
+  try{
+    const inc = await unpackMove(m[1]);
+    let cur=null; try{ cur=JSON.parse(localStorage.getItem(KEY)||'null'); }catch(e){}
+    localStorage.setItem(KEY, JSON.stringify(mergeMove(cur, inc.store)));
+    if(inc.muted==='1'||inc.muted==='0'){ localStorage.setItem('cwm.muted', inc.muted); muted = inc.muted==='1'; }
+    return 'ok';
+  }catch(e){ return 'failed'; }
+}
+window.__move={packMove,unpackMove,mergeMove};
+
+(async ()=>{
+  if(AT_OLD_HOME){ try{ if(await moveOut()) return; }catch(e){} }
+  const moved = AT_OLD_HOME ? null : await moveIn();
+  load(); renderMute();
+  if(store.mode==='school') openSchoolHome(); else { renderHome(); show('sHome'); }
+  if(moved==='ok' && hasData(store)) toast('Welcome to Garaad! Your games came with you.');
+  if(moved==='failed'){                               // ask the old address once more (once per tab)
+    let tried=false; try{ tried=sessionStorage.getItem('garaad.moveRetry')==='1'; sessionStorage.setItem('garaad.moveRetry','1'); }catch(e){ tried=true; }
+    if(!tried && !hasData(store)){ location.replace(OLD_HOME_URL+fwdSearch()+'#again'); return; }
+    toast('Your games did not come over. Ask for help, they are still safe at the old link.');
+  }
+  setTimeout(liveSync, 1500);
+})();
 })();
 </script>
 </body>
